@@ -67,6 +67,11 @@ h1{
     width: 100%; /* Ocupa toda a largura do container */
 }
 
+
+#email, #password {
+    color: #fff;
+}
+
 #login-form label {
     color: #F2E96B;
 }
