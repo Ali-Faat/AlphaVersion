@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+/* Estilos gerais */
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #0684B9, #F26835);
+    color: white;
+}
+
+/* Estilos do container */
+.container {
+    background-color: #011532;
+    padding: 30px;
+    border-radius: 8px;
+    width: 80%; /* Alterado para 80% */
+    max-width: 400px;
+}
+
+/* Estilos do conteúdo principal */
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 80%; /* Alterado para 80% */
+}
+
+/* Estilos do logo */
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    width: 100%; /* Ocupa toda a largura do container */
+}
+
+.logo-container img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+h1{
+    font-family: 'Impact';
+    margin: -15px;
+}
+
+.slogan {
+    font-family: 'Brush Script MT';
+    font-size: 25px;
+    color: #F2E96B;
+}
+
+/* Estilos do formulário */
+#login-form {
+    width: 100%; /* Ocupa toda a largura do container */
+}
+
+#login-form .input-field {
+    margin-left: -30px;
+    width: 100%; /* Ocupa toda a largura do container */
+}
+
+#login-form label {
+    color: #F2E96B;
+}
+
+#login-form input[type="email"]:focus + label,
+#login-form input[type="password"]:focus + label {
+    color: #F26835;
+}
+
+/* Estilos do botão */
+#login-form button {
+    width: 100%; /* Ocupa toda a largura do container */
+}
+
+/* Estilos das opções e do rodapé */
+.options {
+    margin-top: 10px;
+    width: 100%; /* Ocupa toda a largura do container */
+    text-align: center; /* Centraliza o texto */
+}
+
+footer {
+    margin-top: 20px;
+    font-size: 12px;
+    width: 100%; /* Ocupa toda a largura do container */
+    text-align: center; /* Centraliza o texto */
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalCast - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <main class="container content">
+        <div class="logo-container">
+            <img src="../../IMGs/logo.png" alt="Logo GoalCast">
+            <h1>GoalCast</h1>
+            <p class="slogan">O futuro é agora!</p>
+        </div>
+
+        <form id="login-form">
+            <div class="input-field">
+                <i class="material-icons prefix"></i>
+                <input type="email" id="email" name="email" required>
+                <label for="email">E-mail</label>
+            </div>
+            <div class="input-field">
+                <i class="material-icons prefix"></i>
+                <input type="password" id="password" name="password" required>
+                <label for="password">Senha</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Entrar</button>
+        </form>
+
+        <div class="options">
+            <a href="#">Esqueceu sua senha?</a>
+        </div>
+
+        <footer>
+            <a href="#">Privacidade</a>
+        </footer>
+    </main>
+
+    <script src="login.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
