@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalCast - Início</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo center">GoalCast</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="#">Perfil</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container content">
+        <div class="filter-menu">
+            <select id="filter-type">
+                <option value="all">Todos</option>
+                <option value="goals">Gols</option>
+                <option value="highlights">Melhores Momentos</option>
+                <option value="training">Treinos</option>
+            </select>
+        </div>
+
+        <div class="layout-options">
+            <button class="btn layout-button" data-layout="list">Lista</button>
+            <button class="btn layout-button" data-layout="two-columns">2 Colunas</button>
+            <button class="btn layout-button" data-layout="grid">Grid</button>
+        </div>
+
+        <div class="video-list list">
+        </div>
+    </main>
+
+    <footer>
+        <a href="#">Privacidade</a>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
