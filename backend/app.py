@@ -8,8 +8,6 @@ import hashlib
 app = Flask(__name__)
 CORS(app)
 
-# ... (get_db_connection function remains the same)
-
 # Rota para listar as quadras
 @app.route('/api/quadras', methods=['GET'])
 def get_quadras():

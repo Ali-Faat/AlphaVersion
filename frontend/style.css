@@ -1,0 +1,36 @@
+/* Estilos gerais */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+nav {
+    background-color: #007bff; /* Cor de fundo azul */
+    color: white;
+    display: flex;
+}
+
+.brand-logo {
+    font-weight: bold;
+}
+
+/* Estilos do menu superior */
+nav ul.right a {
+    color: white;
+}
+
+/* Estilos do menu lateral */
+.sidenav {
+    background-color: #fff;
+    display: none; /* Oculta o menu lateral por padrão */
+}
+
+@media (max-width: 768px) {
+    .sidenav {
+        display: block; /* Exibe o menu lateral em telas menores */
+    }
+
+    nav ul.right {
+        display: none; /* Oculta o menu desktop em telas menores */
+    }
+}
