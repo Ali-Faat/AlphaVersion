@@ -1,0 +1,19 @@
+.btn {
+    position: relative; /* Posiciona o botão de forma absoluta */
+    left: 50%;          /* Alinha o botão horizontalmente ao centro */
+    transform: translateX(-50%); /* Centraliza o botão horizontalmente */
+    background-color: transparent; /* Fundo transparente */
+    border: none;
+    border-radius: 50%; /* Faz o botão redondo */
+    width: 160px;        /* Largura do botão */
+    height: 160px;       /* Altura do botão */
+    display: flex;     /* Permite usar flexbox para centralizar o conteúdo */
+    align-items: center; /* Centraliza o conteúdo verticalmente */
+    justify-content: center; /* Centraliza o conteúdo horizontalmente */
+    box-shadow: 0 0 20px #82bfff, 0 0 40px #82bfff, 0 0 60px #82bfff; /* Efeito neon azul */
+}
+
+body{
+    height: 100vh;
+    background: linear-gradient(to bottom right, #0684B9, #F26835);
+}
