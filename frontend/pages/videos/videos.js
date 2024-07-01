@@ -42,6 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     //videoItem.appendChild(videoTitle);
                     videoItem.appendChild(videoElement);
 
+                    if (video.eh_criador) {
+                        videoItem.classList.add('destaque'); // Adicionar a classe de destaque
+                    }
+                
                     videoContainer.appendChild(videoItem);
                 });
             }

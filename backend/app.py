@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 from database import get_db_connection
 import mysql.connector
 import json
@@ -51,23 +51,40 @@ def get_videos():
 
     try:
         if quadra_id:
-            cursor.execute('SELECT * FROM videos WHERE quadra_id = %s', (quadra_id,))
+            if 'usuario_id' in session:
+                usuario_id = session['usuario_id']
+                cursor.execute('SELECT v.*, (v.criador_id = %s) AS eh_criador '
+                               'FROM videos v '
+                               'JOIN partidas p ON v.partida_id = p.id '
+                               'WHERE p.quadra_id = %s', (usuario_id, quadra_id))
+            else:
+                cursor.execute('SELECT v.*, 0 AS eh_criador '
+                               'FROM videos v '
+                               'JOIN partidas p ON v.partida_id = p.id '
+                               'WHERE p.quadra_id = %s', (quadra_id,))
         else:
-            cursor.execute('SELECT * FROM videos')
+            if 'usuario_id' in session:
+                usuario_id = session['usuario_id']
+                cursor.execute('SELECT v.*, (v.criador_id = %s) AS eh_criador '
+                               'FROM videos v', (usuario_id,))
+            else:
+                cursor.execute('SELECT v.*, 0 AS eh_criador '
+                               'FROM videos v')
 
         videos = cursor.fetchall()
 
         # Converter para formato JSON
         videos_json = []
         for video in videos:
-            data_criacao_str = video[4].strftime('%Y-%m-%d %H:%M:%S') if video[4] is not None else None
+            data_criacao_str = video[4].strftime('%Y-%m-%d %H:%M:%S') if video[4] else None
             videos_json.append({
                 'id': video[0],
                 'partida_id': video[1],
-                'id_quadra': video[2],
+                'quadra_id': video[2],
                 'url': video[3],
                 'tipo': video[4],
-                'data_criacao': data_criacao_str
+                'data_criacao': data_criacao_str,
+                'eh_criador': video[6]  # Novo campo para indicar se o usuário é o criador
             })
 
         return jsonify(videos_json)
