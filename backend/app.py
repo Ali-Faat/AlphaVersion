@@ -79,22 +79,50 @@ def get_videos():
     quadra_id = request.args.get('quadra_id')
     partida_id = request.args.get('partida_id')
 
-    query = 'SELECT v.*, (v.criador_id = %s) AS eh_criador FROM videos v JOIN partidas p ON v.partida_id = p.id WHERE '
-    params = []
+    mydb = get_db_connection()
+    cursor = mydb.cursor()
 
-    if 'usuario_id' in session:
-        params.append(session['usuario_id'])
-    else:
-        params.append(None)  # Valor padrão para eh_criador quando não logado
+    try:
+        query = 'SELECT v.*, (v.criador_id = %s) AS eh_criador FROM videos v JOIN partidas p ON v.partida_id = p.id WHERE '
+        params = []
 
-    if quadra_id:
-        query += 'p.quadra_id = %s '
-        params.append(quadra_id)
+        # Verificar se o usuário está logado
+        if 'usuario_id' in session:
+            params.append(session['usuario_id'])
+        else:
+            params.append(None)  # Valor padrão para eh_criador quando não logado
 
-    if partida_id:
-        query += 'AND v.data_criacao BETWEEN p.dh_inicio AND p.dh_fim '
+        if quadra_id:
+            query += 'p.quadra_id = %s '
+            params.append(quadra_id)
 
-    return executar_consulta(query, params)
+        if partida_id:
+            query += 'AND v.data_criacao BETWEEN p.dh_inicio AND p.dh_fim '
+
+        cursor.execute(query, params)
+        videos = cursor.fetchall()
+
+        videos_json = []
+        for video in videos:
+            data_criacao_str = video[4].strftime('%Y-%m-%d %H:%M:%S') if video[4] else None
+            videos_json.append({
+                'id': video[0],
+                'partida_id': video[1],
+                'quadra_id': video[2],
+                'url': video[3],
+                'tipo': video[4],
+                'data_criacao': data_criacao_str,
+                'eh_criador': bool(video[6])  # Converter para booleano
+            })
+
+        return jsonify(videos_json)
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
 
 # Rota para autenticar usuário
 @app.route('/api/login', methods=['POST'])
