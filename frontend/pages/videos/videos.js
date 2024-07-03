@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchVideosByQuadra(quadraId) {
         try {
             const response = await fetch(`http://127.0.0.1:5000/api/videos?quadra_id=${quadraId}`);
-
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
@@ -23,10 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
             videoContainer.innerHTML = '';
 
             if (videos.length === 0) {
-                const noVideosMessage = document.createElement('p');
-                noVideosMessage.textContent = 'Nenhum vídeo encontrado para esta quadra.';
-                videoContainer.appendChild(noVideosMessage);
+                // ... (mensagem de nenhum vídeo encontrado)
             } else {
+                // Exibir os vídeos
                 videos.forEach(video => {
                     const videoElement = document.createElement('video');
                     videoElement.src = video.url;
@@ -38,23 +36,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     videoTitle.textContent = video.tipo;
 
                     const videoItem = document.createElement('div');
+
                     videoItem.classList.add('video-item');
-                    //videoItem.appendChild(videoTitle);
+                    // Destacar o vídeo se o usuário for o criador
+                    if (video.eh_criador) {
+                        videoItem.classList.add('destaque');
+                    }
+
+                    videoItem.appendChild(videoTitle);
                     videoItem.appendChild(videoElement);
 
-                    if (video.eh_criador) {
-                        videoItem.classList.add('destaque'); // Adicionar a classe de destaque
-                    }
-                
                     videoContainer.appendChild(videoItem);
                 });
             }
         } catch (error) {
-            console.error('Erro ao buscar vídeos da quadra:', error);
-            // Exibir mensagem de erro na interface
-            const errorMessage = document.createElement('p');
-            errorMessage.textContent = 'Ocorreu um erro ao carregar os vídeos.';
-            videoContainer.appendChild(errorMessage);
+            console.error('Erro ao buscar vídeos da partida:', error);
+            // Lógica para exibir mensagem de erro na interface
         }
     }
 
