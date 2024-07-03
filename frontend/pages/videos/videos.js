@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoContainer = document.getElementById('video-container');
-    const quadraNomeElement = document.getElementById('quadra-nome');
+    const partidaSelect = document.getElementById('partida-select');
 
     // Função para obter o ID da quadra da URL
     function getQuadraIdFromUrl() {
@@ -8,53 +8,108 @@ document.addEventListener('DOMContentLoaded', function () {
         return urlParams.get('quadra_id');
     }
 
+    // Função para exibir uma mensagem de erro/informação
+    function exibirMensagem(mensagem, container, isError = true) {
+        const messageElement = document.createElement('p');
+        messageElement.textContent = mensagem;
+        messageElement.style.color = isError ? 'red' : 'black';
+        container.innerHTML = '';
+        container.appendChild(messageElement);
+    }
+
+    // Função para criar um elemento de vídeo
+    function criarVideoElement(video) {
+        const videoElement = document.createElement('video');
+        videoElement.src = video.url;
+        videoElement.controls = true;
+        videoElement.width = 320;
+        videoElement.height = 240;
+        return videoElement;
+    }
+
     // Função para buscar e exibir os vídeos da quadra
     async function fetchVideosByQuadra(quadraId) {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/videos?quadra_id=${quadraId}`);
-            if (!response.ok) {
-                throw new Error(`Erro HTTP: ${response.status}`);
+            // Busca as partidas da quadra selecionada
+            const partidasResponse = await fetch(`http://127.0.0.1:5000/api/partidas/${quadraId}`);
+            if (!partidasResponse.ok) {
+                throw new Error(`Erro HTTP: ${partidasResponse.status}`);
+            }
+            const partidas = await partidasResponse.json();
+
+            if (partidas.length === 0) {
+                exibirMensagem('Nenhuma partida encontrada para esta quadra.', videoContainer);
+                return;
             }
 
-            const videos = await response.json();
+            // Popula o menu dropdown com as partidas
+            partidaSelect.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.text = 'Selecione uma partida';
+            partidaSelect.appendChild(defaultOption);
 
-            // Limpar o container de vídeos
-            videoContainer.innerHTML = '';
+            partidas.forEach(partida => {
+                const option = document.createElement('option');
+                option.value = partida.id;
+                option.text = partida.dh_inicio ? partida.dh_inicio : 'Partida sem data definida';
+                partidaSelect.appendChild(option);
+            });
 
-            if (videos.length === 0) {
-                // ... (mensagem de nenhum vídeo encontrado)
-            } else {
-                // Exibir os vídeos
-                videos.forEach(video => {
-                    const videoElement = document.createElement('video');
-                    videoElement.src = video.url;
-                    videoElement.controls = true;
-                    videoElement.width = 320;
-                    videoElement.height = 240;
+            // Função para buscar e exibir os vídeos da partida selecionada
+            async function fetchVideosByPartida() {
+                const selectedPartidaId = partidaSelect.value;
 
-                    const videoTitle = document.createElement('h3');
-                    videoTitle.textContent = video.tipo;
+                if (!selectedPartidaId) {
+                    exibirMensagem('Selecione uma partida para ver os vídeos.', videoContainer, false);
+                    return;
+                }
 
-                    const videoItem = document.createElement('div');
-
-                    videoItem.classList.add('video-item');
-                    // Destacar o vídeo se o usuário for o criador
-                    if (video.eh_criador) {
-                        videoItem.classList.add('destaque');
+                try {
+                    const response = await fetch(`http://127.0.0.1:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}`);
+                    if (!response.ok) {
+                        throw new Error(`Erro HTTP: ${response.status}`);
                     }
+                    const videos = await response.json();
 
-                    videoItem.appendChild(videoTitle);
-                    videoItem.appendChild(videoElement);
+                    // Limpar o container de vídeos
+                    videoContainer.innerHTML = '';
 
-                    videoContainer.appendChild(videoItem);
-                });
+                    if (videos.length === 0) {
+                        exibirMensagem('Nenhum vídeo encontrado para esta partida.', videoContainer);
+                    } else {
+                        // Exibir os vídeos
+                        videos.forEach(video => {
+                            const videoElement = criarVideoElement(video);
+                            const videoTitle = document.createElement('h3');
+                            videoTitle.textContent = video.tipo;
+                            const videoItem = document.createElement('div');
+                            videoItem.classList.add('video-item');
+
+                            // Destacar o vídeo se o usuário for o criador
+                            if (video.eh_criador) {
+                                videoItem.classList.add('destaque');
+                            }
+
+                            videoItem.appendChild(videoTitle);
+                            videoItem.appendChild(videoElement);
+
+                            videoContainer.appendChild(videoItem);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar vídeos da partida:', error);
+                    exibirMensagem('Ocorreu um erro ao carregar os vídeos.', videoContainer);
+                }
             }
+
+            // Adicionar evento de mudança ao select de partidas
+            partidaSelect.addEventListener('change', fetchVideosByPartida);
         } catch (error) {
-            console.error('Erro ao buscar vídeos da partida:', error);
-            // Lógica para exibir mensagem de erro na interface
+            console.error('Erro ao buscar partidas da quadra:', error);
+            exibirMensagem('Ocorreu um erro ao carregar as partidas.', videoContainer);
         }
     }
-
     // Função para buscar o nome da quadra
     async function fetchQuadraNome(quadraId) {
         try {
@@ -63,14 +118,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
             const quadra = await response.json();
-
-            quadraNomeElement.textContent = quadra.nome;
+            const quadraNomeElement = document.getElementById('quadra-nome');
+            quadraNomeElement.innerHTML = quadra.nome;
         } catch (error) {
             console.error('Erro ao buscar nome da quadra:', error);
-            // Exibir mensagem de erro na interface
-            const errorMessage = document.createElement('p');
-            errorMessage.textContent = 'Ocorreu um erro ao carregar o nome da quadra.';
-            quadraNomeElement.appendChild(errorMessage); // Adiciona a mensagem ao elemento do nome da quadra
+            exibirMensagem('Ocorreu um erro ao carregar o nome da quadra.', quadraNomeElement);
         }
     }
 
@@ -78,9 +130,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const quadraId = getQuadraIdFromUrl();
     if (quadraId) {
         fetchQuadraNome(quadraId);
-        fetchVideosByQuadra(quadraId);
+        fetchVideosByQuadra(quadraId); // Carrega as partidas, mas não os vídeos
     } else {
         // Redirecionar para a página inicial ou exibir uma mensagem de erro
-        window.location.href = 'quadras.html'; // Exemplo de redirecionamento
+        window.location.href = 'quadras.html'; 
     }
+
+    // Inicializar componentes do Materialize
+    M.AutoInit();
 });

@@ -5,27 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoalCast - Vídeos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="videos.css">
-</head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="videos.css"> </head>
 <body>
 
     <header>
         <nav>
             <div class="nav-wrapper">
-                <a href="#" class="brand-logo center">GoalCast</a>
                 <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             </div>
         </nav>
+        
         <ul id="slide-out" class="sidenav">
-            <li><a href="../botao/botao.html">Botão</a></li>
+            <a href="../quadras/quadras.html" class="brand-logo"><i class="material-icons">arrow_back</i></a>
+            <a href="../botao/botao.html">Botão</a>
         </ul>
     </header>
 
     <main class="container content">
-        <h2 id="quadra-nome"></h2>
-        <div id="video-container"></div>
-    </main>
+        <div class="video-header">
+            <h2 id="quadra-nome"></h2>
+            <div class="input-field">
+                <select id="partida-select"></select>
+            </div>
+        </div>
 
+        <div id="video-container" class="video-list list">
+        </div>
+    </main>
+    
     <script src="videos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>

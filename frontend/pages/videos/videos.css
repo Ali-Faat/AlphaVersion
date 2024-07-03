@@ -1,3 +1,24 @@
 .video-item.destaque {
     box-shadow: 0 0 20px #FFA500, 0 0 40px #FFA500; /* Efeito neon laranja */
+    margin: 50px auto;
+}
+
+#quadra-nome, #partida-select{
+    display: block;
+    color: black;
+}
+
+/* Estilos dos vídeos (exemplo) */
+.video-item {
+    background-color: #fff; /* Adicione um fundo para visualizar o elemento */
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px; /* Adiciona margem inferior para separar os vídeos */
+    width: 100%; /* Garante que o vídeo ocupe toda a largura do container */
+}
+
+.video-item video {
+    display: flex;
+    width: 100%; /* Garante que o vídeo ocupe toda a largura do container */
+    height: auto;  /* Mantém a proporção do vídeo */
 }
