@@ -7,7 +7,7 @@ def get_db_connection():
         port="5004",
         user="Ali",
         password="@Alison2004",
-        database="goalcast_db"  # Nome do seu banco de dados
+        database="goalcast"  # Nome do seu banco de dados
     )
 
     return mydb
