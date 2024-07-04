@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchVideosByQuadra(quadraId) {
         try {
             // Busca as partidas da quadra selecionada
-            const partidasResponse = await fetch(`http://127.0.0.1:5000/api/partidas/${quadraId}`);
+            const partidasResponse = await fetch(`http://138.99.160.212:5000/api/partidas/${quadraId}`);
             if (!partidasResponse.ok) {
                 throw new Error(`Erro HTTP: ${partidasResponse.status}`);
             }
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 try {
-                    const response = await fetch(`http://127.0.0.1:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}`);
+                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}`);
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para buscar o nome da quadra
     async function fetchQuadraNome(quadraId) {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/quadras/${quadraId}`);
+            const response = await fetch(`http://138.99.160.212:5000/api/quadras/${quadraId}`);
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }

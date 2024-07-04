@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para buscar e exibir as quadras
     async function fetchQuadras() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/quadras');
+            const response = await fetch('http://138.99.160.212:5000/api/quadras');
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
