@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+/* Estilos gerais */
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #0684B9, #F26835);
+    color: white;
+    margin: 0;
+}
+
+/* Estilos do container */
+.container {
+    background-color: #011532;
+    padding: 20px;
+    border-radius: 8px;
+    width: 95%;
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+/* Estilos do conteúdo principal */
+.content {
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    width: 80%;
+    margin: 5% auto;
+}
+
+/* Estilos do logo */
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.logo-container img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+.slogan {
+    font-family: 'Brush Script MT';
+    font-size: 25px;
+    color: #F2E96B;
+}
+
+/* Estilos do formulário */
+#cadastro-form {
+    width: 100%;
+}
+
+#cadastro-form .input-field {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+#cadastro-form label {
+    color: #F2E96B;
+}
+
+#cadastro-form input[type="text"]:focus + label,
+#cadastro-form input[type="email"]:focus + label,
+#cadastro-form input[type="tel"]:focus + label,
+#cadastro-form input[type="password"]:focus + label {
+    color: #F26835;
+}
+
+/* Estilos do botão */
+#cadastro-form button {
+    width: 100%;
+}
+
+nav{
+    background-color: #ffffff00;
+    display: none;
+}
+
+/* Estilos para a mensagem de erro */
+.error-message {
+    font-size: 25px;
+    text-align: center;
+    position: fixed;      /* Torna o elemento flutuante */
+    bottom: 40px;         /* Distância da parte inferior da tela */
+    left: 50%;            /* Alinha horizontalmente ao centro */
+    transform: translateX(-50%); /* Centraliza horizontalmente */
+    background-color: #f44336; /* Cor de fundo vermelha (opcional) */
+    color: white;          /* Cor do texto branca */
+    padding: 5px 20px;
+    border-radius: 5px;
+    width: 75%;
+    z-index: 1000;        /* Garante que a mensagem fique acima de outros elementos */
+    display: none;        /* Oculta a mensagem por padrão */
+}
+
+.error-message.show {
+    display: block;       /* Exibe a mensagem quando a classe 'show' for adicionada */
+}
+
+h1{
+    font-family: 'Impact';
+    margin: -15px;
+}
+
+input{
+    color: white;
+}
+
+/* Responsividade para telas maiores */
+@media (min-width: 768px) {
+    .container {
+        width: 80%;
+        padding: 30px;
+    }
+}

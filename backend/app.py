@@ -159,18 +159,46 @@ def get_videos():
         cursor.close()
         mydb.close()
 
-# Rota para autenticar usuário
+#Rota para autenticação do usuário
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data['email']
     senha = data['password']
+
+    # Criptografar a senha
     senha_hash = hashlib.sha256(senha.encode()).hexdigest()
 
-    return executar_consulta(
-        'SELECT * FROM usuarios WHERE email = %s AND senha = %s',
-        (email, senha_hash)
-    )
+    mydb = get_db_connection()
+    cursor = mydb.cursor()
+
+    try:
+        cursor.execute('SELECT * FROM usuarios WHERE email = %s AND senha = %s', (email, senha_hash))
+        usuario = cursor.fetchone()
+
+        if usuario is None:
+            return jsonify({'error': 'Credenciais inválidas'}), 401
+
+        # Iniciar a sessão do usuário
+        session['usuario_id'] = usuario[0]
+        session['tipo_usuario'] = usuario[4]  # Supondo que o tipo de usuário esteja na coluna 4
+
+        return jsonify({'message': 'Login bem-sucedido'}), 200
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro na autenticação: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+# Rota para verificar se o usuário está logado (opcional)
+@app.route('/api/is_authenticated', methods=['GET'])
+def is_authenticated():
+    if 'usuario_id' in session:
+        return jsonify({'authenticated': True}), 200
+    else:
+        return jsonify({'authenticated': False}), 200
 
 
 if __name__ == '__main__':
