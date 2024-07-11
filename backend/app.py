@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from database import get_db_connection
 import mysql.connector
 import json
@@ -201,6 +201,34 @@ def is_authenticated():
     else:
         return jsonify({'authenticated': False}), 200
 
+
+@app.route('/cadastro', methods=['GET', 'POST'])
+def cadastro():
+    error = None
+    if request.method == 'POST':
+        nome_completo = request.form['nome_completo']
+        apelido = request.form['apelido']
+        email = request.form['email']
+        celular = request.form['celular']
+        senha = request.form['senha']
+        confirma_senha = request.form['confirma_senha']
+        # Criptografar a senha
+        senha_hash = hashlib.sha256(senha.encode()).hexdigest()
+
+        mydb = get_db_connection()
+        cursor = mydb.cursor()
+        try:
+            cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                            (nome_completo, apelido, email, celular, senha_hash, 'jogador'))  # Definindo o tipo de usuário como 'jogador'
+            mydb.commit()
+            return redirect(url_for('login'))  # Redireciona para a página de login após o cadastro
+        except mysql.connector.Error as err:
+            error = f'Erro ao cadastrar usuário: {err}'
+        finally:
+            cursor.close()
+            mydb.close()
+
+    return render_template('cadastro.html.jinja2', error=error)
 
 if __name__ == '__main__':
     app.run(debug=True, ssl_context='adhoc')
