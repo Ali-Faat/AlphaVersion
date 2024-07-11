@@ -156,7 +156,7 @@ async function registro() {
     }
 
     try {
-        const response = await fetch('http://138.99.160.212:5000/api/cadastro', { // Substitua pela URL da sua API
+        const response = await fetch('http://138.99.160.212:5000//api/cadastro', { // Substitua pela URL da sua API
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
