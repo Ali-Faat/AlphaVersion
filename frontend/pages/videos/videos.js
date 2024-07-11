@@ -55,34 +55,52 @@ document.addEventListener('DOMContentLoaded', function () {
             const horaPartidaSelect = document.getElementById('hora-partida');
     
             // Função para atualizar o menu suspenso de horas com base na data selecionada
-            function atualizarHorasPartida() {
+            async function atualizarHorasPartida() {
                 const dataSelecionada = dataPartidaInput.value;
+                
+                // Converter a data para o formato yyyy-mm-dd
+                const partesData = dataSelecionada.split(', ');
+                const mes = partesData[0].slice(0, 3); // Pega os 3 primeiros caracteres do mês (ex: "Jul")
+                const dia = partesData[0].slice(4);   // Pega o dia (ex: "03")
+                const ano = partesData[1];            // Pega o ano (ex: "2024")
+            
+                const meses = {
+                    'Jan': '01',
+                    'Fev': '02',
+                    'Mar': '03',
+                    'Abr': '04',
+                    'Mai': '05',
+                    'Jun': '06',
+                    'Jul': '07',
+                    'Ago': '08',
+                    'Set': '09',
+                    'Out': '10',
+                    'Nov': '11',
+                    'Dez': '12'
+                };
+                const dataFormatada = `${ano}-${meses[mes]}-${dia}`;
+            
                 horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.text = 'Selecione a hora';
-                defaultOption.disabled = true; // Desabilita a opção padrão
-                defaultOption.selected = true; // Seleciona a opção padrão
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
                 horaPartidaSelect.appendChild(defaultOption);
-                const horasDisponiveis = new Set(); // Conjunto para armazenar as horas únicas
-    
+            
                 // Filtrar as partidas pela data selecionada
                 const partidasFiltradas = partidas.filter(partida => {
-                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataFormatada);
                 });
-    
+            
                 if (partidasFiltradas.length === 0) {
                     exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
                 } else {
                     partidasFiltradas.forEach(partida => {
-                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3); // Extrai a hora (HH:mm)
-                        if (!horasDisponiveis.has(horaInicio)) { // Verifica se a hora já foi adicionada
-                            horasDisponiveis.add(horaInicio);
-                            const option = document.createElement('option');
-                            option.value = partida.id;
-                            option.text = horaInicio;
-                            horaPartidaSelect.appendChild(option);
-                        }
+                        const option = document.createElement('option');
+                        option.value = partida.id;
+                        option.text = partida.dh_inicio ? partida.dh_inicio.split(' ')[1].slice(0, -3) : 'Hora não definida';
+                        horaPartidaSelect.appendChild(option);
                     });
                 }
             }
