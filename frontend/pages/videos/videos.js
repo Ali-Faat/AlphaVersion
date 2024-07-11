@@ -53,6 +53,45 @@ document.addEventListener('DOMContentLoaded', function () {
             // Cria o menu dropdown com as partidas
             const dataPartidaInput = document.getElementById('data-partida');
             const horaPartidaSelect = document.getElementById('hora-partida');
+
+            if (partidas.length === 0) {
+                exibirMensagem('Nenhuma partida encontrada para esta quadra.', videoContainer);
+                return;
+            }
+
+            // Função para atualizar o menu suspenso de horas com base na data selecionada
+            async function atualizarHorasPartida() {
+                const dataSelecionada = dataPartidaInput.value;
+                horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = 'Selecione a hora';
+                defaultOption.disabled = true; // Desabilita a opção padrão
+                defaultOption.selected = true; // Seleciona a opção padrão
+                horaPartidaSelect.appendChild(defaultOption);
+                const horasDisponiveis = new Set(); // Conjunto para armazenar as horas únicas
+
+                // Filtrar as partidas pela data selecionada
+                const partidasFiltradas = partidas.filter(partida => {
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
+                });
+
+                if (partidasFiltradas.length === 0) {
+                    exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
+                } else {
+                    partidasFiltradas.forEach(partida => {
+                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3); // Extrai a hora (HH:mm)
+                        if (!horasDisponiveis.has(horaInicio)) { // Verifica se a hora já foi adicionada
+                            horasDisponiveis.add(horaInicio);
+                            const option = document.createElement('option');
+                            option.value = partida.id;
+                            option.text = horaInicio;
+                            horaPartidaSelect.appendChild(option);
+                        }
+                    });
+                }
+            }
+
     
             // Função para atualizar o menu suspenso de horas com base na data selecionada
             async function atualizarHorasPartida() {
@@ -155,9 +194,18 @@ document.addEventListener('DOMContentLoaded', function () {
             // Inicializar o componente datepicker do Materialize (após criar o elemento)
             M.Datepicker.init(dataPartidaInput, {
                 format: 'yyyy-mm-dd', // Definir o formato
-                onSelect: atualizarHorasPartida // Atualiza as horas ao selecionar uma data
+                onSelect: function(date) { // Função onSelect atualizada
+                    atualizarHorasPartida();
+                    const label = document.querySelector('label[for="data-partida"]');
+                    if (label) {
+                        label.textContent = 'Data da Partida: ' + date;
+                    }
+                }
             });
     
+            // Adicionar evento de mudança ao select de partidas
+            horaPartidaSelect.addEventListener('change', fetchVideosByPartida);
+
             // Adicionar evento de mudança ao select de partidas
             partidaSelect.addEventListener('change', fetchVideosByPartida);
     
