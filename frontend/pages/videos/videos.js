@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             horaPartidaSelect.appendChild(option);
                         }
                     });
+
+                    // Adicionar evento de mudança ao select de partidas (após a criação do elemento)
+                    partidaSelect.addEventListener('change', fetchVideosByPartida);
                 }
             }
 
@@ -143,9 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Adicionar evento de mudança ao input de data
             dataPartidaInput.addEventListener('change', atualizarHorasPartida);
 
-            // Adicionar evento de mudança ao select de partidas
-            partidaSelect.addEventListener('change', fetchVideosByPartida);
-
             // Buscar os vídeos da primeira partida por padrão (se houver)
             atualizarHorasPartida();
         } catch (error) {
@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+
     // Buscar o nome da quadra e os vídeos ao carregar a página
     const quadraId = getQuadraIdFromUrl();
     if (quadraId) {
@@ -176,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchVideosByQuadra(quadraId); 
     } else {
         // Redirecionar para a página inicial ou exibir uma mensagem de erro
-        window.location.href = 'quadras.html'; 
+        window.location.href = '../quadras/quadras.html'; 
     }
 
     // Inicializar componentes do Materialize
