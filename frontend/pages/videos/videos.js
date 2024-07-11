@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function criarVideoElement(video) {
         const videoElement = document.createElement('video');
         videoElement.src = video.url;
-        //videoElement.controls = true;
+        videoElement.controls = true;
         videoElement.width = 320;
         videoElement.height = 240;
         return videoElement;
@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (partidasFiltradas.length === 0) {
                     exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
                 } else {
+                    const selectedPartidaId = partidaSelect.value;
                     partidasFiltradas.forEach(partida => {
                         const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
                         if (!horasDisponiveis.has(horaInicio)) {
@@ -81,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Função para buscar e exibir os vídeos da partida selecionada
             async function fetchVideosByPartida() {
-                const selectedPartidaId = partidaSelect.value;
                 const dataSelecionada = dataPartidaInput.value; // Obter a data do input
 
                 if (!dataSelecionada || !selectedPartidaId) {
