@@ -202,33 +202,42 @@ def is_authenticated():
         return jsonify({'authenticated': False}), 200
 
 
-@app.route('/api/cadastro', methods=['GET', 'POST'])
+# Rota da API para cadastro
+@app.route('/api/cadastro', methods=['POST'])
 def cadastro():
-    error = None
-    if request.method == 'POST':
-        nome_completo = request.form['nome_completo']
-        apelido = request.form['apelido']
-        email = request.form['email']
-        celular = request.form['celular']
-        senha = request.form['senha']
-        confirma_senha = request.form['confirma_senha']
+    try:
+        data = request.get_json()
+        nome_completo = data['nome_completo']
+        apelido = data['apelido']
+        email = data['email']
+        celular = data['celular']
+        senha = data['senha']
+        confirma_senha = data['confirma_senha']
+
+
         # Criptografar a senha
         senha_hash = hashlib.sha256(senha.encode()).hexdigest()
 
         mydb = get_db_connection()
         cursor = mydb.cursor()
-        try:
-            cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                            (nome_completo, apelido, email, celular, senha_hash, 'jogador'))  # Definindo o tipo de usuário como 'jogador'
-            mydb.commit()
-            return redirect(url_for('login'))  # Redireciona para a página de login após o cadastro
-        except mysql.connector.Error as err:
-            error = f'Erro ao cadastrar usuário: {err}'
-        finally:
-            cursor.close()
-            mydb.close()
+       
+        cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                       (nome_completo, apelido, email, celular, senha_hash, 'jogador'))
+        mydb.commit()
 
-    return render_template('cadastro.html.jinja2', error=error)
+        return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso!'}), 201
+
+    except ValueError as ve:
+        return jsonify({'success': False, 'error': str(ve)}), 400
+
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, ssl_context='adhoc')

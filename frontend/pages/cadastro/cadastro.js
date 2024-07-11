@@ -175,11 +175,11 @@ async function registro() {
         if (response.ok) {
             // Cadastro bem-sucedido
             console.log('Cadastro bem-sucedido!');
-            window.location.href = '/login'; // Redireciona para a página de login
+            window.location.href = '../login/login.html'; // Redireciona para a página de login
         } else {
             // Cadastro falhou
             const errorData = await response.json();
-            console.error('Erro no cadastro:', errorData.error);
+            console.alert('Erro no cadastro:', errorData.error);
 
             // Exibir mensagem de erro
             if (errorMessage) {
