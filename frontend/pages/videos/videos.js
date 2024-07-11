@@ -39,55 +39,73 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchVideosByQuadra(quadraId) {
         try {
             // Busca as partidas da quadra selecionada
-            const partidasResponse = await fetch(`http://127.0.0.1:5000/api/partidas/${quadraId}`); // Substitua pela URL correta da sua API
+            const partidasResponse = await fetch(`http://127.0.0.1:5000/api/partidas/${quadraId}`);
             if (!partidasResponse.ok) {
                 throw new Error(`Erro HTTP: ${partidasResponse.status}`);
             }
             const partidas = await partidasResponse.json();
-
+    
             if (partidas.length === 0) {
                 exibirMensagem('Nenhuma partida encontrada para esta quadra.', videoContainer);
                 return;
             }
-
-            // Popula o menu dropdown com as partidas
+    
+            // Cria o menu dropdown com as partidas
             const dataPartidaInput = document.getElementById('data-partida');
             const horaPartidaSelect = document.getElementById('hora-partida');
-
-            horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.text = 'Selecione uma partida';
-            horaPartidaSelect.appendChild(defaultOption);
-
-            partidas.forEach(partida => {
-                const option = document.createElement('option');
-                option.value = partida.id;
-                const dataFormatada = formatDate(partida.dh_inicio); // Formata a data
-                option.text = dataFormatada ? dataFormatada : 'Partida sem data definida';
-                partidaSelect.appendChild(option);
-            });
-
-
-           // Função para buscar e exibir os vídeos da partida selecionada
-           async function fetchVideosByPartida() {
-            const selectedPartidaId = horaPartidaSelect.value; // Obtém o ID da partida do select de hora
-
-            if (!selectedPartidaId) {
-                exibirMensagem('Selecione uma partida para ver os vídeos.', videoContainer, false);
-                return;
+    
+            // Função para atualizar o menu suspenso de horas com base na data selecionada
+            function atualizarHorasPartida() {
+                const dataSelecionada = dataPartidaInput.value;
+                horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = 'Selecione a hora';
+                defaultOption.disabled = true; // Desabilita a opção padrão
+                defaultOption.selected = true; // Seleciona a opção padrão
+                horaPartidaSelect.appendChild(defaultOption);
+                const horasDisponiveis = new Set(); // Conjunto para armazenar as horas únicas
+    
+                // Filtrar as partidas pela data selecionada
+                const partidasFiltradas = partidas.filter(partida => {
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
+                });
+    
+                if (partidasFiltradas.length === 0) {
+                    exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
+                } else {
+                    partidasFiltradas.forEach(partida => {
+                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3); // Extrai a hora (HH:mm)
+                        if (!horasDisponiveis.has(horaInicio)) { // Verifica se a hora já foi adicionada
+                            horasDisponiveis.add(horaInicio);
+                            const option = document.createElement('option');
+                            option.value = partida.id;
+                            option.text = horaInicio;
+                            horaPartidaSelect.appendChild(option);
+                        }
+                    });
+                }
             }
-
+    
+            // Função para buscar e exibir os vídeos da partida selecionada
+            async function fetchVideosByPartida() {
+                const selectedPartidaId = partidaSelect.value;
+    
+                if (!selectedPartidaId) {
+                    exibirMensagem('Selecione uma partida para ver os vídeos.', videoContainer, false);
+                    return;
+                }
+    
                 try {
-                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}`);
+                    const response = await fetch(`http://127.0.0.1:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}`);
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
                     const videos = await response.json();
-
+    
                     // Limpar o container de vídeos
                     videoContainer.innerHTML = '';
-
+    
                     if (videos.length === 0) {
                         exibirMensagem('Nenhum vídeo encontrado para esta partida.', videoContainer);
                     } else {
@@ -98,15 +116,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             videoTitle.textContent = video.tipo;
                             const videoItem = document.createElement('div');
                             videoItem.classList.add('video-item');
-
+    
                             // Destacar o vídeo se o usuário for o criador
                             if (video.eh_criador) {
                                 videoItem.classList.add('destaque');
                             }
-
+    
                             videoItem.appendChild(videoTitle);
                             videoItem.appendChild(videoElement);
-
+    
                             videoContainer.appendChild(videoItem);
                         });
                     }
@@ -115,21 +133,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     exibirMensagem('Ocorreu um erro ao carregar os vídeos.', videoContainer);
                 }
             }
-
+    
+            // Inicializar o componente datepicker do Materialize (após criar o elemento)
             M.Datepicker.init(dataPartidaInput, {
-                format: 'dd-mm-yyyy', // Especificar o formato
-                onSelect: atualizarHorasPartida
+                format: 'yyyy-mm-dd', // Definir o formato
+                onSelect: atualizarHorasPartida // Atualiza as horas ao selecionar uma data
             });
-
+    
             // Adicionar evento de mudança ao select de partidas
             partidaSelect.addEventListener('change', fetchVideosByPartida);
+    
+            // Buscar os vídeos da primeira partida por padrão (se houver)
+            atualizarHorasPartida();
         } catch (error) {
             console.error('Erro ao buscar partidas da quadra:', error);
             exibirMensagem('Ocorreu um erro ao carregar as partidas.', videoContainer);
         }
 
-
+        
     }
+
     // Função para buscar o nome da quadra
     async function fetchQuadraNome(quadraId) {
         try {
