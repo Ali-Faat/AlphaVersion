@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return urlParams.get('quadra_id');
     }
 
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
     // Função para exibir uma mensagem de erro/informação
     function exibirMensagem(mensagem, container, isError = true) {
         const messageElement = document.createElement('p');
@@ -55,10 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
             partidas.forEach(partida => {
                 const option = document.createElement('option');
                 option.value = partida.id;
-                option.text = partida.dh_inicio ? partida.dh_inicio : 'Partida sem data definida';
-                horaPartidaSelect.appendChild(option);
+                const dataFormatada = formatDate(partida.dh_inicio); // Formata a data
+                option.text = dataFormatada ? dataFormatada : 'Partida sem data definida';
+                partidaSelect.appendChild(option);
             });
-            
+
 
            // Função para buscar e exibir os vídeos da partida selecionada
            async function fetchVideosByPartida() {
@@ -108,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             M.Datepicker.init(dataPartidaInput, {
-                format: 'yyyy-mm-dd', // Definir o formato
+                format: 'dd-mm-yyyy', // Especificar o formato
                 onSelect: atualizarHorasPartida
             });
 
