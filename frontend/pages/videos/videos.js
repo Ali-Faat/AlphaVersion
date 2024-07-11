@@ -67,12 +67,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 horaPartidaSelect.appendChild(defaultOption);
 
 
-                
-                // Filtrar as partidas pela data selecionada
-                const partidasFiltradas = partidas.filter(partida => {
-                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
-                });
 
+                // Filtrar as partidas pela data selecionada
+                    partidasFiltradas.forEach(partida => {
+                    const option = document.createElement('option');
+                    option.value = partida.id;
+
+                    // Extrair apenas a hora da string dh_inicio (com verificação de null)
+                    option.text = partida.dh_inicio?.split(' ')[1]?.slice(0, -3) || 'Hora não definida';
+
+                    horaPartidaSelect.appendChild(option)
+                });
+                
                 // Criar um conjunto para armazenar as horas já adicionadas
                 const horasAdicionadas = new Set();
 
