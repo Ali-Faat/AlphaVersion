@@ -75,11 +75,11 @@ def get_quadra(quadra_id):
         cursor.close()
         mydb.close()
 
-# Rota para listar as partidas de uma quadra específica
+# Rota para obter os detalhes de uma quadra específica
 @app.route('/api/partidas/<quadra_id>', methods=['GET'])
 def get_partidas_por_quadra(quadra_id):
     mydb = get_db_connection()
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
 
     try:
         cursor.execute('SELECT * FROM partidas WHERE quadra_id = %s', (quadra_id,))
@@ -87,14 +87,14 @@ def get_partidas_por_quadra(quadra_id):
 
         partidas_json = []
         for partida in partidas:
-            # Tratamento para dh_inicio e dh_fim nulos
-            dh_inicio_str = partida[3].strftime('%Y-%m-%d %H:%M:%S') if partida[3] else None
-            dh_fim_str = partida[4].strftime('%Y-%m-%d %H:%M:%S') if partida[4] else None
+            # Formatar data para yyyy-MM-dd (somente a data)
+            dh_inicio_str = partida['dh_inicio'].strftime('%Y-%m-%d') if partida['dh_inicio'] else None
+            dh_fim_str = partida['dh_fim'].strftime('%Y-%m-%d %H:%M:%S') if partida['dh_fim'] else None
 
             partidas_json.append({
-                'id': partida[0],
-                'dh_inicio': partida[3].strftime('%Y-%m-%d') if partida[3] else None,  # Formatar a data
-                'dh_fim': partida[4].strftime('%Y-%m-%d %H:%M:%S') if partida[4] else None 
+                'id': partida['id'],
+                'dh_inicio': dh_inicio_str,
+                'dh_fim': dh_fim_str
             })
 
         return jsonify(partidas_json)
