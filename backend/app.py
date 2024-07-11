@@ -93,8 +93,8 @@ def get_partidas_por_quadra(quadra_id):
 
             partidas_json.append({
                 'id': partida[0],
-                'dh_inicio': dh_inicio_str,
-                'dh_fim': dh_fim_str
+                'dh_inicio': partida[3].strftime('%Y-%m-%d') if partida[3] else None,  # Formatar a data
+                'dh_fim': partida[4].strftime('%Y-%m-%d %H:%M:%S') if partida[4] else None 
             })
 
         return jsonify(partidas_json)

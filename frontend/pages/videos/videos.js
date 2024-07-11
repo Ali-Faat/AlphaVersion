@@ -117,6 +117,11 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Erro ao buscar partidas da quadra:', error);
             exibirMensagem('Ocorreu um erro ao carregar as partidas.', videoContainer);
         }
+
+        M.Datepicker.init(dataPartidaInput, {
+            format: 'yyyy-mm-dd', // Definir o formato
+            onSelect: atualizarHorasPartida
+        });
     }
     // Função para buscar o nome da quadra
     async function fetchQuadraNome(quadraId) {
@@ -128,7 +133,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const quadra = await response.json();
             const quadraNomeElement = document.getElementById('quadra-nome');
             quadraNomeElement.innerHTML = quadra.nome;
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Erro ao buscar nome da quadra:', error);
             exibirMensagem('Ocorreu um erro ao carregar o nome da quadra.', quadraNomeElement);
         }
@@ -146,7 +152,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inicializar componentes do Materialize
     M.AutoInit();
-    M.Datepicker.init(dataPartidaInput, {
-        onSelect: atualizarHorasPartida // Atualiza as horas ao selecionar uma data
-    });
 });
