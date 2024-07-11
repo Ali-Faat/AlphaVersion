@@ -67,56 +67,38 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Função para atualizar o menu suspenso de horas com base na data selecionada
-            function atualizarHorasPartida() {
+            async function atualizarHorasPartida() {
                 const dataSelecionada = dataPartidaInput.value;
-
-                // Obter a data em formato Date
-                const dataDate = new Date(dataSelecionada);
-
-                // Formatar a data como yyyy-mm-dd
-                const dataFormatada = dataDate.toISOString().split('T')[0];
-
-                // Filtrar as partidas pela data selecionada
-                partidasFiltradas.forEach(partida => {
-                    const option = document.createElement('option');
-                    option.value = partida.id;
-            
-                    // Verifica se dh_inicio existe e está no formato correto
-                    if (partida.dh_inicio && /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/.test(partida.dh_inicio)) {
-                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
-                        option.text = horaInicio;
-                    } else {
-                        option.text = 'Hora não definida'; // Mensagem alternativa se dh_inicio for inválido ou nulo
-                        option.disabled = true; // Desabilitar a opção se a hora for inválida
-                    }
-            
-                    horaPartidaSelect.appendChild(option);
-                });
-
-                horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
+                horaPartidaSelect.innerHTML = '';
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.text = 'Selecione a hora';
                 defaultOption.disabled = true;
                 defaultOption.selected = true;
                 horaPartidaSelect.appendChild(defaultOption);
-                const horasDisponiveis = new Set();
-
+            
+                // Filtrar as partidas pela data selecionada
+                const partidasFiltradas = partidas.filter(partida => {
+                  return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
+                });
+            
                 if (partidasFiltradas.length === 0) {
-                    exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
+                  exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
                 } else {
-                    partidasFiltradas.forEach(partida => {
-                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
-                        if (!horasDisponiveis.has(horaInicio)) {
-                            horasDisponiveis.add(horaInicio);
-                            const option = document.createElement('option');
-                            option.value = partida.id;
-                            option.text = horaInicio;
-                            horaPartidaSelect.appendChild(option);
-                        }
-                    });
+                  partidasFiltradas.forEach(partida => {
+                    if (partida.dh_inicio) { // Verifica se dh_inicio existe e é uma string válida
+                      const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
+                      const option = document.createElement('option');
+                      option.value = partida.id;
+                      option.text = horaInicio;
+                      horaPartidaSelect.appendChild(option);
+                    } else {
+                      console.warn(`Partida ${partida.id} não tem dh_inicio definido ou em formato inválido.`);
+                      // Opcionalmente, você pode criar uma opção desabilitada no select para indicar a partida sem horário definido.
+                    }
+                  });
                 }
-            }
+              }
 
             // Função para buscar e exibir os vídeos da partida selecionada
             async function fetchVideosByPartida() {
