@@ -138,5 +138,68 @@ function ocultarErro(errorContainer) { // Recebe o container como argumento
         }
     });
 
-    // ... (restante do código)
+    // Função para enviar os dados do formulário de cadastro para a API
+async function registro() {
+    // Obter os valores dos campos do formulário
+    const nomeCompleto = document.getElementById('nome_completo').value;
+    const apelido = document.getElementById('apelido').value;
+    const numeroJogador = document.getElementById('numero_jogador').value;
+    const email = document.getElementById('email').value;
+    const celular = document.getElementById('celular').value;
+    const senha = document.getElementById('senha').value;
+    const confirmaSenha = document.getElementById('confirma_senha').value;
+
+    // Verificar se todos os campos estão válidos
+    if (!validarNomeCompleto() || !validarApelido() || !validarNumeroJogador() ||
+        !validarEmail() || !validarCelular() || !validarSenha() || !validarConfirmaSenha()) {
+        return; // Não envia o formulário se houver erros de validação
+    }
+
+    try {
+        const response = await fetch('http://138.99.160.212:5000/api/cadastro', { // Substitua pela URL da sua API
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nome_completo: nomeCompleto,
+                apelido: apelido,
+                numero_jogador: numeroJogador,
+                email: email,
+                celular: celular,
+                senha: senha,
+                confirma_senha: confirmaSenha
+            })
+        });
+
+        if (response.ok) {
+            // Cadastro bem-sucedido
+            console.log('Cadastro bem-sucedido!');
+            window.location.href = '/login'; // Redireciona para a página de login
+        } else {
+            // Cadastro falhou
+            const errorData = await response.json();
+            console.error('Erro no cadastro:', errorData.error);
+
+            // Exibir mensagem de erro
+            if (errorMessage) {
+                errorMessage.textContent = errorData.error;
+                errorMessage.style.display = 'block'; 
+            } else {
+                alert(errorData.error); 
+            }
+        }
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        // Exibir mensagem de erro genérica
+        if (errorMessage) {
+            errorMessage.textContent = 'Ocorreu um erro ao realizar o cadastro.';
+            errorMessage.style.display = 'block'; 
+        } else {
+            alert('Ocorreu um erro ao realizar o cadastro.');
+        }
+    }
+}
+
 });
+cadastroForm.addEventListener('submit', registro); // Chama a função registro ao enviar o formulário

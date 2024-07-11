@@ -202,7 +202,7 @@ def is_authenticated():
         return jsonify({'authenticated': False}), 200
 
 
-@app.route('/cadastro', methods=['GET', 'POST'])
+@app.route('/api/cadastro', methods=['GET', 'POST'])
 def cadastro():
     error = None
     if request.method == 'POST':
