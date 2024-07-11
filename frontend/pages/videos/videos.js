@@ -48,25 +48,34 @@ document.addEventListener('DOMContentLoaded', function () {
             // Função para atualizar o menu suspenso de horas com base na data selecionada
             function atualizarHorasPartida() {
                 const dataSelecionada = dataPartidaInput.value;
-                horaPartidaSelect.innerHTML = '';
+
+                // Obter a data em formato Date
+                const dataDate = new Date(dataSelecionada);
+
+                // Formatar a data como yyyy-mm-dd
+                const dataFormatada = dataDate.toISOString().split('T')[0];
+
+                const partidasFiltradas = partidas.filter(partida => {
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataFormatada);
+                });
+
+                // Popula o menu dropdown com as partidas
+                partidaSelect.innerHTML = '';
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.text = 'Selecione a hora';
                 defaultOption.disabled = true;
                 defaultOption.selected = true;
-                horaPartidaSelect.appendChild(defaultOption);
+                partidaSelect.appendChild(defaultOption);
 
                 const horasDisponiveis = new Set();
 
-                // Filtrar as partidas pela data selecionada
-                const partidasFiltradas = partidas.filter(partida => {
-                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
-                });
+
 
                 if (partidasFiltradas.length === 0) {
                     exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
-                } else {
-                    const selectedPartidaId = partidaSelect.value;
+                }
+                else {
                     partidasFiltradas.forEach(partida => {
                         const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
                         if (!horasDisponiveis.has(horaInicio)) {
@@ -82,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Função para buscar e exibir os vídeos da partida selecionada
             async function fetchVideosByPartida() {
+                const selectedPartidaId = partidaSelect.value;
                 const dataSelecionada = dataPartidaInput.value; // Obter a data do input
 
                 if (!dataSelecionada || !selectedPartidaId) {
@@ -133,8 +143,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Adicionar evento de mudança ao select de partidas
             partidaSelect.addEventListener('change', fetchVideosByPartida);
 
-            // Popular o select de horas e buscar os vídeos da primeira partida
-            atualizarHorasPartida(); 
+            // Buscar os vídeos da primeira partida por padrão (se houver)
+            atualizarHorasPartida();
         } catch (error) {
             console.error('Erro ao buscar partidas da quadra:', error);
             exibirMensagem('Ocorreu um erro ao carregar as partidas.', videoContainer);
@@ -160,12 +170,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const quadraId = getQuadraIdFromUrl();
     if (quadraId) {
         fetchQuadraNome(quadraId);
-        fetchVideosByQuadra(quadraId); 
+        fetchVideosByQuadra(quadraId); // Carrega as partidas, mas não os vídeos
     } else {
         // Redirecionar para a página inicial ou exibir uma mensagem de erro
         window.location.href = 'quadras.html'; 
     }
 
-    // Inicializar componentes do Materialize
-    M.AutoInit();
+
 });
