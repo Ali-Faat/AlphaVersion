@@ -33,62 +33,70 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para buscar e exibir os vídeos da quadra
     async function fetchVideosByQuadra(quadraId) {
         try {
-            console.log('Buscando partidas da quadra:', quadraId); // Log antes da requisição
-
             // Busca as partidas da quadra selecionada
             const partidasResponse = await fetch(`http://138.99.160.212:5000/api/partidas/${quadraId}`);
-
             if (!partidasResponse.ok) {
                 throw new Error(`Erro HTTP: ${partidasResponse.status}`);
             }
-
-            partidas = await partidasResponse.json();
-            console.log('Partidas encontradas:', partidas); // Log após a requisição
+            const partidas = await partidasResponse.json();
 
             if (partidas.length === 0) {
                 exibirMensagem('Nenhuma partida encontrada para esta quadra.', videoContainer);
                 return;
             }
 
-            // Cria o menu dropdown com as partidas
+            let partidasFiltradas = partidas; // Inicialmente, todas as partidas são exibidas
+
+            // Popula o menu dropdown com as partidas
             const dataPartidaInput = document.getElementById('data-partida');
             const horaPartidaSelect = document.getElementById('hora-partida');
 
+            horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.text = 'Selecione a hora';
+            defaultOption.disabled = true; 
+            defaultOption.selected = true; 
+            horaPartidaSelect.appendChild(defaultOption);
+
+            partidas.forEach(partida => {
+                const option = document.createElement('option');
+                option.value = partida.id;
+                option.text = partida.dh_inicio ? partida.dh_inicio.split(' ')[1].slice(0, -3) : 'Hora não definida';
+                horaPartidaSelect.appendChild(option);
+            });
+
             // Função para atualizar o menu suspenso de horas com base na data selecionada
-            // Função para atualizar o menu suspenso de horas com base na data selecionada
-            async function atualizarHorasPartida() {
+            function atualizarHorasPartida() {
                 const dataSelecionada = dataPartidaInput.value;
-                horaPartidaSelect.innerHTML = '';
+
+                // Obter a data em formato Date
+                const dataDate = new Date(dataSelecionada);
+
+                // Formatar a data como yyyy-mm-dd
+                const dataFormatada = dataDate.toISOString().split('T')[0];
+
+                // Filtrar as partidas pela data selecionada
+                partidasFiltradas = partidas.filter(partida => {
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataFormatada);
+                });
+
+                horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.text = 'Selecione a hora';
                 defaultOption.disabled = true;
                 defaultOption.selected = true;
                 horaPartidaSelect.appendChild(defaultOption);
-
-
-
-                // Filtrar as partidas pela data selecionada
-                    partidasFiltradas.forEach(partida => {
-                    const option = document.createElement('option');
-                    option.value = partida.id;
-
-                    // Extrair apenas a hora da string dh_inicio (com verificação de null)
-                    option.text = partida.dh_inicio?.split(' ')[1]?.slice(0, -3) || 'Hora não definida';
-
-                    horaPartidaSelect.appendChild(option)
-                });
-                
-                // Criar um conjunto para armazenar as horas já adicionadas
-                const horasAdicionadas = new Set();
+                const horasDisponiveis = new Set();
 
                 if (partidasFiltradas.length === 0) {
                     exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
                 } else {
                     partidasFiltradas.forEach(partida => {
-                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3); // Extrai a hora (HH:mm:ss)
-                        if (!horasAdicionadas.has(horaInicio)) { // Verifica se a hora já foi adicionada
-                            horasAdicionadas.add(horaInicio);
+                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
+                        if (!horasDisponiveis.has(horaInicio)) {
+                            horasDisponiveis.add(horaInicio);
                             const option = document.createElement('option');
                             option.value = partida.id;
                             option.text = horaInicio;
@@ -148,6 +156,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             videoContainer.appendChild(videoItem);
                         });
+                        // Adicionar evento de mudança ao input de data
+                        dataPartidaInput.addEventListener('change', atualizarHorasPartida);
+
+                        // Adicionar evento de mudança ao select de partidas
+                        partidaSelect.addEventListener('change', fetchVideosByPartida);
+
+                        // Buscar os vídeos da primeira partida por padrão (se houver)
+                        if (partidasFiltradas.length > 0) {
+                            fetchVideosByPartida(partidasFiltradas[0].id);
+                        } else {
+                            exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
+                        }
                     }
                 } catch (error) {
                     console.error('Erro ao buscar vídeos da partida:', error);
