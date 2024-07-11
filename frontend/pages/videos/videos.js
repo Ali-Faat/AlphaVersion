@@ -47,13 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Função para atualizar o menu suspenso de horas com base na data selecionada
             function atualizarHorasPartida() {
                 const dataSelecionada = dataPartidaInput.value;
-
-                // Obter a data em formato Date
-                const dataDate = new Date(dataSelecionada);
-
-                // Formatar a data como yyyy-mm-dd
-                const dataFormatada = dataDate.toISOString().split('T')[0];
-
                 horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
@@ -66,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Filtrar as partidas pela data selecionada
                 const partidasFiltradas = partidas.filter(partida => {
-                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataFormatada);
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
                 });
 
                 if (partidasFiltradas.length === 0) {
@@ -90,19 +83,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const selectedPartidaId = partidaSelect.value;
                 const dataSelecionada = dataPartidaInput.value; // Obter a data do input
 
-                // Obter a data em formato Date
-                const dataDate = new Date(dataSelecionada);
-
-                // Formatar a data como yyyy-mm-dd
-                const dataFormatada = dataDate.toISOString().split('T')[0];
-
-                if (!dataFormatada || !selectedPartidaId) {
+                if (!dataSelecionada || !selectedPartidaId) {
                     exibirMensagem('Selecione uma data e hora para ver os vídeos.', videoContainer, false);
                     return;
                 }
 
                 try {
-                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}&data_inicio=${dataFormatada}`);
+                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}&data_inicio=${dataSelecionada}`);
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
@@ -139,20 +126,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Inicializar o componente datepicker do Materialize (após criar o elemento)
-            M.Datepicker.init(dataPartidaInput, {
-                format: 'yyyy-mm-dd', // Definir o formato
-                onSelect: function(date) { // Função onSelect atualizada
-                    atualizarHorasPartida();
-                    const label = document.querySelector('label[for="data-partida"]');
-                    if (label) {
-                        label.textContent = 'Data da Partida: ' + date;
-                    }
-                }
-            });
+            // Adicionar evento de mudança ao input de data
+            dataPartidaInput.addEventListener('change', atualizarHorasPartida);
 
             // Adicionar evento de mudança ao select de partidas
-            horaPartidaSelect.addEventListener('change', fetchVideosByPartida);
+            partidaSelect.addEventListener('change', fetchVideosByPartida);
 
             // Buscar os vídeos da primeira partida por padrão (se houver)
             atualizarHorasPartida();
@@ -184,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchVideosByQuadra(quadraId); // Carrega as partidas, mas não os vídeos
     } else {
         // Redirecionar para a página inicial ou exibir uma mensagem de erro
-        window.location.href = 'quadras.html'; 
+        window.location.href = '../quadras/quadras.html'; 
     }
 
     // Inicializar componentes do Materialize
