@@ -2,10 +2,12 @@ from flask import Flask, jsonify, request, session
 from database import get_db_connection
 import mysql.connector
 import json
+import os
 from flask_cors import CORS
 import hashlib
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # Gera uma chave secreta aleatória
 CORS(app)
 
 def executar_consulta(query, params=None):
