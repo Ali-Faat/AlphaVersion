@@ -124,6 +124,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (videos.length === 0) {
                         exibirMensagem('Nenhum vídeo encontrado para esta partida.', videoContainer);
                     } else {
+                        // Adicionar evento de mudança ao select de partidas
+                        partidaSelect.addEventListener('change', fetchVideosByPartida);
+                        
                         // Exibir os vídeos
                         videos.forEach(video => {
                             const videoElement = criarVideoElement(video);
@@ -150,9 +153,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
 
-            
-            // Adicionar evento de mudança ao select de partidas
-            partidaSelect.addEventListener('change', fetchVideosByPartida);
+
+
 
             // Buscar os vídeos da primeira partida por padrão (se houver)
             atualizarHorasPartida();
