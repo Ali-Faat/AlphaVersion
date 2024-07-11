@@ -111,6 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
+            M.Datepicker.init(dataPartidaInput, {
+                format: 'yyyy-mm-dd', // Definir o formato
+                onSelect: atualizarHorasPartida
+            });
+
             // Adicionar evento de mudança ao select de partidas
             partidaSelect.addEventListener('change', fetchVideosByPartida);
         } catch (error) {
@@ -118,10 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             exibirMensagem('Ocorreu um erro ao carregar as partidas.', videoContainer);
         }
 
-        M.Datepicker.init(dataPartidaInput, {
-            format: 'yyyy-mm-dd', // Definir o formato
-            onSelect: atualizarHorasPartida
-        });
+
     }
     // Função para buscar o nome da quadra
     async function fetchQuadraNome(quadraId) {
