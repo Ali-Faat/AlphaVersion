@@ -202,17 +202,18 @@ def is_authenticated():
         return jsonify({'authenticated': False}), 200
 
 
-# Rota da API para cadastro
+
 @app.route('/api/cadastro', methods=['POST'])
 def cadastro():
     try:
         data = request.get_json()
         nome_completo = data['nome_completo']
         apelido = data['apelido']
+        numero_jogador = data['numero_jogador']
         email = data['email']
         celular = data['celular']
         senha = data['senha']
-        confirma_senha = data['confirma_senha']
+
 
 
         # Criptografar a senha
@@ -220,15 +221,13 @@ def cadastro():
 
         mydb = get_db_connection()
         cursor = mydb.cursor()
-       
-        cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                       (nome_completo, apelido, email, celular, senha_hash, 'jogador'))
+        cursor.execute('INSERT INTO usuarios (nome, apelido, numero_jogador, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                       (nome_completo, apelido, numero_jogador, email, celular, senha_hash, 'jogador'))
         mydb.commit()
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso!'}), 201
 
-    except ValueError as ve:
-        return jsonify({'success': False, 'error': str(ve)}), 400
+
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
