@@ -3,9 +3,15 @@
     margin: 50px auto;
 }
 
-#quadra-nome, #partida-select{
+#quadra-nome{
     display: block;
     color: black;
+}
+
+.input-field input[type="date"],
+.input-field select {
+    width: 48%; /* Cada campo ocupa 48% da largura, com 4% de margem entre eles */
+    margin: 0 2%;
 }
 
 /* Estilos dos vídeos (exemplo) */
