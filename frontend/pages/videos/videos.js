@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const quadraNomeElement = document.getElementById('quadra-nome');
     const partidaSelect = document.getElementById('partida-select');
     const dataPartidaInput = document.getElementById('data-partida');
+    let partidas = [];
 
     // Função para obter o ID da quadra da URL
     function getQuadraIdFromUrl() {
@@ -32,21 +33,37 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para buscar e exibir os vídeos da quadra
     async function fetchVideosByQuadra(quadraId) {
         try {
+            console.log('Buscando partidas da quadra:', quadraId); // Log antes da requisição
+
             // Busca as partidas da quadra selecionada
             const partidasResponse = await fetch(`http://138.99.160.212:5000/api/partidas/${quadraId}`);
+
             if (!partidasResponse.ok) {
                 throw new Error(`Erro HTTP: ${partidasResponse.status}`);
             }
-            const partidas = await partidasResponse.json();
+
+            partidas = await partidasResponse.json();
+            console.log('Partidas encontradas:', partidas); // Log após a requisição
 
             if (partidas.length === 0) {
                 exibirMensagem('Nenhuma partida encontrada para esta quadra.', videoContainer);
                 return;
             }
 
+            // Cria o menu dropdown com as partidas
+            const dataPartidaInput = document.getElementById('data-partida');
+            const horaPartidaSelect = document.getElementById('hora-partida');
+
             // Função para atualizar o menu suspenso de horas com base na data selecionada
             function atualizarHorasPartida() {
                 const dataSelecionada = dataPartidaInput.value;
+
+                // Obter a data em formato Date
+                const dataDate = new Date(dataSelecionada);
+
+                // Formatar a data como yyyy-mm-dd
+                const dataFormatada = dataDate.toISOString().split('T')[0];
+
                 horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
@@ -59,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Filtrar as partidas pela data selecionada
                 const partidasFiltradas = partidas.filter(partida => {
-                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataFormatada);
                 });
 
                 if (partidasFiltradas.length === 0) {
@@ -83,13 +100,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const selectedPartidaId = partidaSelect.value;
                 const dataSelecionada = dataPartidaInput.value; // Obter a data do input
 
-                if (!dataSelecionada || !selectedPartidaId) {
+                // Obter a data em formato Date
+                const dataDate = new Date(dataSelecionada);
+
+                // Formatar a data como yyyy-mm-dd
+                const dataFormatada = dataDate.toISOString().split('T')[0];
+
+                if (!dataFormatada || !selectedPartidaId) {
                     exibirMensagem('Selecione uma data e hora para ver os vídeos.', videoContainer, false);
                     return;
                 }
 
                 try {
-                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}&data_inicio=${dataSelecionada}`);
+                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}&data_inicio=${dataFormatada}`);
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
@@ -126,9 +149,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Adicionar evento de mudança ao input de data
-            dataPartidaInput.addEventListener('change', atualizarHorasPartida);
 
+            
             // Adicionar evento de mudança ao select de partidas
             partidaSelect.addEventListener('change', fetchVideosByPartida);
 
@@ -139,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
             exibirMensagem('Ocorreu um erro ao carregar as partidas.', videoContainer);
         }
     }
-
+    
     // Função para buscar o nome da quadra
     async function fetchQuadraNome(quadraId) {
         try {
@@ -162,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchVideosByQuadra(quadraId); // Carrega as partidas, mas não os vídeos
     } else {
         // Redirecionar para a página inicial ou exibir uma mensagem de erro
-        window.location.href = '../quadras/quadras.html'; 
+        window.location.href = 'quadras.html'; 
     }
 
     // Inicializar componentes do Materialize
