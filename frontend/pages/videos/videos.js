@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // ... (busca as partidas da quadra selecionada)
 
             // Cria o menu dropdown com as partidas
-            const dataPartidaInput = document.getElementById('data-partida');
-            const horaPartidaSelect = document.getElementById('hora-partida');
+            const dataPartidaInput = document.getElementById('#data-partida');
+            const horaPartidaSelect = document.getElementById('#hora-partida');
 
             if (partidas.length === 0) {
                 exibirMensagem('Nenhuma partida encontrada para esta quadra.', videoContainer);
