@@ -70,12 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const horasDisponiveis = new Set();
 
-
-
                 if (partidasFiltradas.length === 0) {
                     exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
-                }
-                else {
+                } else {
                     partidasFiltradas.forEach(partida => {
                         const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
                         if (!horasDisponiveis.has(horaInicio)) {
@@ -94,13 +91,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const selectedPartidaId = partidaSelect.value;
                 const dataSelecionada = dataPartidaInput.value; // Obter a data do input
 
-                if (!dataSelecionada || !selectedPartidaId) {
+                // Obter a data em formato Date
+                const dataDate = new Date(dataSelecionada);
+
+                // Formatar a data como yyyy-mm-dd
+                const dataFormatada = dataDate.toISOString().split('T')[0];
+
+                if (!dataFormatada || !selectedPartidaId) {
                     exibirMensagem('Selecione uma data e hora para ver os vídeos.', videoContainer, false);
                     return;
                 }
 
                 try {
-                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}&data_inicio=${dataSelecionada}`);
+                    const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${selectedPartidaId}&data_inicio=${dataFormatada}`);
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
@@ -170,11 +173,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const quadraId = getQuadraIdFromUrl();
     if (quadraId) {
         fetchQuadraNome(quadraId);
-        fetchVideosByQuadra(quadraId); // Carrega as partidas, mas não os vídeos
+        fetchVideosByQuadra(quadraId); 
     } else {
         // Redirecionar para a página inicial ou exibir uma mensagem de erro
         window.location.href = 'quadras.html'; 
     }
 
-
+    // Inicializar componentes do Materialize
+    M.AutoInit();
 });
