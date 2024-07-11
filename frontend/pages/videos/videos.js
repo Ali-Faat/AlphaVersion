@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function criarVideoElement(video) {
         const videoElement = document.createElement('video');
         videoElement.src = video.url;
-        videoElement.controls = true;
+        //videoElement.controls = true;
         videoElement.width = 320;
         videoElement.height = 240;
         return videoElement;
