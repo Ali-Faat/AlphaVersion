@@ -77,8 +77,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 const dataFormatada = dataDate.toISOString().split('T')[0];
 
                 // Filtrar as partidas pela data selecionada
-                partidasFiltradas = partidas.filter(partida => {
-                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataFormatada);
+                partidasFiltradas.forEach(partida => {
+                    const option = document.createElement('option');
+                    option.value = partida.id;
+            
+                    // Verifica se dh_inicio existe e está no formato correto
+                    if (partida.dh_inicio && /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/.test(partida.dh_inicio)) {
+                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
+                        option.text = horaInicio;
+                    } else {
+                        option.text = 'Hora não definida'; // Mensagem alternativa se dh_inicio for inválido ou nulo
+                        option.disabled = true; // Desabilitar a opção se a hora for inválida
+                    }
+            
+                    horaPartidaSelect.appendChild(option);
                 });
 
                 horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
