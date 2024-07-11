@@ -55,16 +55,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const horaPartidaSelect = document.getElementById('hora-partida');
 
             // Função para atualizar o menu suspenso de horas com base na data selecionada
-            function atualizarHorasPartida() {
+            // Função para atualizar o menu suspenso de horas com base na data selecionada
+            async function atualizarHorasPartida() {
                 const dataSelecionada = dataPartidaInput.value;
-
-                // Obter a data em formato Date
-                const dataDate = new Date(dataSelecionada);
-
-                // Formatar a data como yyyy-mm-dd
-                const dataFormatada = dataDate.toISOString().split('T')[0];
-
-                horaPartidaSelect.innerHTML = ''; // Limpar as opções de hora
+                horaPartidaSelect.innerHTML = '';
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.text = 'Selecione a hora';
@@ -72,20 +66,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 defaultOption.selected = true;
                 horaPartidaSelect.appendChild(defaultOption);
 
-                const horasDisponiveis = new Set();
 
+                
                 // Filtrar as partidas pela data selecionada
                 const partidasFiltradas = partidas.filter(partida => {
-                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataFormatada);
+                    return partida.dh_inicio && partida.dh_inicio.startsWith(dataSelecionada);
                 });
+
+                // Criar um conjunto para armazenar as horas já adicionadas
+                const horasAdicionadas = new Set();
 
                 if (partidasFiltradas.length === 0) {
                     exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
                 } else {
                     partidasFiltradas.forEach(partida => {
-                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
-                        if (!horasDisponiveis.has(horaInicio)) {
-                            horasDisponiveis.add(horaInicio);
+                        const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3); // Extrai a hora (HH:mm:ss)
+                        if (!horasAdicionadas.has(horaInicio)) { // Verifica se a hora já foi adicionada
+                            horasAdicionadas.add(horaInicio);
                             const option = document.createElement('option');
                             option.value = partida.id;
                             option.text = horaInicio;
@@ -126,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         // Adicionar evento de mudança ao select de partidas
                         partidaSelect.addEventListener('change', fetchVideosByPartida);
-                        
+
                         // Exibir os vídeos
                         videos.forEach(video => {
                             const videoElement = criarVideoElement(video);
