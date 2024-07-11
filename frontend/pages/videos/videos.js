@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchVideosByQuadra(quadraId) {
         try {
             // Busca as partidas da quadra selecionada
-            const partidasResponse = await fetch(`http://127.0.0.1:5000/api/partidas/${quadraId}`);
+            const partidasResponse = await fetch(`http://138.99.160.212:5000/api/partidas/${quadraId}`);
             if (!partidasResponse.ok) {
                 throw new Error(`Erro HTTP: ${partidasResponse.status}`);
             }
