@@ -111,24 +111,23 @@ def get_partidas_por_quadra(quadra_id):
 def get_videos():
     quadra_id = request.args.get('quadra_id')
     partida_id = request.args.get('partida_id')
+    data_inicio = request.args.get('data_inicio')  # Novo parâmetro para data
 
     mydb = get_db_connection()
     cursor = mydb.cursor()
 
     try:
-        if quadra_id and partida_id:
-            # Obter as datas de início e fim da partida selecionada
-            cursor.execute('SELECT dh_inicio, dh_fim FROM partidas WHERE id = %s', (partida_id,))
-            partida = cursor.fetchone()
-
-            if partida is None:
-                return jsonify({'error': 'Partida não encontrada'}), 404
-
-            dh_inicio, dh_fim = partida
-
-            # Buscar os vídeos da partida selecionada, filtrando por data e hora
-            cursor.execute('SELECT v.*, (v.criador_id = %s) AS eh_criador FROM videos v WHERE v.partida_id = %s AND v.data_criacao BETWEEN %s AND %s',
-                           (session.get('usuario_id'), partida_id, dh_inicio, dh_fim))
+        if quadra_id and partida_id and data_inicio:
+            # Filtrar vídeos pela data exata
+            query = '''
+                SELECT v.*, (v.criador_id = %s) AS eh_criador 
+                FROM videos v 
+                JOIN partidas p ON v.partida_id = p.id 
+                WHERE p.quadra_id = %s 
+                AND p.id = %s 
+                AND DATE(v.data_criacao) = %s  -- Filtra por data exata
+            '''
+            params = (session.get('usuario_id'), quadra_id, partida_id, data_inicio)
         elif quadra_id:
             # Se não houver partida_id, retorna todos os vídeos da quadra
             cursor.execute('SELECT v.*, (v.criador_id = %s) AS eh_criador FROM videos v JOIN partidas p ON v.partida_id = p.id WHERE p.quadra_id = %s',
