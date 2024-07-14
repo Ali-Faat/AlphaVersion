@@ -59,7 +59,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       
           partidas = await partidasResponse.json();
       
-          // Função para atualizar o select de horas com base na data selecionada
+          if (!Array.isArray(partidas)) {
+            throw new Error('A resposta da API não é um array de partidas.');
+          }
+      
           async function atualizarHorasPartida() {
             const dataSelecionada = dataPartidaInput.value;
             if (!dataSelecionada) {
@@ -67,24 +70,24 @@ document.addEventListener('DOMContentLoaded', async () => {
               return;
             }
       
-            const dataFormatada = new Date(dataSelecionada).toISOString().split('T')[1];
+            const dataFormatada = new Date(dataSelecionada).toISOString().split('T')[0];
             const partidasFiltradas = partidas.filter(partida => {
-              if (partida.dh_inicio) { // Verifica se dh_inicio existe
+              if (partida.dh_inicio && partida.dh_inicio.includes('T')) { // Verifica se existe e se é string válida
                 return partida.dh_inicio.startsWith(dataFormatada);
               } else {
-                return false; // Se dh_inicio for nulo, não inclui na filtragem
+                return false;
               }
             });
       
             horaPartidaSelect.innerHTML = '<option value="">Selecione a hora</option>';
       
             if (partidasFiltradas.length === 0) {
-              horaPartidaSelect.innerHTML = '<option value="">Nenhuma partida encontrada para esta data</option>';
+              exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
             } else {
               const horasDisponiveis = new Set();
               partidasFiltradas.forEach(partida => {
-                if (partida.dh_inicio) { // Verifica se dh_inicio existe
-                  const horaInicio = partida.dh_inicio.split(' ')[1].slice(0, -3);
+                if (partida.dh_inicio && partida.dh_inicio.includes('T')) { // Verifica se existe e se é string válida
+                  const horaInicio = partida.dh_inicio.split('T')[1].slice(0, -3); // Índice 1 para dh_inicio
                   if (!horasDisponiveis.has(horaInicio)) {
                     horasDisponiveis.add(horaInicio);
                     const option = document.createElement('option');
