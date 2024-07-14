@@ -40,6 +40,30 @@ def executar_consulta(query, params=None):
 def get_quadras():
     return executar_consulta('SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media FROM quadras')
 
+@app.route('/api/usuarios/<int:usuario_id>', methods=['GET'])
+def get_usuario(usuario_id):
+    mydb = get_db_connection()
+    cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
+
+    try:
+        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
+        usuario = cursor.fetchone()
+
+        if usuario is None:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
+
+        # Remover a senha do dicionário antes de retornar
+        del usuario['senha']
+
+        return jsonify(usuario)
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao buscar usuário: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
 # Rota para obter os detalhes de uma quadra específica
 @app.route('/api/quadras/<quadra_id>', methods=['GET'])
 def get_quadra(quadra_id):
