@@ -191,6 +191,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   
     // Inicializar componentes do Materialize
-    M.AutoInit();
+    //M.AutoInit();
   });
   
