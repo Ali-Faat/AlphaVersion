@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               return;
             }
       
-            const dataFormatada = new Date(dataSelecionada).toISOString().split('T')[0];
+            const dataFormatada = new Date(dataSelecionada).toISOString().split('T')[1];
             const partidasFiltradas = partidas.filter(partida => {
               if (partida.dh_inicio) { // Verifica se dh_inicio existe
                 return partida.dh_inicio.startsWith(dataFormatada);
