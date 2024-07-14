@@ -79,7 +79,16 @@ document.addEventListener('DOMContentLoaded', async () => {
               }
             });
           
-            horaPartidaSelect.innerHTML = '<option value="">Selecione a hora</option>';
+            // Limpar o select (sem usar Materialize)
+            while (horaPartidaSelect.options.length > 0) {
+              horaPartidaSelect.remove(0);
+            }
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.text = 'Selecione a hora';
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            horaPartidaSelect.appendChild(defaultOption);
           
             if (partidasFiltradas.length === 0) {
               exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
@@ -90,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   const horaInicio = partida.dh_inicio.split('T')[1].slice(0, -3);
                   if (!horasDisponiveis.has(horaInicio)) {
                     horasDisponiveis.add(horaInicio);
-                    console.log('Hora de início filtrada:', horaInicio); // Log da hora de início
+
                     const option = document.createElement('option');
                     option.value = partida.id;
                     option.text = horaInicio;
@@ -98,10 +107,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                   }
                 }
               });
-          
-              horaPartidaSelect.addEventListener('change', fetchVideosByPartida);
+
+              
             }
-          }
+        }
   
         // Função para buscar e exibir os vídeos da partida selecionada
         async function fetchVideosByPartida() {
