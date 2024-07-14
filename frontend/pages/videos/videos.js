@@ -83,34 +83,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             while (horaPartidaSelect.options.length > 0) {
               horaPartidaSelect.remove(0);
             }
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.text = 'Selecione a hora';
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            horaPartidaSelect.appendChild(defaultOption);
+            const horaPartidaBtn = document.getElementById('hora-partida-btn');
+            const horaPartidaLista = document.getElementById('hora-partida-lista');
+          
+            horaPartidaLista.innerHTML = ''; // Limpa a lista
           
             if (partidasFiltradas.length === 0) {
               exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
-            } else {
-              const horasDisponiveis = new Set();
+            }
+            else {
               partidasFiltradas.forEach(partida => {
                 if (partida.dh_inicio && partida.dh_inicio.includes('T')) {
                   const horaInicio = partida.dh_inicio.split('T')[1].slice(0, -3);
-                  if (!horasDisponiveis.has(horaInicio)) {
-                    horasDisponiveis.add(horaInicio);
-
-                    const option = document.createElement('option');
-                    option.value = partida.id;
-                    option.text = horaInicio;
-                    horaPartidaSelect.appendChild(option);
-                  }
+                  const listItem = document.createElement('li');
+                  listItem.textContent = horaInicio;
+                  listItem.addEventListener('click', () => {
+                    horaPartidaBtn.textContent = horaInicio; // Atualiza o texto do botão
+                    fetchVideosByPartida(partida.id); // Chama a função para buscar os vídeos
+                    horaPartidaLista.style.display = 'none'; // Esconde a lista
+                  });
+                  horaPartidaLista.appendChild(listItem);
                 }
               });
 
-              
+
             }
-        }
+          }
   
         // Função para buscar e exibir os vídeos da partida selecionada
         async function fetchVideosByPartida() {
