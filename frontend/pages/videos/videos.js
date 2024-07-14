@@ -51,43 +51,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Função para buscar e exibir os vídeos da quadra
     async function fetchVideosByQuadra(quadraId) {
         try {
+          console.log('Buscando partidas da quadra:', quadraId); // Log antes do fetch
           const partidasResponse = await fetch(`http://138.99.160.212:5000/api/partidas/${quadraId}`);
-      
+    
           if (!partidasResponse.ok) {
             throw new Error(`Erro HTTP: ${partidasResponse.status}`);
           }
-      
+    
+          console.log('Resposta da API (partidas):', partidasResponse); // Log da resposta
           partidas = await partidasResponse.json();
-      
-          if (!Array.isArray(partidas)) {
-            throw new Error('A resposta da API não é um array de partidas.');
-          }
-      
+          console.log('Partidas recebidas:', partidas); // Log das partidas recebidas
+    
+          // Função para atualizar o select de horas com base na data selecionada
           async function atualizarHorasPartida() {
+            console.log('Atualizando horas de partida...'); // Log no início da função
+    
             const dataSelecionada = dataPartidaInput.value;
             if (!dataSelecionada) {
               exibirMensagem('Selecione uma data.', videoContainer, false);
               return;
             }
-      
+    
             const dataFormatada = new Date(dataSelecionada).toISOString().split('T')[0];
             const partidasFiltradas = partidas.filter(partida => {
-              if (partida.dh_inicio && partida.dh_inicio.includes('T')) { // Verifica se existe e se é string válida
+              if (partida.dh_inicio && partida.dh_inicio.includes('T')) {
                 return partida.dh_inicio.startsWith(dataFormatada);
               } else {
                 return false;
               }
             });
-      
+    
+            console.log('Partidas filtradas:', partidasFiltradas); // Log das partidas filtradas
+    
             horaPartidaSelect.innerHTML = '<option value="">Selecione a hora</option>';
-      
+    
             if (partidasFiltradas.length === 0) {
               exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
             } else {
               const horasDisponiveis = new Set();
               partidasFiltradas.forEach(partida => {
-                if (partida.dh_inicio && partida.dh_inicio.includes('T')) { // Verifica se existe e se é string válida
-                  const horaInicio = partida.dh_inicio.split('T')[1].slice(0, -3); // Índice 1 para dh_inicio
+                if (partida.dh_inicio && partida.dh_inicio.includes('T')) {
+                  const horaInicio = partida.dh_inicio.split('T')[1].slice(0, -3);
                   if (!horasDisponiveis.has(horaInicio)) {
                     horasDisponiveis.add(horaInicio);
                     const option = document.createElement('option');
@@ -97,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   }
                 }
               });
-      
+    
               horaPartidaSelect.addEventListener('change', fetchVideosByPartida);
             }
           }
