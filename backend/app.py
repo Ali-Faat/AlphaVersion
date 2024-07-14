@@ -116,7 +116,7 @@ def get_partidas_por_quadra(quadra_id):
             dh_fim_str = partida['dh_fim'].strftime('%Y-%m-%d %H:%M:%S') if partida['dh_fim'] else None
 
             partidas_json.append({
-                'id': partida['id_partida'],  # Corrigido para usar o nome da coluna
+                'id': partida['id'],  # Corrigido para usar o nome da coluna
                 'dh_inicio': partida['dh_inicio'].isoformat() if partida['dh_inicio'] else None,
                 'dh_fim': partida['dh_fim'].isoformat() if partida['dh_fim'] else None
             })
