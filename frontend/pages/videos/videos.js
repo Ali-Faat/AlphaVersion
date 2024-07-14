@@ -64,14 +64,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     
           // Função para atualizar o select de horas com base na data selecionada
           async function atualizarHorasPartida() {
-            console.log('Atualizando horas de partida...'); // Log no início da função
-    
             const dataSelecionada = dataPartidaInput.value;
             if (!dataSelecionada) {
               exibirMensagem('Selecione uma data.', videoContainer, false);
               return;
             }
-    
+          
             const dataFormatada = new Date(dataSelecionada).toISOString().split('T')[0];
             const partidasFiltradas = partidas.filter(partida => {
               if (partida.dh_inicio && partida.dh_inicio.includes('T')) {
@@ -80,11 +78,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return false;
               }
             });
-    
-            console.log('Partidas filtradas:', partidasFiltradas); // Log das partidas filtradas
-    
+          
             horaPartidaSelect.innerHTML = '<option value="">Selecione a hora</option>';
-    
+          
             if (partidasFiltradas.length === 0) {
               exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
             } else {
@@ -94,6 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   const horaInicio = partida.dh_inicio.split('T')[1].slice(0, -3);
                   if (!horasDisponiveis.has(horaInicio)) {
                     horasDisponiveis.add(horaInicio);
+                    console.log('Hora de início filtrada:', horaInicio); // Log da hora de início
                     const option = document.createElement('option');
                     option.value = partida.id;
                     option.text = horaInicio;
@@ -101,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   }
                 }
               });
-    
+          
               horaPartidaSelect.addEventListener('change', fetchVideosByPartida);
             }
           }
