@@ -116,9 +116,9 @@ def get_partidas_por_quadra(quadra_id):
             dh_fim_str = partida['dh_fim'].strftime('%Y-%m-%d %H:%M:%S') if partida['dh_fim'] else None
 
             partidas_json.append({
-                'id': partida[0],
-                'dh_inicio': partida[3].isoformat() if partida[3] else None,  # Formatar para ISO 8601
-                'dh_fim': partida[4].isoformat() if partida[4] else None 
+                'id': partida['id_partida'],  # Corrigido para usar o nome da coluna
+                'dh_inicio': partida['dh_inicio'].isoformat() if partida['dh_inicio'] else None,
+                'dh_fim': partida['dh_fim'].isoformat() if partida['dh_fim'] else None
             })
 
         return jsonify(partidas_json)
@@ -164,7 +164,7 @@ def get_videos():
         # Converter para formato JSON
         videos_json = []
         for video in videos:
-            data_criacao_str = video[4].strftime('%Y-%m-%d %H:%M:%S') if video[4] else None
+            data_criacao_str = video[5].strftime('%Y-%m-%d %H:%M:%S') if video[5] else None
             videos_json.append({
                 'id': video[0],
                 'partida_id': video[1],
