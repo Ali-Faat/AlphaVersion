@@ -242,7 +242,7 @@ def cadastro():
 
         mydb = get_db_connection()
         cursor = mydb.cursor()
-        cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+        cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s)',
                        (nome_completo, apelido, email, celular, senha_hash, 'jogador'))
         mydb.commit()
 
