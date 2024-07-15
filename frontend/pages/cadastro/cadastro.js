@@ -146,11 +146,9 @@ document.addEventListener('DOMContentLoaded', function () {
       
             if (response.ok) {
               // Cadastro realizado com sucesso
-              const loginUrl = '../login/login.html'; // URL da página de login
               const mensagemSucesso = 'Cadastro realizado com sucesso! Faça login para continuar!';
-      
               // Redireciona para a página de login com a mensagem
-              window.location.href = `${loginUrl}`;
+              window.location.href = '../login/login.html';
               window.alert(`${mensagemSucesso}`)
             } else {
               // Lidar com erros de cadastro (exibir mensagem de erro, etc.)
