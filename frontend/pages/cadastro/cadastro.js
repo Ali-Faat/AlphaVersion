@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const cadastroForm = document.getElementById('cadastro-form');
     const nomeCompletoInput = document.getElementById('nome_completo');
     const apelidoInput = document.getElementById('apelido');
-    const numeroJogadorInput = document.getElementById('numero_jogador');
     const emailInput = document.getElementById('email');
     const celularInput = document.getElementById('celular');
     const senhaInput = document.getElementById('senha');
@@ -19,12 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function validarApelido() {
         const apelido = apelidoInput.value.trim();
         return apelido.length <= 20; // Verifica se o apelido tem no máximo 20 caracteres
-    }
-
-    // Função para validar o número do jogador
-    function validarNumeroJogador() {
-        const numero = numeroJogadorInput.value.trim();
-        return /^\d{2}$/.test(numero); // Verifica se o número tem exatamente 2 dígitos
     }
 
     // Função para validar o email
@@ -95,14 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 mostrarErro(apelidoInput, 'O apelido deve ter no máximo 20 caracteres.');
             } else {
                 ocultarErro(apelidoInput);
-            }
-        });
-
-        numeroJogadorInput.addEventListener('blur', () => {
-            if (!validarNumeroJogador()) {
-                mostrarErro(numeroJogadorInput, 'O número deve ter exatamente 2 dígitos.');
-            } else {
-                ocultarErro(numeroJogadorInput);
             }
         });
 
