@@ -242,8 +242,8 @@ def cadastro():
 
         mydb = get_db_connection()
         cursor = mydb.cursor()
-        cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s)',
-                       (nome_completo, apelido, email, celular, senha_hash, 'jogador'))
+        cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha) VALUES (%s, %s, %s, %s, %s)',
+                       (nome_completo, apelido, email, celular, senha_hash))
         mydb.commit()
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso!'}), 201
