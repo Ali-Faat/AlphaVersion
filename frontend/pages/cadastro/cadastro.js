@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         //Envio das informações para a api/cadastro
-        const formCadastro = document.querySelector('form'); // Seleciona o formulário de cadastro
+        const formCadastro = document.getElementById('cadastro-form'); // Seleciona o formulário de cadastro
 
         formCadastro.addEventListener('submit', async (event) => {
           event.preventDefault(); // Impede o envio padrão do formulário
