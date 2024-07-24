@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar E-mail</title>
+    <link rel="stylesheet" href="validar.css">
+</head>
+<body>
+    <div class="container">
+        <img src="../../IMGs/e-mail.jpg" alt="Logo da plataforma" class="logo"> <p id="mensagem-boas-vindas">Olá, <span id="apelido-usuario">{{Apelido}}</span>! É um prazer te dar as boas-vindas ao nosso sistema. Para finalizar seu cadastro, digite sua senha para validar seu e-mail.</p>
+
+        <div class="input-field">
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" required>
+        </div>
+        <br>
+        <button id="validar-email" class="btn waves-effect waves-light">Validar E-mail</button>
+        <p id="mensagem-verificacao"></p>
+    </div>
+    
+    <script src="validar.js"></script>
+</body>
+</html>

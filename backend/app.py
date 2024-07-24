@@ -5,6 +5,9 @@ import json
 import os
 from flask_cors import CORS
 import hashlib
+import email_verification
+import secrets  # Para gerar tokens aleatórios
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Gera uma chave secreta aleatória
@@ -198,11 +201,12 @@ def login():
     cursor = mydb.cursor()
 
     try:
-        cursor.execute('SELECT * FROM usuarios WHERE email = %s AND senha = %s', (email, senha_hash))
+        # Verificar se o usuário existe e se o e-mail está verificado
+        cursor.execute('SELECT * FROM usuarios WHERE email = %s AND senha = %s AND verificado = True', (email, senha_hash))
         usuario = cursor.fetchone()
 
         if usuario is None:
-            return jsonify({'error': 'Credenciais inválidas'}), 401
+            return jsonify({'error': 'Credenciais inválidas ou e-mail não verificado'}), 401
 
         # Iniciar a sessão do usuário
         session['usuario_id'] = usuario[0]
@@ -226,7 +230,7 @@ def is_authenticated():
         return jsonify({'authenticated': False}), 200
 
 
-
+# Rota para cadastrar o usuário e gerar token de verificação por e-mail
 @app.route('/api/cadastro', methods=['POST'])
 def cadastro():
     try:
@@ -240,16 +244,54 @@ def cadastro():
         # Criptografar a senha
         senha_hash = hashlib.sha256(senha.encode()).hexdigest()
 
+        # Gerar token de verificação
+        verification_token = secrets.token_hex(16)  # Gera um token de 32 caracteres
+
         mydb = get_db_connection()
         cursor = mydb.cursor()
-        cursor.execute('INSERT INTO usuarios (nome, apelido, email, celular, senha) VALUES (%s, %s, %s, %s, %s)',
-                       (nome_completo, apelido, email, celular, senha_hash))
+
+        # Inserir usuário no banco de dados com o campo "verificado" como False e o token de verificação
+        cursor.execute(
+            'INSERT INTO usuarios (nome, apelido, email, celular, senha, verificado, verification_token) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (nome_completo, apelido, email, celular, senha_hash, False, verification_token)
+        )
         mydb.commit()
 
-        return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso!'}), 201
+        # Criar link de verificação
+        verification_link = f'http://seu_site.com/api/verificar_email/{verification_token}'
+
+        # Enviar e-mail de verificação
+        email_verification.send_verification_email(email, verification_link)
+
+        return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+
+# Rota para verificar o e-mail
+@app.route('/api/verificar_email/<token>')
+def verificar_email(token):
+    mydb = get_db_connection()
+    cursor = mydb.cursor()
+
+    try:
+        cursor.execute('SELECT * FROM usuarios WHERE verification_token = %s', (token,))
+        usuario = cursor.fetchone()
+
+        if usuario:
+            cursor.execute('UPDATE usuarios SET verificado = True WHERE id = %s', (usuario[0],))
+            mydb.commit()
+            return 'E-mail verificado com sucesso!'
+        else:
+            return 'Token de verificação inválido.'
+
+    except Exception as err:
+        return f'Erro ao verificar e-mail: {err}'
 
     finally:
         cursor.close()
