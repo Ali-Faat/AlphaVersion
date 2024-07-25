@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from database import get_db_connection
-from dotenv import load_dotenv
 import mysql.connector
 import json
 import os
@@ -25,13 +24,17 @@ mail = Mail(app)
 
 # Função para obter a conexão com o banco de dados
 def get_db_connection():
-    mydb = mysql.connector.connect(
-        host=os.getenv('DB_HOST'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASSWORD'),
-        database=os.getenv('DB_NAME')
-    )
-    return mydb
+    try:
+        mydb = mysql.connector.connect(
+            host=get_db_connection.DB_HOST,
+            user=get_db_connection.DB_USER,
+            password=get_db_connection.DB_PASSWORD,
+            database=get_db_connection.DB_NAME
+        )
+        return mydb
+    except mysql.connector.Error as err:
+        app.logger.error(f"Erro ao conectar ao banco de dados: {err}")
+        raise
 
 
 def check_password_hash(stored_password, provided_password, salt):
