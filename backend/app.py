@@ -23,7 +23,7 @@ mail = Mail(app)
 
 
 # Função para obter a conexão com o banco de dados
-def get_db_connection():
+def connection():
     try:
         mydb = mysql.connector.connect(
             host=get_db_connection.DB_HOST,
@@ -43,7 +43,7 @@ def check_password_hash(stored_password, provided_password, salt):
 
 
 def executar_consulta(query, params=None):
-    mydb = get_db_connection()
+    mydb = connection()
     cursor = mydb.cursor()
 
     try:
@@ -74,7 +74,7 @@ def get_quadras():
 
 @app.route('/api/usuarios/<int:usuario_id>', methods=['GET'])
 def get_usuario(usuario_id):
-    mydb = get_db_connection()
+    mydb = connection()
     cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
 
     try:
@@ -113,7 +113,7 @@ def cadastro():
             return jsonify({'success': False, 'error': 'Todos os campos são obrigatórios'}), 400
 
         # Verificar se o email já está cadastrado
-        mydb = get_db_connection()
+        mydb = connection()
         cursor = mydb.cursor()
         cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
         existing_user = cursor.fetchone()
@@ -161,7 +161,7 @@ def login():
         return jsonify({'success': False, 'error': 'Email e senha são obrigatórios'}), 400
 
     try:
-        mydb = get_db_connection()
+        mydb = connection()
         cursor = mydb.cursor(dictionary=True)  # Certifique-se de que o cursor seja criado aqui
         cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
         usuario = cursor.fetchone()
@@ -203,7 +203,7 @@ def confirmar_email():
         if not token or not senha:
             return jsonify({'success': False, 'error': 'Token ou senha não fornecidos'}), 400
 
-        mydb = get_db_connection()
+        mydb = connection()
         cursor = mydb.cursor(dictionary=True)
         cursor.execute('SELECT * FROM usuarios WHERE verification_token = %s', (token,))
         usuario = cursor.fetchone()
@@ -226,7 +226,7 @@ def confirmar_email():
 # Rota para obter os detalhes de uma quadra específica
 @app.route('/api/quadras/<quadra_id>', methods=['GET'])
 def get_quadra(quadra_id):
-    mydb = get_db_connection()
+    mydb = connection()
     cursor = mydb.cursor()
 
     try:
@@ -261,7 +261,7 @@ def get_quadra(quadra_id):
 # Rota para obter os detalhes de uma quadra específica
 @app.route('/api/partidas/<quadra_id>', methods=['GET'])
 def get_partidas_por_quadra(quadra_id):
-    mydb = get_db_connection()
+    mydb = connection()
     cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
 
     try:
@@ -296,7 +296,7 @@ def get_videos():
     partida_id = request.args.get('partida_id')
     data_inicio = request.args.get('data_inicio')
 
-    mydb = get_db_connection()
+    mydb = connection()
     cursor = mydb.cursor()
 
     try:
