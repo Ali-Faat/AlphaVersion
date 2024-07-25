@@ -18,8 +18,8 @@ CORS(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # ou o servidor do seu provedor
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USERNAME'] = os.getenv('verificadorgoalcast@gmail.com')
+app.config['MAIL_PASSWORD'] = os.getenv('mxrm aldh ayyg plab')
 mail = Mail(app)
 
 
@@ -159,7 +159,7 @@ def login():
 
     try:
         mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
+        cursor = mydb.cursor(dictionary=True)  # Certifique-se de que o cursor seja criado aqui
         cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
         usuario = cursor.fetchone()
 
@@ -179,9 +179,14 @@ def login():
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro na autenticação: {err}'}), 500
 
-    finally:
-        cursor.close()
+    else:
+        cursor.close()  # Feche o cursor apenas se não houver erros
         mydb.close()
+
+    finally:
+        # Agora você pode fechar a conexão com o banco de dados aqui, independentemente de ter havido erro ou não
+        if mydb.is_connected():
+            mydb.close()
 
 
 

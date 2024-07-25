@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Primeira requisição: Obter dados do usuário (GET)
-    fetch(`/validar_email?token=${token}`)
+    fetch(`138.99.160.212:5000/validar_email?token=${token}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao validar token.');
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Segunda requisição: Confirmar email com senha (POST)
     validarEmailBtn.addEventListener('click', () => {
         const senha = senhaInput.value;
-        fetch('/confirmar_email', {
+        fetch('138.99.160.212:5000/confirmar_email', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 mensagemVerificacao.textContent = data.message;
                 // Redirecionar para a página de login após um tempo (opcional)
                 setTimeout(() => {
-                    window.location.href = '/login.html';
+                    window.location.href = '../login/login.html';
                 }, 3000); // Redireciona após 3 segundos
             } else {
                 mensagemVerificacao.textContent = data.error;
