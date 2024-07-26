@@ -10,7 +10,9 @@ import datetime
 import secrets  # Para gerar tokens aleatórios
 from flask_mail import Mail, Message
 
+
 app = Flask(__name__)
+app.run(debug=True)
 app.secret_key = os.urandom(24)  # Gera uma chave secreta aleatória
 CORS(app)
 
