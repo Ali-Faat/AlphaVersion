@@ -4,8 +4,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def send_verification_email(email, verification_link):
-    from_email = 'seu_email@gmail.com'  # Substitua pelo seu email
-    password = 'sua_senha'  # Substitua pela sua senha
+    from_email = 'verificadorgoalcast@gmail.com'  # Substitua pelo seu email
+    password = '@HMahm023048'  # Substitua pela sua senha
 
     msg = MIMEMultipart()
     msg['From'] = from_email
