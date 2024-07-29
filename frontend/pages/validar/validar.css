@@ -1,0 +1,75 @@
+/* style.css */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f5; /* Fundo cinza claro similar à imagem */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+  
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 20px; /* Bordas mais arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+    width: 90%;
+    max-width: 300px;
+    text-align: center;
+}
+  
+.logo {
+    max-width: 100px; /* Tamanho da imagem menor */
+    margin-bottom: 20px;
+}
+  
+#mensagem-boas-vindas {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+  
+/* Estilos para os campos de código */
+.codigo-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+  
+.codigo-campo {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ccc;
+    border-radius: 10px; /* Bordas arredondadas */
+    text-align: center;
+    font-size: 24px;
+    margin: 0 5px;
+}
+  
+/* Estilos para os botões */
+.botoes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+  
+button {
+    background-color: #673ab7; /* Cor roxa similar à imagem */
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 10px; /* Bordas arredondadas */
+    cursor: pointer;
+    font-size: 16px;
+}
+  
+#validar-email {
+    background-color: #4CAF50; /* Cor verde para o botão de validar */
+}
+
+#mensagem-verificacao {
+    margin-top: 20px;
+}
