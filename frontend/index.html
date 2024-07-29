@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GoalCast - Uma plataforma inovadora para gerenciamento de metas e produtividade.">
+    <meta name="keywords" content="metas, produtividade, GoalCast, gerenciamento de metas">
     <title>GoalCast</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,20 +12,75 @@
     <header>
         <nav>
             <div class="nav-wrapper container">
-                <a href="#" class="brand-logo">GoalCast</a>
-                <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <a href="#" class="brand-logo"><img src="IMGs/logo.png" alt="GoalCast"></a>
+                <a href="#" data-target="mobile-nav" class="sidenav-trigger" style="display: none;"><i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down">
+                    <li><a href="#jogador">Jogador</a></li>
+                    <li><a href="#quadra">Quadra</a></li>
+                    <li><a href="#dink">Dink</a></li>
+                    <li><a href="#contate-nos">Contate-nos</a></li>
                     <li><a href="pages/login/login.html">Login</a></li>
-                    <li><a href="pages/cadastro/cadastro.html">Cadastro</a></li>
+                    <li><a href="pages/cadastro/cadastro.html">Cadastre-se</a></li>
                 </ul>
             </div>
         </nav>
 
         <ul class="sidenav" id="mobile-nav">
+            <li><a href="#jogador">Jogador</a></li>
+            <li><a href="#quadra">Quadra</a></li>
+            <li><a href="#dink">Dink</a></li>
+            <li><a href="#contate-nos">Contate-nos</a></li>
             <li><a href="pages/login/login.html">Login</a></li>
-            <li><a href="pages/cadastro/cadastro.html">Cadastro</a></li>
+            <li><a href="pages/cadastro/cadastro.html">Cadastre-se</a></li>
         </ul>
     </header>
+
+    <section id="jogador" class="section jogador-section">
+        <div class="container">
+            <h1>Jogador</h1>
+            <p>Descreva aqui o que o sistema oferece para os jogadores. Explique os benefícios, as funcionalidades e como isso pode ajudá-los a alcançar seus objetivos.</p>
+            <!-- Adicione mais conteúdo como imagens ou vídeos relacionados aqui -->
+        </div>
+    </section>
+
+    <section id="quadra" class="section quadra-section">
+        <div class="container">
+            <h1>Quadra</h1>
+            <p>Detalhe as características e benefícios da funcionalidade "Quadra". Explique como ela contribui para o sistema como um todo e o valor que oferece aos usuários.</p>
+            <!-- Adicione mais conteúdo como imagens ou vídeos relacionados aqui -->
+        </div>
+    </section>
+
+    <section id="dink" class="section dink-section">
+        <div class="container">
+            <h1>Dink</h1>
+            <p>Descreva o recurso "Dink", como ele funciona e por que é importante para o sistema. Inclua informações que ajudem os visitantes a entender o seu valor e aplicação.</p>
+            <!-- Adicione mais conteúdo como imagens ou vídeos relacionados aqui -->
+        </div>
+    </section>
+
+    <section id="contate-nos" class="section contate-nos-section">
+        <div class="container">
+            <h1>Contate-nos</h1>
+            <p>Entre em contato conosco para mais informações, sugestões ou suporte. Preencha o formulário abaixo ou use os nossos canais de comunicação.</p>
+            <form action="submit_form.php" method="post">
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Mensagem:</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit" class="cta-button">Enviar</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 GoalCast. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
-    </body>
+</body>
 </html>
