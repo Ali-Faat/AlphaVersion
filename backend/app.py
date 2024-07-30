@@ -16,7 +16,9 @@ load_dotenv()
 
 app = Flask(__name__, template_folder='../frontend/pages')
 app.secret_key = os.getenv('SECRET_KEY')
-CORS(app)
+
+# Configuração do CORS
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Configuração do e-mail
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
