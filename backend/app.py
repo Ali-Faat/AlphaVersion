@@ -18,7 +18,7 @@ app = Flask(__name__, template_folder='../frontend/pages')
 app.secret_key = os.getenv('SECRET_KEY')
 
 # Configuração do CORS
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Configuração do e-mail
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
@@ -33,10 +33,6 @@ mail = Mail(app)
 def check_password_hash(stored_password, provided_password, salt):
     return hashlib.sha256((provided_password + salt).encode()).hexdigest() == stored_password
 
-@app.route('/api/quadras', methods=['GET'])
-def get_quadras():
-    return executar_consulta('SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media FROM quadras')
-
 def executar_consulta(query, params=None):
     mydb = get_db_connection()
     cursor = mydb.cursor()
@@ -45,13 +41,11 @@ def executar_consulta(query, params=None):
         cursor.execute(query, params or ())
         resultados = cursor.fetchall()
 
-        # Obter os nomes das colunas
         colunas = [col[0] for col in cursor.description]
 
-        # Converter para formato JSON
         resultados_json = []
         for resultado in resultados:
-            resultados_json.append(dict(zip(colunas, resultado)))  # Converter para dicionário
+            resultados_json.append(dict(zip(colunas, resultado)))
 
         return jsonify(resultados_json)
 
@@ -62,10 +56,14 @@ def executar_consulta(query, params=None):
         cursor.close()
         mydb.close()
 
+@app.route('/api/quadras', methods=['GET'])
+def get_quadras():
+    return executar_consulta('SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media FROM quadras')
+
 @app.route('/api/usuarios/<int:usuario_id>', methods=['GET'])
 def get_usuario(usuario_id):
     mydb = get_db_connection()
-    cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
+    cursor = mydb.cursor(dictionary=True)
 
     try:
         cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
@@ -74,7 +72,6 @@ def get_usuario(usuario_id):
         if usuario is None:
             return jsonify({'error': 'Usuário não encontrado'}), 404
 
-        # Remover a senha do dicionário antes de retornar
         del usuario['senha']
 
         return jsonify(usuario)
@@ -98,7 +95,6 @@ def get_quadra(quadra_id):
         if quadra is None:
             return jsonify({'error': 'Quadra não encontrada'}), 404
 
-        # Converter para formato JSON
         quadra_json = {
             'id': quadra[1],
             'nome': quadra[2],
@@ -111,7 +107,7 @@ def get_quadra(quadra_id):
             'avaliacao_media': quadra[9]
         }
 
-        return jsonify(quadra_json)  # Retornar os dados em formato JSON
+        return jsonify(quadra_json)
 
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar quadra: {err}'}), 500
@@ -123,7 +119,7 @@ def get_quadra(quadra_id):
 @app.route('/api/partidas/<quadra_id>', methods=['GET'])
 def get_partidas_por_quadra(quadra_id):
     mydb = get_db_connection()
-    cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
+    cursor = mydb.cursor(dictionary=True)
 
     try:
         cursor.execute('SELECT * FROM partidas WHERE quadra_id = %s', (quadra_id,))
@@ -131,12 +127,11 @@ def get_partidas_por_quadra(quadra_id):
 
         partidas_json = []
         for partida in partidas:
-            # Formatar data para yyyy-MM-dd (somente a data)
             dh_inicio_str = partida['dh_inicio'].strftime('%Y-%m-%d') if partida['dh_inicio'] else None
             dh_fim_str = partida['dh_fim'].strftime('%Y-%m-%d %H:%M:%S') if partida['dh_fim'] else None
 
             partidas_json.append({
-                'id': partida['id'],  # Corrigido para usar o nome da coluna
+                'id': partida['id'],
                 'dh_inicio': partida['dh_inicio'].isoformat() if partida['dh_inicio'] else None,
                 'dh_fim': partida['dh_fim'].isoformat() if partida['dh_fim'] else None
             })
@@ -161,18 +156,16 @@ def get_videos():
 
     try:
         if quadra_id and partida_id and data_inicio:
-            # Filtrar vídeos pela data exata
             query = '''
                 SELECT v.*, (v.criador_id = %s) AS eh_criador 
                 FROM videos v 
                 JOIN partidas p ON v.partida_id = p.id 
                 WHERE p.quadra_id = %s 
                 AND p.id = %s 
-                AND DATE(v.data_criacao) = %s  -- Filtra por data exata
+                AND DATE(v.data_criacao) = %s
             '''
             params = (session.get('usuario_id'), quadra_id, partida_id, data_inicio)
         elif quadra_id:
-            # Se não houver partida_id, retorna todos os vídeos da quadra
             query = '''
                 SELECT v.*, (v.criador_id = %s) AS eh_criador 
                 FROM videos v
@@ -181,7 +174,6 @@ def get_videos():
             '''
             params = (session.get('usuario_id'), quadra_id)
         else:
-            # Se não houver quadra_id, retorna todos os vídeos
             query = '''
                 SELECT v.*, (v.criador_id = %s) AS eh_criador 
                 FROM videos v
@@ -191,7 +183,6 @@ def get_videos():
         cursor.execute(query, params)
         videos = cursor.fetchall()
 
-        # Converter para formato JSON
         videos_json = []
         for video in videos:
             data_criacao_str = video[5].strftime('%Y-%m-%d %H:%M:%S') if video[5] else None
@@ -225,18 +216,13 @@ def login():
     try:
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
-        cursor.execute(
-            'SELECT * FROM usuarios WHERE email = %s',
-            (email,)
-        )
+        cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
         usuario = cursor.fetchone()
 
         if usuario and check_password_hash(usuario['senha'], senha, usuario['salt']):
-            # Verificar se o e-mail está verificado
             if not usuario['verificado']:
                 return jsonify({'error': 'Email não verificado. Por favor, verifique seu email antes de fazer login.'}), 401
 
-            # Iniciar a sessão do usuário
             session['usuario_id'] = usuario['id']
             session['tipo_usuario'] = usuario['tipo']
 
