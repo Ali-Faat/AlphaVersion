@@ -1,18 +1,19 @@
-from flask import Flask, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from database import get_db_connection
 import mysql.connector
+import json
 import os
 from flask_cors import CORS
 import hashlib
+import email_verification
 import datetime
 import secrets
-from dotenv import load_dotenv
-import email_verification
-import json  # Importação do módulo json
+from flask_mail import Mail, Message
 
 # Carregar variáveis de ambiente
 load_dotenv()
 
+app = Flask(__name__, static_folder='../frontend', template_folder='../frontend/pages')
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 CORS(app)
@@ -77,15 +78,44 @@ def validar_email():
     try:
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
-        cursor.execute('SELECT id FROM usuarios WHERE verification_token = %s', (token,))
+        cursor.execute('SELECT id, apelido FROM usuarios WHERE verification_token = %s', (token,))
         usuario = cursor.fetchone()
 
         if usuario:
-            cursor.execute('UPDATE usuarios SET verificado = TRUE WHERE id = %s', (usuario['id'],))
-            mydb.commit()
-            return jsonify({'success': True, 'message': 'E-mail verificado com sucesso!'}), 200
+            # Renderiza a página de validação
+            return render_template('validar/validar.html', apelido=usuario['apelido'], token=token)
         else:
             return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
+
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+#Rota para confimar email
+@app.route('/confirmar_email', methods=['POST'])
+def confirmar_email():
+    data = request.get_json()
+    token = data.get('token')
+    senha = data.get('senha')
+
+    if not token or not senha:
+        return jsonify({'success': False, 'error': 'Token ou senha não fornecidos'}), 400
+
+    try:
+        mydb = get_db_connection()
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM usuarios WHERE verification_token = %s', (token,))
+        usuario = cursor.fetchone()
+
+        if usuario and check_password_hash(usuario['senha'], senha, usuario['salt']):
+            cursor.execute('UPDATE usuarios SET verificado = TRUE WHERE id = %s', (usuario['id'],))
+            mydb.commit()
+            return jsonify({'success': True, 'message': 'Email confirmado com sucesso!'}), 200
+        else:
+            return jsonify({'success': False, 'error': 'Token ou senha inválidos'}), 401
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500

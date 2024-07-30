@@ -13,13 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Primeira requisição: Obter dados do usuário (GET)
-    fetch(`138.99.160.212:5000/validar_email?token=${token}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao validar token.');
-            }
-            return response.json();
-        })
+    fetch(`/validar_email?token=${token}`)
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 // Token válido, exibir mensagem de boas-vindas com o apelido
@@ -33,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => {
-            mensagemVerificacao.textContent = error.message;
+            mensagemVerificacao.textContent = 'Erro ao validar token. Por favor, tente novamente mais tarde.';
             mensagemBoasVindas.style.display = 'none'; // Ocultar a mensagem de boas-vindas
             senhaInput.style.display = 'none';      // Ocultar o campo de senha
             validarEmailBtn.style.display = 'none'; // Ocultar o botão de validar
@@ -42,19 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Segunda requisição: Confirmar email com senha (POST)
     validarEmailBtn.addEventListener('click', () => {
         const senha = senhaInput.value;
-        fetch('138.99.160.212:5000/confirmar_email', {
+        fetch('/confirmar_email', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ token: token, senha: senha })
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao confirmar email.');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 mensagemVerificacao.textContent = data.message;
@@ -67,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => {
-            mensagemVerificacao.textContent = error.message;
+            mensagemVerificacao.textContent = 'Erro ao confirmar email. Por favor, tente novamente mais tarde.';
         });
     });
 });
