@@ -20,12 +20,14 @@ def send_verification_email(email, verification_link, nome_completo):
     Por favor, clique no link abaixo para verificar seu e-mail:
 
     {verification_link}
+
+    Att. Equipe Goal Cast!
     """
 
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server = smtplib.SMTP(current_app.config['MAIL_SERVER'], current_app.config['MAIL_PORT'])
         server.starttls()
         server.login(from_email, password)
         text = msg.as_string()
