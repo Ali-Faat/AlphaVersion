@@ -4,46 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoalCast - Vídeos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="videos.css"> </head>
+    <link rel="stylesheet" href="videos.css">
+</head>
 <body>
-
-    <header>
-        <nav>
-            <div class="nav-wrapper">
-                <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            </div>
-        </nav>
-        
-        <ul id="slide-out" class="sidenav">
-            <a href="../quadras/quadras.html" class="brand-logo"><i class="material-icons">arrow_back</i></a>
-            <a href="../botao/botao.html">Botão</a>
-        </ul>
-    </header>
-
     <main class="container content">
-        <div class="video-header">
-            <h2 id="quadra-nome"></h2>
-            <div class="input-field">
-                <input type="date" id="data-partida">
-                <label for="data-partida">Data da Partida:</label>
-            </div>
-            <div>
-                <label for="hora-partida">Hora da Partida:</label>
-                <div class="input-field">
-                    <label for="hora-partida">Hora da Partida:</label>
-                    <select id="hora-partida">
-                        <option value="" disabled selected>Selecione a hora</option>
-                    </select>
-                </div>
-            </div>
+        <h1 id="quadra-nome">Nome da Quadra</h1>
+        <div class="input-field col s12">
+            <input type="date" id="data-partida" placeholder="Selecione a data da partida">
+            <label for="data-partida">Data da Partida</label>
         </div>
-
-        <div id="video-container" class="video-list list">
+        <div class="input-field col s12">
+            <select id="hora-partida">
+                <option value="" disabled selected>Escolha a hora da partida</option>
+            </select>
+            <label for="hora-partida">Hora da Partida</label>
         </div>
+        <ul id="hora-partida-lista"></ul> <!-- Lista para exibir as horas disponíveis -->
+        <div id="video-container"></div> <!-- Contêiner para exibir vídeos -->
+        <div class="error-message" style="color: red; margin-top: 10px;"></div> <!-- Elemento para mensagens de erro -->
     </main>
-    
     <script src="videos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>

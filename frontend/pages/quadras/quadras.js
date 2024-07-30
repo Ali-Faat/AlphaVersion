@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const quadraList = document.querySelector('.quadra-item');
-    const filterSelect = document.getElementById('filter-type');
-    const layoutDropdown = document.getElementById('layoutDropdown');
+    const quadraList = document.querySelector('.quadra-list');
+    const filterInput = document.getElementById('filter-name');
+    const errorMessage = document.querySelector('.error-message'); // Elemento para exibir mensagens de erro
 
     // Função para buscar e exibir as quadras
-    async function fetchQuadras() {
+    async function fetchQuadras(nome = '') {
         try {
-            const response = await fetch('http://138.99.160.212:5000/api/quadras');
+            let url = 'http://138.99.160.212:5000/api/quadras';
+            if (nome) {
+                url += `?nome=${encodeURIComponent(nome)}`;
+            }
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
@@ -36,29 +40,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 quadraList.appendChild(quadraItem);
             });
 
-            // Aplicar o layout inicial (lista)
-            changeLayout('list');
         } catch (error) {
             console.error('Erro ao buscar quadras:', error);
-            // Lógica para exibir mensagem de erro na interface (ex: alert ou elemento na página)
+            mostrarErro('Erro ao buscar quadras. Tente novamente mais tarde.');
         }
     }
 
-    // Função para filtrar as quadras (ainda não implementada)
-    function filterQuadras() {
-        const filterType = filterSelect.value;
-        // ... (Lógica para filtrar as quadras com base no tipo)
-        fetchQuadras(); // Atualiza a lista de quadras após a filtragem
+    // Função para exibir mensagens de erro na interface
+    function mostrarErro(mensagem) {
+        errorMessage.textContent = mensagem;
+        errorMessage.classList.add('show'); // Supondo que há uma classe CSS 'show' para exibir a mensagem
+
+        // Timeout para remover a mensagem de erro após 10 segundos
+        setTimeout(() => {
+            ocultarErro();
+        }, 3000);
     }
 
-    // Função para alternar entre os layouts
-    function changeLayout(layout) {
-        quadraList.className = `video-list ${layout}`;
+    // Função para ocultar mensagens de erro na interface
+    function ocultarErro() {
+        errorMessage.classList.remove('show'); // Supondo que há uma classe CSS 'show' para ocultar a mensagem
+        errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
     }
 
-    // Adicionar evento ao select de filtro (se necessário)
-    if (filterSelect) {
-        filterSelect.addEventListener('change', filterQuadras);
+    // Adicionar evento ao campo de entrada de nome de quadra
+    if (filterInput) {
+        filterInput.addEventListener('input', () => {
+            const nome = filterInput.value.trim();
+            fetchQuadras(nome);
+        });
     }
 
     // Inicializar componentes do Materialize

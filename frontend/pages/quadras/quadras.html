@@ -3,31 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalCast - Início</title>
+    <title>GoalCast - Quadras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="quadras.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="nav-wrapper">
-                <a href="#" class="brand-logo center">GoalCast</a>
-                <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            </div>
-        </nav>
-        <ul id="slide-out" class="sidenav">
-            <li><a href="../botao/botao.html">Botão</a></li>
-        </ul>
-    </header>
 
     <main class="container content">
-        <div>
-            <div class="quadra-item">
-                <a href="../videos/videos.html" class="quadra-link" data-quadra-id="${quadra.id}"><h3>${quadra.nome}</h3></a>
-                <div class="quadra-imagens"></div>
-            </div>
+        <h1>Quadras</h1>
+        <div class="error-message" style="color: red; margin-top: 10px;"></div> <!-- Elemento para mensagens de erro -->
+
+        <div class="input-field col s12">
+            <input type="text" id="filter-name" placeholder="Digite o nome da quadra">
+            <label for="filter-name">Nome da Quadra</label>
         </div>
+
+        <div class="quadra-list"></div> <!-- Corrigido seletor para '.quadra-list' -->
     </main>
 
     <script src="quadras.js"></script>

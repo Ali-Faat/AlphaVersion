@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('login-form');
+    const errorMessage = document.querySelector('.error-message'); // Elemento para exibir mensagens de erro
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -21,19 +22,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 const data = await response.json();
-                window.location.href = '../quadras/quadras.html'
+                window.location.href = '../quadras/quadras.html';
             } else {
                 const errorData = await response.json();
                 console.error('Erro no login:', errorData.error);
-                // Lógica para exibir mensagem de erro na interface
+                mostrarErro(errorData.error);
             }
         } catch (error) {
             console.error('Erro na requisição:', error);
-            // Lógica para exibir mensagem de erro na interface
+            mostrarErro('Erro na requisição. Tente novamente mais tarde.');
         }
     });
-});
 
-document.addEventListener('DOMContentLoaded', function() {
+    // Função para exibir mensagens de erro na interface
+    function mostrarErro(mensagem) {
+        errorMessage.textContent = mensagem;
+        errorMessage.classList.add('show'); // Supondo que há uma classe CSS 'show' para exibir a mensagem
+
+        // Timeout para remover a mensagem de erro após 10 segundos
+        setTimeout(() => {
+            ocultarErro();
+        }, 3000);
+    }
+
+    // Função para ocultar mensagens de erro na interface
+    function ocultarErro() {
+        errorMessage.classList.remove('show'); // Supondo que há uma classe CSS 'show' para ocultar a mensagem
+        errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
+    }
+
     M.AutoInit(); // Inicializar componentes do Materialize
 });
