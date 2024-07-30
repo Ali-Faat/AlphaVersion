@@ -1,18 +1,11 @@
 import smtplib
-import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from dotenv import load_dotenv
-
-# Carregar variáveis de ambiente
-load_dotenv()
+from flask import current_app
 
 def send_verification_email(email, verification_link, nome_completo):
-    from_email = os.getenv('EMAIL_USER')
-    password = os.getenv('EMAIL_PASSWORD')
-
-    if not from_email or not password:
-        raise ValueError("Email credentials are not set in environment variables")
+    from_email = current_app.config['MAIL_USERNAME']
+    password = current_app.config['MAIL_PASSWORD']
 
     msg = MIMEMultipart()
     msg['From'] = from_email
@@ -27,9 +20,6 @@ def send_verification_email(email, verification_link, nome_completo):
     Por favor, clique no link abaixo para verificar seu e-mail:
 
     {verification_link}
-
-    Atenciosamente,
-    Equipe GoalCast
     """
 
     msg.attach(MIMEText(body, 'plain'))
@@ -43,5 +33,4 @@ def send_verification_email(email, verification_link, nome_completo):
         server.quit()
         print(f'E-mail de verificação enviado para {email}')
     except Exception as e:
-        import logging
-        logging.error(f'Erro ao enviar e-mail: {e}')
+        print(f'Erro ao enviar e-mail: {e}')

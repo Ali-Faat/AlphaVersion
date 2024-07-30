@@ -296,7 +296,7 @@ def cadastro():
 
         base_url = os.getenv('BASE_URL')
         verification_link = f'{base_url}/validar_email?token={verification_token}'
-        email_verification.send_verification_email(email, verification_link)
+        email_verification.send_verification_email(email, verification_link, nome_completo)
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
 
