@@ -1,28 +1,281 @@
+import os
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from database import get_db_connection
 import mysql.connector
 import json
-import os
 from flask_cors import CORS
 import hashlib
 import email_verification
 import datetime
 import secrets
 from flask_mail import Mail, Message
+from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente
+# Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
-app = Flask(__name__, static_folder='../frontend', template_folder='../frontend/pages')
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../frontend/pages')
 app.secret_key = os.getenv('SECRET_KEY')
 CORS(app)
 
-# Função auxiliar para verificar hash de senha
-def check_password_hash(stored_password, provided_password, salt):
-    return stored_password == hashlib.sha256((provided_password + salt).encode()).hexdigest()
+# Configuração do e-mail
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
 
-# Rota de cadastro
+mail = Mail(app)
+
+def check_password_hash(stored_password, provided_password, salt):
+    return hashlib.sha256((provided_password + salt).encode()).hexdigest() == stored_password
+
+@app.route('/api/quadras', methods=['GET'])
+def get_quadras():
+    return executar_consulta('SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media FROM quadras')
+
+def executar_consulta(query, params=None):
+    mydb = get_db_connection()
+    cursor = mydb.cursor()
+
+    try:
+        cursor.execute(query, params or ())
+        resultados = cursor.fetchall()
+
+        # Obter os nomes das colunas
+        colunas = [col[0] for col in cursor.description]
+
+        # Converter para formato JSON
+        resultados_json = []
+        for resultado in resultados:
+            resultados_json.append(dict(zip(colunas, resultado)))  # Converter para dicionário
+
+        return jsonify(resultados_json)
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro no banco de dados: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+@app.route('/api/usuarios/<int:usuario_id>', methods=['GET'])
+def get_usuario(usuario_id):
+    mydb = get_db_connection()
+    cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
+
+    try:
+        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
+        usuario = cursor.fetchone()
+
+        if usuario is None:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
+
+        # Remover a senha do dicionário antes de retornar
+        del usuario['senha']
+
+        return jsonify(usuario)
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao buscar usuário: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+@app.route('/api/quadras/<quadra_id>', methods=['GET'])
+def get_quadra(quadra_id):
+    mydb = get_db_connection()
+    cursor = mydb.cursor()
+
+    try:
+        cursor.execute('SELECT * FROM quadras WHERE id = %s', (quadra_id,))
+        quadra = cursor.fetchone()
+
+        if quadra is None:
+            return jsonify({'error': 'Quadra não encontrada'}), 404
+
+        # Converter para formato JSON
+        quadra_json = {
+            'id': quadra[1],
+            'nome': quadra[2],
+            'endereco': quadra[3],
+            'tipo': quadra[4],
+            'imagens': json.loads(quadra[5]) if quadra[5] else [],
+            'descricao': quadra[6],
+            'preco_hora': quadra[7],
+            'disponibilidade': json.loads(quadra[8]) if quadra[8] else [],
+            'avaliacao_media': quadra[9]
+        }
+
+        return jsonify(quadra_json)  # Retornar os dados em formato JSON
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao buscar quadra: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+@app.route('/api/partidas/<quadra_id>', methods=['GET'])
+def get_partidas_por_quadra(quadra_id):
+    mydb = get_db_connection()
+    cursor = mydb.cursor(dictionary=True)  # Retorna resultados como dicionários
+
+    try:
+        cursor.execute('SELECT * FROM partidas WHERE quadra_id = %s', (quadra_id,))
+        partidas = cursor.fetchall()
+
+        partidas_json = []
+        for partida in partidas:
+            # Formatar data para yyyy-MM-dd (somente a data)
+            dh_inicio_str = partida['dh_inicio'].strftime('%Y-%m-%d') if partida['dh_inicio'] else None
+            dh_fim_str = partida['dh_fim'].strftime('%Y-%m-%d %H:%M:%S') if partida['dh_fim'] else None
+
+            partidas_json.append({
+                'id': partida['id'],  # Corrigido para usar o nome da coluna
+                'dh_inicio': partida['dh_inicio'].isoformat() if partida['dh_inicio'] else None,
+                'dh_fim': partida['dh_fim'].isoformat() if partida['dh_fim'] else None
+            })
+
+        return jsonify(partidas_json)
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao buscar partidas: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+@app.route('/api/videos', methods=['GET'])
+def get_videos():
+    quadra_id = request.args.get('quadra_id')
+    partida_id = request.args.get('partida_id')
+    data_inicio = request.args.get('data_inicio')
+
+    mydb = get_db_connection()
+    cursor = mydb.cursor()
+
+    try:
+        if quadra_id and partida_id and data_inicio:
+            # Filtrar vídeos pela data exata
+            query = '''
+                SELECT v.*, (v.criador_id = %s) AS eh_criador 
+                FROM videos v 
+                JOIN partidas p ON v.partida_id = p.id 
+                WHERE p.quadra_id = %s 
+                AND p.id = %s 
+                AND DATE(v.data_criacao) = %s  -- Filtra por data exata
+            '''
+            params = (session.get('usuario_id'), quadra_id, partida_id, data_inicio)
+        elif quadra_id:
+            # Se não houver partida_id, retorna todos os vídeos da quadra
+            query = '''
+                SELECT v.*, (v.criador_id = %s) AS eh_criador 
+                FROM videos v
+                JOIN partidas p ON v.partida_id = p.id 
+                WHERE p.quadra_id = %s
+            '''
+            params = (session.get('usuario_id'), quadra_id)
+        else:
+            # Se não houver quadra_id, retorna todos os vídeos
+            query = '''
+                SELECT v.*, (v.criador_id = %s) AS eh_criador 
+                FROM videos v
+            '''
+            params = (session.get('usuario_id'),)
+
+        cursor.execute(query, params)
+        videos = cursor.fetchall()
+
+        # Converter para formato JSON
+        videos_json = []
+        for video in videos:
+            data_criacao_str = video[5].strftime('%Y-%m-%d %H:%M:%S') if video[5] else None
+            videos_json.append({
+                'id': video[0],
+                'partida_id': video[1],
+                'quadra_id': video[2],
+                'url': video[3],
+                'tipo': video[4],
+                'data_criacao': data_criacao_str,
+                'eh_criador': bool(video[6])
+            })
+
+        return jsonify(videos_json)
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
+
+    finally:
+        cursor.close()
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    senha = data.get('password')
+
+    if not email or not senha:
+        return jsonify({'error': 'Credenciais inválidas'}), 401
+
+    try:
+        mydb = get_db_connection()
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute(
+            'SELECT * FROM usuarios WHERE email = %s',
+            (email,)
+        )
+        usuario = cursor.fetchone()
+
+        if usuario and check_password_hash(usuario['senha'], senha, usuario['salt']):
+            # Verificar se o e-mail está verificado
+            if not usuario['verificado']:
+                return jsonify({'error': 'Email não verificado. Por favor, verifique seu email antes de fazer login.'}), 401
+
+            # Iniciar a sessão do usuário
+            session['usuario_id'] = usuario['id']
+            session['tipo_usuario'] = usuario['tipo']
+
+            return jsonify({'message': 'Login bem-sucedido'}), 200
+        else:
+            return jsonify({'error': 'Credenciais inválidas'}), 401
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro na autenticação: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+@app.route('/api/verificar_autorizacao', methods=['POST'])
+def verificar_autorizacao():
+    try:
+        data = request.get_json()
+        usuario_id = data.get('usuario_id')
+        senha = data.get('senha')
+
+        if not usuario_id or not senha:
+            return jsonify({'success': False, 'error': 'ID do usuário e senha são obrigatórios'}), 400
+
+        mydb = get_db_connection()
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
+        usuario = cursor.fetchone()
+
+        if usuario and check_password_hash(usuario['senha'], senha, usuario['salt']):
+            return jsonify({'success': True, 'autorizado': True}), 200
+        else:
+            return jsonify({'success': True, 'autorizado': False}), 200
+
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
 @app.route('/api/cadastro', methods=['POST'])
 def cadastro():
     try:
@@ -55,8 +308,7 @@ def cadastro():
 
         base_url = os.getenv('BASE_URL')
         verification_link = f'{base_url}/validar_email?token={verification_token}'
-
-        email_verification.send_verification_email(email, verification_link, nome_completo)
+        email_verification.send_verification_email(email, verification_link)
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
 
@@ -67,7 +319,6 @@ def cadastro():
         cursor.close()
         mydb.close()
 
-# Rota de verificação de e-mail
 @app.route('/validar_email', methods=['GET'])
 def validar_email():
     token = request.args.get('token')
@@ -82,7 +333,6 @@ def validar_email():
         usuario = cursor.fetchone()
 
         if usuario:
-            # Renderiza a página de validação
             return render_template('validar/validar.html', apelido=usuario['apelido'], token=token)
         else:
             return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
@@ -94,7 +344,6 @@ def validar_email():
         cursor.close()
         mydb.close()
 
-#Rota para confimar email
 @app.route('/confirmar_email', methods=['POST'])
 def confirmar_email():
     data = request.get_json()
@@ -124,201 +373,5 @@ def confirmar_email():
         cursor.close()
         mydb.close()
 
-# Rota de login
-@app.route('/api/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    email = data.get('email')
-    senha = data.get('senha')
-
-    if not email or not senha:
-        return jsonify({'success': False, 'error': 'Credenciais inválidas'}), 401
-
-    try:
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
-        usuario = cursor.fetchone()
-
-        if usuario and check_password_hash(usuario['senha'], senha, usuario['salt']):
-            if not usuario['verificado']:
-                return jsonify({'success': False, 'error': 'Email não verificado. Verifique seu email antes de fazer login.'}), 401
-
-            session['usuario_id'] = usuario['id']
-            session['tipo_usuario'] = usuario['tipo']
-            return jsonify({'success': True, 'message': 'Login bem-sucedido'}), 200
-        else:
-            return jsonify({'success': False, 'error': 'Credenciais inválidas'}), 401
-
-    except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro na autenticação: {err.msg}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-# Rota para obter perfil do usuário
-@app.route('/api/perfil', methods=['GET'])
-def get_perfil():
-    if 'usuario_id' not in session:
-        return jsonify({'success': False, 'error': 'Usuário não autenticado'}), 401
-
-    usuario_id = session['usuario_id']
-
-    try:
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-        cursor.execute('SELECT nome, apelido, email, celular, tipo FROM usuarios WHERE id = %s', (usuario_id,))
-        usuario = cursor.fetchone()
-
-        if usuario:
-            return jsonify({'success': True, 'perfil': usuario}), 200
-        else:
-            return jsonify({'success': False, 'error': 'Usuário não encontrado'}), 404
-
-    except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-# Rota para atualizar perfil do usuário
-@app.route('/api/perfil', methods=['PUT'])
-def atualizar_perfil():
-    if 'usuario_id' not in session:
-        return jsonify({'success': False, 'error': 'Usuário não autenticado'}), 401
-
-    usuario_id = session['usuario_id']
-    data = request.get_json()
-
-    if not any(data.values()):
-        return jsonify({'success': False, 'error': 'Pelo menos um campo deve ser fornecido para atualização'}), 400
-
-    try:
-        mydb = get_db_connection()
-        cursor = mydb.cursor()
-        update_fields = []
-        update_values = []
-        for campo, valor in data.items():
-            if valor is not None:
-                update_fields.append(f"{campo} = %s")
-                update_values.append(valor)
-
-        if update_fields:
-            update_query = f"UPDATE usuarios SET {', '.join(update_fields)} WHERE id = %s"
-            update_values.append(usuario_id)
-            cursor.execute(update_query, update_values)
-            mydb.commit()
-            return jsonify({'success': True, 'message': 'Perfil atualizado com sucesso!'}), 200
-        else:
-            return jsonify({'success': False, 'error': 'Nenhum campo válido para atualização'}), 400
-
-    except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-# Rota para listar quadras
-@app.route('/api/quadras', methods=['GET'])
-def get_quadras():
-    nome = request.args.get('nome', '')
-    try:
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-        
-        if nome:
-            query = 'SELECT * FROM quadras WHERE nome LIKE %s'
-            cursor.execute(query, (f'%{nome}%',))
-        else:
-            query = 'SELECT * FROM quadras'
-            cursor.execute(query)
-
-        quadras = cursor.fetchall()
-
-        for quadra in quadras:
-            quadra['imagens'] = json.loads(quadra['imagens']) if quadra['imagens'] else []
-            quadra['disponibilidade'] = json.loads(quadra['disponibilidade']) if quadra['disponibilidade'] else []
-
-        return jsonify(quadras)
-
-    except mysql.connector.Error as err:
-        return jsonify({'error': f'Erro ao buscar quadras: {err}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-
-# Rota para obter detalhes de uma quadra específica
-@app.route('/api/quadras/<quadra_id>', methods=['GET'])
-def get_quadra(quadra_id):
-    try:
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM quadras WHERE id = %s', (quadra_id,))
-        quadra = cursor.fetchone()
-
-        if quadra:
-            quadra['imagens'] = json.loads(quadra['imagens']) if quadra['imagens'] else []
-            quadra['disponibilidade'] = json.loads(quadra['disponibilidade']) if quadra['disponibilidade'] else []
-            return jsonify(quadra)
-        else:
-            return jsonify({'error': 'Quadra não encontrada'}), 404
-
-    except mysql.connector.Error as err:
-        return jsonify({'error': f'Erro ao buscar quadra: {err}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-# Nova rota para filtrar vídeos
-@app.route('/api/videos', methods=['GET'])
-def get_videos():
-    quadra_id = request.args.get('quadra_id')
-    data_inicio = request.args.get('data_inicio')
-    hora_inicio = request.args.get('hora_inicio')
-
-    query = """
-        SELECT v.id, v.partida_id, v.quadra_id, v.url, v.tipo, v.data_criacao 
-        FROM videos v
-        JOIN partidas p ON v.partida_id = p.id 
-        WHERE 1=1
-    """
-    params = []
-
-    if quadra_id:
-        query += " AND p.quadra_id = %s"
-        params.append(quadra_id)
-    if data_inicio:
-        query += " AND DATE(v.data_criacao) = %s"
-        params.append(data_inicio)
-    if hora_inicio:
-        query += " AND TIME(v.data_criacao) = %s"
-        params.append(hora_inicio)
-
-    try:
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-        cursor.execute(query, params)
-        videos = cursor.fetchall()
-
-        # Converter resultados para JSON
-        for video in videos:
-            video['data_criacao'] = video['data_criacao'].isoformat() if video['data_criacao'] else None
-
-        return jsonify(videos)
-
-    except mysql.connector.Error as err:
-        return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-# Iniciar o servidor Flask
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
