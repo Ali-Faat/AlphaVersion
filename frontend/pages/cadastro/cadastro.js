@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', function () {
         input.value = valor;
     }
 
+    function validarCelular() {
+        const celular = celularInput.value.trim();
+        return /\(\d{2}\) \d{4,5}-\d{4}/.test(celular);
+    }
+
     celularInput.addEventListener('input', () => {
         aplicarMascaraCelular(celularInput);
         if (!validarCelular()) {

@@ -3,63 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalCast - Cadastro</title>
+    <title>Cadastro - GoalCast</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="cadastro.css">
 </head>
-
 <body>
-    <header>
-        <nav>
-            <a href="../../index.html" class="brand-logo"><i class="material-icons">arrow_back</i></a>
-        </nav>
-    </header>
-
-    <main class="container content">
-        <div class="logo-container">
-            <img src="../../IMGs/logo.png" alt="Logo GoalCast">
-            <h1>GoalCast</h1>
-            <p class="slogan">O futuro é agora!</p>
-        </div>
-
-        <div id="error-container" class="error-message"></div>
-
+    <div class="container">
         <form id="cadastro-form">
-            <div class="input-field col s12">
+            <div class="input-field">
                 <input type="text" id="nome_completo" name="nome_completo" required>
                 <label for="nome_completo">Nome Completo</label>
             </div>
-            <div class="row">
-                <div class="input-field col s6">
-                    <input type="text" id="apelido" name="apelido" required>
-                    <label for="apelido">Apelido</label>
-                </div>
+            <div class="input-field">
+                <input type="text" id="apelido" name="apelido" required>
+                <label for="apelido">Apelido</label>
             </div>
             <div class="input-field">
-                <i class="material-icons prefix">email</i>
                 <input type="email" id="email" name="email" required>
                 <label for="email">E-mail</label>
             </div>
             <div class="input-field">
-                <i class="material-icons prefix">phone</i>
-                <input type="tel" id="celular" name="celular" required>
+                <input type="text" id="celular" name="celular" required>
                 <label for="celular">Celular</label>
             </div>
             <div class="input-field">
-                <i class="material-icons prefix">lock</i>
                 <input type="password" id="senha" name="senha" required>
                 <label for="senha">Senha</label>
             </div>
             <div class="input-field">
-                <i class="material-icons prefix">lock_open</i>
                 <input type="password" id="confirma_senha" name="confirma_senha" required>
-                <label for="confirma_senha">Confirme sua Senha</label>
+                <label for="confirma_senha">Confirma Senha</label>
             </div>
-            <button class="btn waves-effect waves-light" type="submit">Cadastrar</button>
+            <button type="submit" class="btn waves-effect waves-light">Cadastrar</button>
+            <div id="error-container" class="error-message"></div>
         </form>
-    </main>
-
+    </div>
     <script src="cadastro.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
