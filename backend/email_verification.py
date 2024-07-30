@@ -20,8 +20,6 @@ def send_verification_email(email, verification_link, nome_completo):
     Por favor, clique no link abaixo para verificar seu e-mail:
 
     {verification_link}
-
-    Att. Equipe Goal Cast!
     """
 
     msg.attach(MIMEText(body, 'plain'))
