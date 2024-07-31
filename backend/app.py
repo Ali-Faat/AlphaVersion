@@ -40,18 +40,11 @@ def executar_consulta(query, params=None):
     try:
         cursor.execute(query, params or ())
         resultados = cursor.fetchall()
-
         colunas = [col[0] for col in cursor.description]
-
-        resultados_json = []
-        for resultado in resultados:
-            resultados_json.append(dict(zip(colunas, resultado)))
-
+        resultados_json = [dict(zip(colunas, resultado)) for resultado in resultados]
         return jsonify(resultados_json)
-
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro no banco de dados: {err}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -64,21 +57,15 @@ def get_quadras():
 def get_usuario(usuario_id):
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
-
     try:
         cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
         usuario = cursor.fetchone()
-
         if usuario is None:
             return jsonify({'error': 'Usuário não encontrado'}), 404
-
         del usuario['senha']
-
         return jsonify(usuario)
-
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar usuário: {err}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -87,14 +74,11 @@ def get_usuario(usuario_id):
 def get_quadra(quadra_id):
     mydb = get_db_connection()
     cursor = mydb.cursor()
-
     try:
         cursor.execute('SELECT * FROM quadras WHERE id = %s', (quadra_id,))
         quadra = cursor.fetchone()
-
         if quadra is None:
             return jsonify({'error': 'Quadra não encontrada'}), 404
-
         quadra_json = {
             'id': quadra[1],
             'nome': quadra[2],
@@ -106,12 +90,9 @@ def get_quadra(quadra_id):
             'disponibilidade': json.loads(quadra[8]) if quadra[8] else [],
             'avaliacao_media': quadra[9]
         }
-
         return jsonify(quadra_json)
-
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar quadra: {err}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -120,27 +101,19 @@ def get_quadra(quadra_id):
 def get_partidas_por_quadra(quadra_id):
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
-
     try:
         cursor.execute('SELECT * FROM partidas WHERE quadra_id = %s', (quadra_id,))
         partidas = cursor.fetchall()
-
-        partidas_json = []
-        for partida in partidas:
-            dh_inicio_str = partida['dh_inicio'].strftime('%Y-%m-%d') if partida['dh_inicio'] else None
-            dh_fim_str = partida['dh_fim'].strftime('%Y-%m-%d %H:%M:%S') if partida['dh_fim'] else None
-
-            partidas_json.append({
+        partidas_json = [
+            {
                 'id': partida['id'],
                 'dh_inicio': partida['dh_inicio'].isoformat() if partida['dh_inicio'] else None,
                 'dh_fim': partida['dh_fim'].isoformat() if partida['dh_fim'] else None
-            })
-
+            } for partida in partidas
+        ]
         return jsonify(partidas_json)
-
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar partidas: {err}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -183,26 +156,24 @@ def get_videos():
         cursor.execute(query, params)
         videos = cursor.fetchall()
 
-        videos_json = []
-        for video in videos:
-            data_criacao_str = video[5].strftime('%Y-%m-%d %H:%M:%S') if video[5] else None
-            videos_json.append({
+        videos_json = [
+            {
                 'id': video[0],
                 'partida_id': video[1],
                 'quadra_id': video[2],
                 'url': video[3],
                 'tipo': video[4],
-                'data_criacao': data_criacao_str,
+                'data_criacao': video[5].strftime('%Y-%m-%d %H:%M:%S') if video[5] else None,
                 'eh_criador': bool(video[6])
-            })
+            } for video in videos
+        ]
 
         return jsonify(videos_json)
-
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
-
     finally:
         cursor.close()
+        mydb.close()
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -232,7 +203,6 @@ def login():
 
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro na autenticação: {err}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -259,7 +229,6 @@ def verificar_autorizacao():
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -302,7 +271,6 @@ def cadastro():
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -327,7 +295,6 @@ def validar_email():
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
@@ -356,7 +323,6 @@ def confirmar_email():
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
-
     finally:
         cursor.close()
         mydb.close()
