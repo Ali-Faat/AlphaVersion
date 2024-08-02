@@ -7,10 +7,14 @@ def send_verification_email(email, verification_link, nome_completo):
     from_email = current_app.config['MAIL_USERNAME']
     password = current_app.config['MAIL_PASSWORD']
 
+    # Garantir que o assunto do e-mail está codificado em UTF-8
+    subject = 'Confirmação de Cadastro - GoalCast'
+    subject = str(subject).encode('utf-8')
+
     msg = MIMEMultipart()
     msg['From'] = from_email
     msg['To'] = email
-    msg['Subject'] = 'Confirmação de Cadastro - GoalCast'
+    msg['Subject'] = subject.decode('utf-8')  # Decode de volta para string após codificação
 
     body = f"""
     Olá {nome_completo},
