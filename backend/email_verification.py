@@ -7,7 +7,7 @@ def send_verification_email(email, verification_link, nome_completo):
     from_email = current_app.config['MAIL_USERNAME']
     password = current_app.config['MAIL_PASSWORD']
     mail_server = current_app.config['MAIL_SERVER']
-    mail_port = current_app.config['MAIL_PORT']  # Pode ser 25 para conexões não criptografadas
+    mail_port = current_app.config['MAIL_PORT']  # Usar porta adequada para seu servidor SMTP
 
     msg = MIMEMultipart()
     msg['From'] = from_email
@@ -27,10 +27,15 @@ def send_verification_email(email, verification_link, nome_completo):
     msg.attach(MIMEText(body, 'html', 'utf-8'))
 
     try:
-        # Conectar ao servidor SMTP sem usar TLS
+        # Conectar ao servidor SMTP
         with smtplib.SMTP(mail_server, mail_port) as server:
-            server.login(from_email, password)
+            # Tentar autenticar se o servidor suportar
+            if mail_port == 587:  # Porta comum para STARTTLS
+                server.starttls()
+            server.login(from_email, password)  # Tentar autenticar
             server.sendmail(from_email, email, msg.as_string())
         print(f'E-mail de verificação enviado para {email}')
+    except smtplib.SMTPAuthenticationError as auth_err:
+        print(f'Erro de autenticação: {auth_err}')
     except Exception as e:
         print(f'Erro ao enviar e-mail: {e}')
