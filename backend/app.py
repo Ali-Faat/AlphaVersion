@@ -1,15 +1,15 @@
 import os
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from database import get_db_connection
-import mysql.connector
 import json
-from flask_cors import CORS
 import hashlib
-import email_verification
 import datetime
 import secrets
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask_cors import CORS
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
+import mysql.connector
+from database import get_db_connection
+import email_verification
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -21,12 +21,14 @@ app.secret_key = os.getenv('SECRET_KEY')
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Configuração do e-mail
-app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
-app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
-app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+app.config.update(
+    MAIL_SERVER=os.getenv('MAIL_SERVER'),
+    MAIL_PORT=int(os.getenv('MAIL_PORT')),
+    MAIL_USERNAME=os.getenv('MAIL_USERNAME'),
+    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD'),
+    MAIL_USE_TLS=os.getenv('MAIL_USE_TLS') == 'True',
+    MAIL_USE_SSL=os.getenv('MAIL_USE_SSL') == 'True'
+)
 
 mail = Mail(app)
 
@@ -51,14 +53,19 @@ def executar_consulta(query, params=None):
 
 @app.route('/api/quadras', methods=['GET'])
 def get_quadras():
-    return executar_consulta('SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media FROM quadras')
+    query = '''
+        SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media 
+        FROM quadras
+    '''
+    return executar_consulta(query)
 
 @app.route('/api/usuarios/<int:usuario_id>', methods=['GET'])
 def get_usuario(usuario_id):
+    query = 'SELECT * FROM usuarios WHERE id = %s'
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
     try:
-        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
+        cursor.execute(query, (usuario_id,))
         usuario = cursor.fetchone()
         if usuario is None:
             return jsonify({'error': 'Usuário não encontrado'}), 404
@@ -72,10 +79,11 @@ def get_usuario(usuario_id):
 
 @app.route('/api/quadras/<quadra_id>', methods=['GET'])
 def get_quadra(quadra_id):
+    query = 'SELECT * FROM quadras WHERE id = %s'
     mydb = get_db_connection()
     cursor = mydb.cursor()
     try:
-        cursor.execute('SELECT * FROM quadras WHERE id = %s', (quadra_id,))
+        cursor.execute(query, (quadra_id,))
         quadra = cursor.fetchone()
         if quadra is None:
             return jsonify({'error': 'Quadra não encontrada'}), 404
@@ -99,10 +107,11 @@ def get_quadra(quadra_id):
 
 @app.route('/api/partidas/<quadra_id>', methods=['GET'])
 def get_partidas_por_quadra(quadra_id):
+    query = 'SELECT * FROM partidas WHERE quadra_id = %s'
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
     try:
-        cursor.execute('SELECT * FROM partidas WHERE quadra_id = %s', (quadra_id,))
+        cursor.execute(query, (quadra_id,))
         partidas = cursor.fetchall()
         partidas_json = [
             {
@@ -209,14 +218,14 @@ def login():
 
 @app.route('/api/verificar_autorizacao', methods=['POST'])
 def verificar_autorizacao():
+    data = request.get_json()
+    usuario_id = data.get('usuario_id')
+    senha = data.get('senha')
+
+    if not usuario_id or not senha:
+        return jsonify({'success': False, 'error': 'ID do usuário e senha são obrigatórios'}), 400
+
     try:
-        data = request.get_json()
-        usuario_id = data.get('usuario_id')
-        senha = data.get('senha')
-
-        if not usuario_id or not senha:
-            return jsonify({'success': False, 'error': 'ID do usuário e senha são obrigatórios'}), 400
-
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
         cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
@@ -228,24 +237,24 @@ def verificar_autorizacao():
             return jsonify({'success': True, 'autorizado': False}), 200
 
     except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
     finally:
         cursor.close()
         mydb.close()
 
 @app.route('/api/cadastro', methods=['POST'])
 def cadastro():
+    data = request.get_json()
+    nome_completo = data.get('nome_completo')
+    apelido = data.get('apelido')
+    email = data.get('email')
+    celular = data.get('celular')
+    senha = data.get('senha')
+
+    if not all([nome_completo, apelido, email, celular, senha]):
+        return jsonify({'success': False, 'error': 'Todos os campos são obrigatórios'}), 400
+
     try:
-        data = request.get_json()
-        nome_completo = data.get('nome_completo')
-        apelido = data.get('apelido')
-        email = data.get('email')
-        celular = data.get('celular')
-        senha = data.get('senha')
-
-        if not all([nome_completo, apelido, email, celular, senha]):
-            return jsonify({'success': False, 'error': 'Todos os campos são obrigatórios'}), 400
-
         mydb = get_db_connection()
         cursor = mydb.cursor()
         cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
@@ -270,7 +279,7 @@ def cadastro():
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
 
     except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
     finally:
         cursor.close()
         mydb.close()
@@ -294,7 +303,7 @@ def validar_email():
             return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
 
     except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
     finally:
         cursor.close()
         mydb.close()
@@ -322,7 +331,7 @@ def confirmar_email():
             return jsonify({'success': False, 'error': 'Token ou senha inválidos'}), 401
 
     except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
     finally:
         cursor.close()
         mydb.close()
