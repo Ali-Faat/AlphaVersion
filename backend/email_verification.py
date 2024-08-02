@@ -12,7 +12,6 @@ def send_verification_email(email, verification_link, nome_completo):
     msg['To'] = email
     msg['Subject'] = 'Confirmação de Cadastro - GoalCast'
 
-    # Certificar que o corpo do e-mail está codificado em UTF-8
     body = f"""
     Olá {nome_completo},
 
@@ -21,11 +20,9 @@ def send_verification_email(email, verification_link, nome_completo):
     Por favor, clique no link abaixo para verificar seu e-mail:
 
     {verification_link}
-
-    Att. Com 🩷
-    Equipe GoalCast!
     """
 
+    # Certificar que o corpo do e-mail está codificado em UTF-8
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
 
     try:

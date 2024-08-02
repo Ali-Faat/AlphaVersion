@@ -9,7 +9,7 @@ from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import mysql.connector
 from database import get_db_connection
-import email_verification
+from email_verification import send_verification_email
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -244,17 +244,17 @@ def verificar_autorizacao():
 
 @app.route('/api/cadastro', methods=['POST'])
 def cadastro():
-    data = request.get_json()
-    nome_completo = data.get('nome_completo')
-    apelido = data.get('apelido')
-    email = data.get('email')
-    celular = data.get('celular')
-    senha = data.get('senha')
-
-    if not all([nome_completo, apelido, email, celular, senha]):
-        return jsonify({'success': False, 'error': 'Todos os campos são obrigatórios'}), 400
-
     try:
+        data = request.get_json()
+        nome_completo = data.get('nome_completo')
+        apelido = data.get('apelido')
+        email = data.get('email')
+        celular = data.get('celular')
+        senha = data.get('senha')
+
+        if not all([nome_completo, apelido, email, celular, senha]):
+            return jsonify({'success': False, 'error': 'Todos os campos são obrigatórios'}), 400
+
         mydb = get_db_connection()
         cursor = mydb.cursor()
         cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
@@ -274,12 +274,12 @@ def cadastro():
 
         base_url = os.getenv('BASE_URL')
         verification_link = f'{base_url}/validar_email?token={verification_token}'
-        email_verification.send_verification_email(email, verification_link, nome_completo)
+        send_verification_email(email, verification_link, nome_completo)
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
 
     except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err}'}), 500
+        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
     finally:
         cursor.close()
         mydb.close()
