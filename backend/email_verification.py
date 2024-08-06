@@ -24,7 +24,7 @@ def send_verification_email(email, verification_link, nome_completo):
     msg['From'] = from_email
     msg['To'] = email
     msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText(body, 'plain', 'utf-8'))  # Garantir que o corpo está codificado em UTF-8
 
     try:
         server = smtplib.SMTP(current_app.config['MAIL_SERVER'], current_app.config['MAIL_PORT'])
