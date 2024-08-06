@@ -2,7 +2,7 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 # Defina a porta que o servidor irá usar
-PORT = 80
+PORT = 9090
 
 # Crie uma classe que estende SimpleHTTPRequestHandler
 class CustomHandler(SimpleHTTPRequestHandler):
