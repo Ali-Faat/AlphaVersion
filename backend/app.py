@@ -281,9 +281,11 @@ def cadastro():
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+
     finally:
         cursor.close()
         mydb.close()
+
 
 @app.route('/validar_email', methods=['GET'])
 def validar_email():
