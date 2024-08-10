@@ -262,7 +262,6 @@ def login():
                 return jsonify({'error': 'Email não verificado. Por favor, verifique seu email antes de fazer login.'}), 401
 
             session['usuario_id'] = usuario['id']
-            session['tipo_usuario'] = usuario['tipo']
 
             return jsonify({'message': 'Login bem-sucedido'}), 200
         else:
