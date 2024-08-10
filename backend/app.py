@@ -97,8 +97,8 @@ def upload_video():
         # Se não houver partida, criar uma nova
         if not partida:
             cursor.execute(
-                'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim, numero_jogadores, valor, status) VALUES (%s, %s, %s, %s, %s, %s)',
-                (quadra_id, dh_inicio, dh_fim, 0, 0, 'finalizada')
+                'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim) VALUES (%s, %s, %s)',
+                (quadra_id, dh_inicio, dh_fim)
             )
             mydb.commit()
             partida_id = cursor.lastrowid
