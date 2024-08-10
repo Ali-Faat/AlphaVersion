@@ -324,17 +324,14 @@ def cadastro():
 
         salt = secrets.token_hex(16)
         senha_hash = hashlib.sha256((senha + salt).encode()).hexdigest()
-        verification_token = secrets.token_urlsafe(32)
 
         cursor.execute(
-            'INSERT INTO usuarios (nome, apelido, email, celular, senha, salt, verificado, verification_token) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
-            (nome_completo, apelido, email, celular, senha_hash, salt, False, verification_token)
+            'INSERT INTO usuarios (nome, apelido, email, celular, senha, salt, verificado) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (nome_completo, apelido, email, celular, senha_hash, salt, False)
         )
         mydb.commit()
 
-        base_url = os.getenv('BASE_URL')
-        verification_link = f'{base_url}/validar_email?token={urllib.parse.quote(verification_token)}'
-        send_welcome_email(email, verification_link, nome_completo)
+        send_welcome_email(email, nome_completo)
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
 
