@@ -75,11 +75,7 @@ def upload_video():
     
     if video and allowed_file(video.filename):
         filename = secure_filename(video.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        
-        # Salvar o vídeo no diretório de uploads
-        video.save(filepath)
-        
+
         # Obter os dados adicionais da requisição
         quadra_id = request.form.get('quadra_id')
         dh_inicio = request.form.get('dh_inicio')
@@ -87,6 +83,17 @@ def upload_video():
         tipo = request.form.get('tipo', 'partida')  # Tipo do vídeo, por exemplo: 'partida', 'lance'
         criador_id = session.get('usuario_id')
 
+        # Criar o caminho dinâmico baseado no quadra_id
+        directory = os.path.join(app.config['UPLOAD_FOLDER'], f'quadra_{quadra_id}')
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # Definir o caminho final do arquivo
+        filepath = os.path.join(directory, filename)
+
+        # Salvar o vídeo no diretório de uploads
+        video.save(filepath)
+        
         # Verificar se há uma partida registrada para a quadra no horário fornecido
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
@@ -97,7 +104,7 @@ def upload_video():
         # Se não houver partida, criar uma nova
         if not partida:
             cursor.execute(
-                'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim) VALUES (%s, %s, %s)',
+                'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim,) VALUES %s, %s, %s)',
                 (quadra_id, dh_inicio, dh_fim)
             )
             mydb.commit()
@@ -105,11 +112,13 @@ def upload_video():
         else:
             partida_id = partida['id']
         
+        # Caminho relativo para salvar no banco de dados
+        video_url = f'../../../{os.path.relpath(filepath, start="uploads")}'
+        
         # Salvar a URL do vídeo no banco de dados
-        video_url = f'{request.host_url}{app.config["UPLOAD_FOLDER"]}/{filename}'
         cursor.execute(
             'INSERT INTO videos (partida_id, quadra_id, url, tipo, criador_id, data_criacao) VALUES (%s, %s, %s, %s, %s, %s)',
-            (partida_id, quadra_id, video_url, tipo, criador_id, datetime.datetime.now())
+            (partida_id, quadra_id, video_url, 'lance', criador_id, datetime.datetime.now())
         )
         mydb.commit()
         
@@ -326,7 +335,7 @@ def cadastro():
 
         cursor.execute(
             'INSERT INTO usuarios (nome, apelido, email, celular, senha, salt, verificado) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-            (nome_completo, apelido, email, celular, senha_hash, salt, False)
+            (nome_completo, apelido, email, celular, senha_hash, salt, True)
         )
         mydb.commit()
 
