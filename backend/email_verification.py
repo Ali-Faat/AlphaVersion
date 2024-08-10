@@ -3,21 +3,22 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import current_app
 
-def send_verification_email(email, verification_link, nome_completo):
+def send_welcome_email(email, nome_completo):
     from_email = current_app.config['MAIL_USERNAME']
     password = current_app.config['MAIL_PASSWORD']
     
-    subject = 'Confirmação de Cadastro - GoalCast'
+    subject = 'Bem-vindo ao GoalCast'
     body = f"""
     Olá {nome_completo}, 👋🏻
 
     Obrigado por se cadastrar no GoalCast!
 
-    Por favor, clique no link abaixo para verificar seu e-mail:
+    Para concluir seu cadastro, por favor, acesse a página de verificação e insira seu e-mail e senha.
 
-    {verification_link}
+    Link para verificação: http://138.99.160.212/pages/validar/validar.html
 
-    Att. Equipe GoalCast!
+    Atenciosamente,
+    Equipe GoalCast!
     """
 
     msg = MIMEMultipart()
@@ -32,6 +33,6 @@ def send_verification_email(email, verification_link, nome_completo):
         server.login(from_email, password)
         server.sendmail(from_email, email, msg.as_string())
         server.quit()
-        print(f'E-mail de verificação enviado para {email}')
+        print(f'E-mail de boas-vindas enviado para {email}')
     except Exception as e:
         print(f'Erro ao enviar e-mail: {e}')
