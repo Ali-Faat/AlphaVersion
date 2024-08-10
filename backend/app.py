@@ -5,7 +5,7 @@ import mysql.connector
 import json
 from flask_cors import CORS
 import hashlib
-import email_verification
+from email_verification import send_welcome_email
 import datetime
 from werkzeug.utils import secure_filename
 import secrets
@@ -334,7 +334,7 @@ def cadastro():
 
         base_url = os.getenv('BASE_URL')
         verification_link = f'{base_url}/validar_email?token={urllib.parse.quote(verification_token)}'
-        email_verification.send_verification_email(email, verification_link, nome_completo)
+        send_welcome_email(email, verification_link, nome_completo)
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
 
