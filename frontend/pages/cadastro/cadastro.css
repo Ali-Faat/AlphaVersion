@@ -1,121 +1,249 @@
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-
-/* Estilos gerais */
-body {
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: linear-gradient(to bottom right, #0684B9, #F26835);
-    color: white;
+/* Reseta o estilo padrão do navegador */
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Estilos do container */
-.container {
-    background-color: #011532;
-    padding: 20px;
-    border-radius: 8px;
-    width: 95%;
-    max-width: 400px;
-    margin: 20px auto;
-}
-
-/* Estilos do conteúdo principal */
-.content {
+body {
+    font-family: 'Readex Pro', sans-serif;
     display: flex;
-    flex-direction: column;
-    height: 90%;
-    width: 80%;
-    margin: 5% auto;
-}
-
-/* Estilos do logo */
-.logo-container {
-    display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 30px;
-    width: 100%;
+    margin: 10px;
+    background: linear-gradient(180deg, #0684B9 0%, #F26835);
 }
 
-.logo-container img {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 10px;
-}
-
-.slogan {
-    font-family: 'Brush Script MT';
-    font-size: 25px;
-    color: #F2E96B;
-}
-
-/* Estilos do formulário */
-#cadastro-form {
-    width: 100%;
-}
-
-#cadastro-form .input-field {
-    margin-bottom: 15px;
-    width: 100%;
-}
-
-#cadastro-form label {
-    color: #F2E96B;
-}
-
-#cadastro-form input[type="text"]:focus + label,
-#cadastro-form input[type="email"]:focus + label,
-#cadastro-form input[type="tel"]:focus + label,
-#cadastro-form input[type="password"]:focus + label {
-    color: #F26835;
-}
-
-/* Estilos do botão */
-#cadastro-form button {
-    width: 100%;
-}
-
-nav{
-    background-color: #ffffff00;
-    display: none;
-}
-
-/* Estilos para a mensagem de erro */
-.error-message {
-    font-size: 25px;
+/* Contêiner principal */
+.container {
+    width: 90%;
+    max-width: 380px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
-    position: fixed;      /* Torna o elemento flutuante */
-    bottom: 40px;         /* Distância da parte inferior da tela */
-    left: 50%;            /* Alinha horizontalmente ao centro */
-    transform: translateX(-50%); /* Centraliza horizontalmente */
-    background-color: #f44336; /* Cor de fundo vermelha (opcional) */
-    color: white;          /* Cor do texto branca */
-    padding: 5px 20px;
-    border-radius: 5px;
-    width: 75%;
-    z-index: 1000;        /* Garante que a mensagem fique acima de outros elementos */
-    display: none;        /* Oculta a mensagem por padrão */
 }
 
-.error-message.show {
-    display: block;       /* Exibe a mensagem quando a classe 'show' for adicionada */
+.logo {
+    width: 200px;
+    height: 200px;
+    padding: 5px;
 }
 
-h1{
-    font-family: 'Impact';
-    margin: -15px;
+/* Estilos do cabeçalho */
+.signup-form h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
 }
 
-input{
-    color: white;
+.signup-form p {
+    font-size: 16px;
+    color: #F26835;
+    margin-bottom: 24px;
 }
 
-/* Responsividade para telas maiores */
-@media (min-width: 768px) {
+/* Estilos dos campos de entrada */
+.input-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background-color: #f7f7f7;
+    font-size: 16px;
+}
+
+.input-group input:focus {
+    border-color: #4a90e2;
+    outline: none;
+    background-color: #fff;
+}
+
+/* Estilos do botão de visibilidade da senha */
+.password-container {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Estilos do botão principal */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: #6a0dad;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
+.btn-primary:hover {
+    background-color: #5909a3;
+}
+
+/* Estilos dos links e termos */
+.terms {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555555;
+}
+
+.terms a {
+    color: #0000FF;
+    text-decoration: none;
+}
+
+.terms a:hover {
+    text-decoration: underline;
+}
+
+/* Tema escuro */
+@media (prefers-color-scheme: dark) {
     .container {
-        width: 80%;
-        padding: 30px;
+        background-color: #333;
     }
+
+    .input-group input {
+        background-color: #444;
+        color: #eee;
+        border: 2px solid #555;
+    }
+
+    .input-group input:focus {
+        border-color: #9b59b6;
+        background-color: #555;
+    }
+
+    .toggle-password {
+        color: #eee;
+    }
+
+    .btn-primary {
+        background-color: #8e44ad;
+    }
+
+    .terms {
+        color: #bbb;
+    }
+
+    .terms a {
+        color: #b3d9ff;
+    }
+}
+
+/* Responsividade para Tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        width: 60%;
+        max-width: 500px;
+        padding: 40px;
+    }
+
+    .signup-form h1 {
+        font-size: 32px;
+    }
+
+    .signup-form p {
+        font-size: 18px;
+    }
+
+    .btn-primary {
+        font-size: 20px;
+    }
+
+    .input-group input {
+        font-size: 18px;
+    }
+}
+
+/* Responsividade para Desktop */
+@media (min-width: 1025px) {
+    .container {
+        width: 40%;
+        max-width: 600px;
+        padding: 60px;
+    }
+
+    .signup-form h1 {
+        font-size: 36px;
+    }
+
+    .signup-form p {
+        font-size: 20px;
+    }
+
+    .btn-primary {
+        font-size: 22px;
+    }
+
+    .input-group input {
+        font-size: 20px;
+    }
+}
+
+/* Estilo do banner de mensagem */
+.message-banner {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red; /* Cor padrão, alterada pelo JS */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 1000;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    font-family: 'Readex Pro', sans-serif;
+}
+
+.message-banner.show {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#message-text {
+    flex: 1;
+}
+
+#message-banner button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.message-banner.success {
+    background-color: green;
+}
+
+.message-banner.error {
+    background-color: red;
 }

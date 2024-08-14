@@ -6,8 +6,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const celularInput = document.getElementById('celular');
     const senhaInput = document.getElementById('senha');
     const confirmaSenhaInput = document.getElementById('confirma_senha');
-    const errorMessage = document.querySelector('.error-message');
+    const messageBanner = document.getElementById('message-banner');
+    const messageText = document.getElementById('message-text');
+    const closeBanner = document.getElementById('close-banner');
 
+    let messageTimeout;
+
+    // Função para mostrar mensagens de erro ou sucesso
+    function mostrarMensagem(mensagem, tipo = 'error') {
+        messageText.textContent = mensagem;
+        messageBanner.classList.add('show');
+        messageBanner.classList.add(tipo);
+
+        // Fecha o banner automaticamente após 10 segundos
+        messageTimeout = setTimeout(() => {
+            ocultarMensagem();
+        }, 10000);
+    }
+
+    // Função para ocultar o banner de mensagem
+    function ocultarMensagem() {
+        messageBanner.classList.remove('show');
+        messageBanner.classList.remove('error', 'success');
+        clearTimeout(messageTimeout); // Limpa o timeout caso o usuário feche o banner antes dos 10 segundos
+    }
+
+    // Listener para o botão de fechar o banner
+    closeBanner.addEventListener('click', ocultarMensagem);
+
+    // Funções de Validação (mantidas as mesmas)
     function validarNomeCompleto() {
         const nome = nomeCompletoInput.value.trim();
         return nome.split(' ').length >= 2;
@@ -38,9 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
     celularInput.addEventListener('input', () => {
         aplicarMascaraCelular(celularInput);
         if (!validarCelular()) {
-            mostrarErro(celularInput, 'Digite um número de celular válido no formato (DD) XXXXX-XXXX.');
-        } else {
-            ocultarErro(celularInput);
+            mostrarMensagem('Digite um número de celular válido no formato (DD) XXXXX-XXXX.', 'error');
         }
     });
 
@@ -55,65 +80,39 @@ document.addEventListener('DOMContentLoaded', function () {
         return senha === confirmaSenha;
     }
 
-    function mostrarErro(inputElement, mensagem) {
-        const errorContainer = document.getElementById('error-container');
-        errorContainer.textContent = mensagem;
-        errorContainer.classList.add('show');
-
-        setTimeout(() => {
-            ocultarErro(errorContainer);
-        }, 3000);
-    }
-
-    function ocultarErro(errorContainer) {
-        errorContainer.classList.remove('show');
-    }
-
     nomeCompletoInput.addEventListener('blur', () => {
         if (!validarNomeCompleto()) {
-            mostrarErro(nomeCompletoInput, 'Digite pelo menos dois nomes.');
-        } else {
-            ocultarErro(nomeCompletoInput);
+            mostrarMensagem('Digite pelo menos dois nomes.', 'error');
         }
     });
 
     apelidoInput.addEventListener('blur', () => {
         if (!validarApelido()) {
-            mostrarErro(apelidoInput, 'O apelido deve ter no máximo 20 caracteres.');
-        } else {
-            ocultarErro(apelidoInput);
+            mostrarMensagem('O apelido deve ter no máximo 20 caracteres.', 'error');
         }
     });
 
     emailInput.addEventListener('blur', () => {
         if (!validarEmail()) {
-            mostrarErro(emailInput, 'Digite um e-mail válido.');
-        } else {
-            ocultarErro(emailInput);
+            mostrarMensagem('Digite um e-mail válido.', 'error');
         }
     });
 
     celularInput.addEventListener('blur', () => {
         if (!validarCelular()) {
-            mostrarErro(celularInput, 'Digite um número de celular válido no formato (DD) XXXXX-XXXX.');
-        } else {
-            ocultarErro(celularInput);
+            mostrarMensagem('Digite um número de celular válido no formato (DD) XXXXX-XXXX.', 'error');
         }
     });
 
     senhaInput.addEventListener('blur', () => {
         if (!validarSenha()) {
-            mostrarErro(senhaInput, 'A senha deve ter pelo menos 6 caracteres, 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial.');
-        } else {
-            ocultarErro(senhaInput);
+            mostrarMensagem('A senha deve ter pelo menos 6 caracteres, 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial.', 'error');
         }
     });
 
     confirmaSenhaInput.addEventListener('blur', () => {
         if (!validarConfirmaSenha()) {
-            mostrarErro(confirmaSenhaInput, 'As senhas não coincidem.');
-        } else {
-            ocultarErro(confirmaSenhaInput);
+            mostrarMensagem('As senhas não coincidem.', 'error');
         }
     });
 
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
 
         if (!validarNomeCompleto() || !validarApelido() || !validarEmail() || !validarCelular() || !validarSenha() || !validarConfirmaSenha()) {
-            mostrarErro(cadastroForm, 'Por favor, preencha todos os campos corretamente.');
+            mostrarMensagem('Por favor, preencha todos os campos corretamente.', 'error');
             return;
         }
 
@@ -141,15 +140,16 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (response.ok) {
-                const mensagemSucesso = 'Cadastro realizado com sucesso! Faça login para continuar!';
-                window.location.href = '../login/login.html';
-                window.alert(`${mensagemSucesso}`);
+                mostrarMensagem('Cadastro realizado com sucesso! Faça login para continuar!', 'success');
+                setTimeout(() => {
+                    window.location.href = '../login/login.html';
+                }, 10000);
             } else {
                 const errorData = await response.json();
-                console.error('Erro no cadastro:', errorData.error);
+                mostrarMensagem(`Erro no cadastro: ${errorData.error}`, 'error');
             }
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            mostrarMensagem('Erro na requisição. Tente novamente mais tarde.', 'error');
         }
     });
 });

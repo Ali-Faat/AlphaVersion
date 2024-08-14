@@ -1,44 +1,66 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - GoalCast</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Cadastro - GOALCAST</title>
     <link rel="stylesheet" href="cadastro.css">
 </head>
 <body>
+
+    <!-- Banner de Mensagem -->
+    <span id="message-banner" class="message-banner">
+        <span id="message-text">Mensagem aqui</span>
+        <button id="close-banner">X</button>
+    </span>
+
     <div class="container">
-        <form id="cadastro-form">
-            <div class="input-field">
-                <input type="text" id="nome_completo" name="nome_completo" required>
-                <label for="nome_completo">Nome Completo</label>
-            </div>
-            <div class="input-field">
-                <input type="text" id="apelido" name="apelido" required>
-                <label for="apelido">Apelido</label>
-            </div>
-            <div class="input-field">
-                <input type="email" id="email" name="email" required>
-                <label for="email">E-mail</label>
-            </div>
-            <div class="input-field">
-                <input type="text" id="celular" name="celular" required>
-                <label for="celular">Celular</label>
-            </div>
-            <div class="input-field">
-                <input type="password" id="senha" name="senha" required>
-                <label for="senha">Senha</label>
-            </div>
-            <div class="input-field">
-                <input type="password" id="confirma_senha" name="confirma_senha" required>
-                <label for="confirma_senha">Confirma Senha</label>
-            </div>
-            <button type="submit" class="btn waves-effect waves-light">Cadastrar</button>
-            <div id="error-container" class="error-message"></div>
-        </form>
+        <div class="header">
+            <img src="../../IMGs/logo.png" alt="Logo GOALCAST" class="logo">
+        </div>
+        <div class="signup-form">
+            <h1>GOALCAST</h1>
+            <p>O futuro do futebol é agora!</p>
+            <form id="cadastro-form">
+                <div id="error-container" class="error-message"></div>
+                <div class="input-group">
+                    <label for="nome_completo">Nome Completo:</label>
+                    <input type="text" id="nome_completo" name="nome_completo" placeholder="Digite seu nome aqui" required>
+                </div>
+                <div class="input-group">
+                    <label for="apelido">Apelido:</label>
+                    <input type="text" id="apelido" name="apelido" placeholder="Digite seu apelido aqui" maxlength="20" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu email aqui" required>
+                </div>
+                <div class="input-group">
+                    <label for="celular">Celular:</label>
+                    <input type="text" id="celular" name="celular" placeholder="(XX) XXXXX-XXXX" required>
+                </div>
+                <div class="input-group">
+                    <label for="senha">Senha:</label>
+                    <div class="password-container">
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha aqui" required>
+                        <button type="button" id="toggleSenha1" class="toggle-password">&#128065;</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="confirma_senha">Confirme sua senha:</label>
+                    <div class="password-container">
+                        <input type="password" id="confirma_senha" name="confirma_senha" placeholder="Confirme sua senha" required>
+                        <button type="button" id="toggleSenha2" class="toggle-password">&#128065;</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Cadastrar</button>
+                <p class="terms">
+                    Ao se inscrever você aceita os <a href="termos.html">Termos de uso</a> e a <a href="privacidade.html">Política de Privacidade</a>.
+                </p>
+            </form>
+        </div>
     </div>
+
     <script src="cadastro.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>

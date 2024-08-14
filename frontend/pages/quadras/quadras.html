@@ -1,28 +1,55 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalCast - Quadras</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Lista de Quadras - GOALCAST</title>
+    <!-- Importando Materialize CSS para ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Importando Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="quadras.css">
 </head>
 <body>
+    <!-- Banner de Mensagem -->
+    <span id="error-banner" class="error-banner">
+        <span id="error-text">Mensagem de erro aqui</span>
+        <button id="close-banner">X</button>
+    </span>
 
-    <main class="container content">
-        <h1>Quadras</h1>
-        <div class="error-message" style="color: red; margin-top: 10px;"></div> <!-- Elemento para mensagens de erro -->
-
-        <div class="input-field col s12">
-            <input type="text" id="filter-name" placeholder="Digite o nome da quadra">
-            <label for="filter-name">Nome da Quadra</label>
+    <div class="container">
+        <!-- Menu Superior -->
+        <div class="header row">
+            <div class="col s2 header-left">
+                <!-- Ícone de menu hamburguer -->
+                <a href="#" class="menu-icon">
+                    <i class="material-icons">menu</i>
+                </a>
+            </div>
+            <div class="col s8 header-center">
+                <h1>QUADRAS</h1>
+            </div>
+            <div class="col s2 header-right">
+                <!-- Ícone de configurações -->
+                <a href="configuracoes.html" class="settings-icon">
+                    <i class="material-icons">settings</i>
+                </a>
+            </div>
         </div>
 
-        <div class="quadra-list"></div> <!-- Corrigido seletor para '.quadra-list' -->
-    </main>
+        <!-- Barra de Pesquisa -->
+        <div class="search-bar">
+            <input type="text" id="filter-name" placeholder="Filtrar por nome de quadra...">
+        </div>
 
-    <script src="quadras.js"></script>
+        <!-- Lista de Quadras -->
+        <div class="quadra-list">
+            <!-- Os itens de quadra serão inseridos aqui dinamicamente -->
+        </div>
+    </div>
+
+    <!-- Importando Materialize JS e dependências -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="quadras.js"></script>
 </body>
 </html>

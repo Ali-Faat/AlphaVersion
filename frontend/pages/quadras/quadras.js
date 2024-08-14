@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const quadraList = document.querySelector('.quadra-list');
     const filterInput = document.getElementById('filter-name');
-    const errorMessage = document.querySelector('.error-message'); // Elemento para exibir mensagens de erro
+    const errorMessage = document.querySelector('.error-banner');
+    const closeBanner = document.getElementById('close-banner');
 
     // Função para buscar e exibir as quadras
     async function fetchQuadras(nome = '') {
@@ -48,20 +49,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para exibir mensagens de erro na interface
     function mostrarErro(mensagem) {
-        errorMessage.textContent = mensagem;
-        errorMessage.classList.add('show'); // Supondo que há uma classe CSS 'show' para exibir a mensagem
+        errorMessage.querySelector('#error-text').textContent = mensagem;
+        errorMessage.classList.add('show');
 
         // Timeout para remover a mensagem de erro após 10 segundos
         setTimeout(() => {
             ocultarErro();
-        }, 3000);
+        }, 10000);
     }
 
     // Função para ocultar mensagens de erro na interface
     function ocultarErro() {
-        errorMessage.classList.remove('show'); // Supondo que há uma classe CSS 'show' para ocultar a mensagem
-        errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
+        errorMessage.classList.remove('show');
+        errorMessage.querySelector('#error-text').textContent = '';
     }
+
+    // Listener para o botão de fechar o banner
+    closeBanner.addEventListener('click', ocultarErro);
 
     // Adicionar evento ao campo de entrada de nome de quadra
     if (filterInput) {
@@ -71,9 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Inicializar componentes do Materialize
-    M.AutoInit();
-
     // Buscar e exibir as quadras ao carregar a página
     fetchQuadras();
+
+    // Aplicar o tema com base na preferência do sistema
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    if (prefersDarkScheme.matches) {
+        document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+        document.documentElement.setAttribute("data-theme", "light");
+    }
 });

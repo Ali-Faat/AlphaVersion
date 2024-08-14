@@ -1,106 +1,223 @@
-/* Estilos base para mobile */
+/* Estilo geral */
 body {
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: linear-gradient(to bottom right, #0684B9, #F26835);
-    color: white;
-    margin: 0; /* Remove margens padrão */
+    font-family: 'Readex Pro', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.container {
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 20px; /* Reduzimos o padding para mobile */
-    border-radius: 8px;
-    align-self: center;
-    width: 95%; /* Ocupa quase toda a largura em mobile */
-    margin: 20px auto; /* Centraliza e adiciona margens verticais */
+/* Definições de temas */
+:root {
+    --background-color: #ffffff;
+    --text-color: #212121;
+    --container-background: #f0f0f0;
+    --input-background: #e0e0e0;
+    --input-text-color: #212121;
+    --input-border-color: #cccccc;
+    --item-background: #e0e0e0;
+    --item-text-color: #212121;
+    --profile-border-color: #212121;
+    --banner-background-color: #f44336;
+    --banner-text-color: #ffffff;
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    align-self: auto;
-    width: 90%; /* Ocupa toda a largura do container em mobile */
+[data-theme="dark"] {
+    --background-color: #212121;
+    --text-color: #ffffff;
+    --container-background: #2c2c2c;
+    --input-background: #333333;
+    --input-text-color: #ffffff;
+    --input-border-color: #444444;
+    --item-background: #333333;
+    --item-text-color: #ffffff;
+    --profile-border-color: #ffffff;
+    --banner-background-color: #f44336;
+    --banner-text-color: #ffffff;
 }
 
-.filter-menu,
-.layout-options {
-    display: flex;
-    flex-direction: column; /* Alinha os botões em coluna em mobile */
-    gap: 10px;
-    width: 100%;
-}
-
-.video-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-}
-
-.video-item {
-    /* Estilos para cada item da lista (ajuste para mobile) */
-    width: 100%;
-}
-
-.criar-partida-button {
-    margin-top: 20px;
-    width: 100%;
-}
-
-footer {
-    margin-top: auto;
+/* Banner de erro */
+.error-banner {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--banner-background-color);
+    color: var(--banner-text-color);
     padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 1000;
+    width: 80%;
+    max-width: 500px;
     text-align: center;
-    font-size: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-h3{
+.error-banner.show {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#error-text {
+    flex: 1;
+}
+
+#error-banner button {
+    background: none;
+    border: none;
+    color: var(--banner-text-color);
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Menu Superior */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.header-left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.header-center {
+    display: flex;
     justify-content: center;
-    font-size: 190%;
-    border: solid 3px black;
-    padding: 5px;
-    border-radius: 7%;
+    align-items: center;
+    text-align: center;
 }
 
-/* Estilos para telas maiores (tablets e desktops) */
-@media (min-width: 768px) {
-    .container {
-        width: 80%;
-        padding: 30px; /* Aumentamos o padding para telas maiores */
-    }
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
 
-    .filter-menu,
-    .layout-options {
-        flex-direction: row; /* Alinha os botões em linha em telas maiores */
-        justify-content: space-around;
-    }
+.header-center h1 {
+    margin: 0;
+    font-size: 24px;
+    text-align: center;
+}
 
-    .video-list.two-columns {
+.menu-icon, .settings-icon {
+    color: var(--text-color);
+    font-size: 30px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* Barra de Pesquisa */
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--input-border-color);
+    border-radius: 5px;
+    background-color: var(--input-background);
+    color: var(--input-text-color);
+    outline: none;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Estilo da lista de quadras */
+.quadra-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quadra-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--item-background);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: var(--item-text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.quadra-item h3 {
+    margin: 0;
+    font-size: 20px;
+    flex: 1;
+}
+
+.quadra-item p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+/* Logo da Quadra */
+.quadra-logo {
+    width: 50px; /* Ajuste o tamanho conforme necessário */
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.quadra-logo:hover {
+    transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header {
         flex-direction: row;
-        flex-wrap: wrap;
+        align-items: center;
     }
 
-    .video-list.grid {
-        flex-direction: row;
-        flex-wrap: wrap;
+    .header-left, .header-center, .header-right {
+        width: 33.33%;
     }
 
-    .video-item {
-        /* Estilos para cada item da lista (ajuste para telas maiores) */
-        width: calc(50% - 10px); /* Duas colunas com espaçamento */
+    .header-center h1 {
+        font-size: 22px;
+    }
+
+    .search-bar input[type="text"] {
+        margin-top: 10px;
+        max-width: 90%;
+    }
+
+    .menu-icon, .settings-icon {
+        font-size: 28px;
     }
 }
 
-/* Estilos para telas ainda maiores (desktops grandes) */
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1200px;
+@media (min-width: 769px) and (max-width: 1024px) {
+    .header-center h1 {
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .header-center h1 {
+        font-size: 26px;
     }
 
-    .video-list.grid .video-item {
-        width: calc(33.33% - 10px); /* Três colunas com espaçamento */
+    .search-bar input[type="text"] {
+        width: 100%;
+        margin: 0 auto 20px auto;
+    }
+
+    .menu-icon{
+        display: none;
     }
 }
