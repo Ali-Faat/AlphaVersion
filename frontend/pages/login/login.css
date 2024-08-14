@@ -1,100 +1,292 @@
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+/* Reseta o estilo padrão do navegador */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-/* Estilos gerais */
+/* Estilos Globais (Aplicado a ambos os temas) */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Readex Pro', sans-serif;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(to bottom right, #0684B9, #F26835);
-    color: white;
+    height: 100vh;
 }
 
-/* Estilos do container */
 .container {
-    background-color: #011532;
-    padding: 30px;
-    border-radius: 8px;
-    width: 80%; /* Alterado para 80% */
+    border-radius: 10px;
+    overflow: hidden;
+    width: 90%;
     max-width: 400px;
+    margin: auto;
 }
 
-/* Estilos do conteúdo principal */
-.content {
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+.header .logo {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.header h1 {
+    margin-top: 10px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.header p {
+    font-size: 14px;
+}
+
+.login-form {
+    padding: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.password-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 80%; /* Alterado para 80% */
 }
 
-/* Estilos do logo */
-.logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 30px;
-    width: 100%; /* Ocupa toda a largura do container */
+.password-container input {
+    flex: 1;
 }
 
-.logo-container img {
-    width: 150px;
-    height: 150px;
+.toggle-password {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
     margin-bottom: 10px;
 }
 
-h1{
-    font-family: 'Impact';
-    margin: -15px;
+.btn-secondary {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
 }
 
-.slogan {
-    font-family: 'Brush Script MT';
-    font-size: 25px;
-    color: #F2E96B;
-}
-
-/* Estilos do formulário */
-#login-form {
-    width: 100%; /* Ocupa toda a largura do container */
-}
-
-#login-form .input-field {
-    margin-left: -30px;
-    width: 100%; /* Ocupa toda a largura do container */
-}
-
-#email, #password {
-    color: #fff;
-}
-
-#login-form label {
-    color: #F2E96B;
-}
-
-#login-form input[type="email"]:focus + label,
-#login-form input[type="password"]:focus + label {
-    color: #F26835;
-}
-
-/* Estilos do botão */
-#login-form button {
-    width: 100%; /* Ocupa toda a largura do container */
-}
-
-/* Estilos das opções e do rodapé */
-.options {
-    margin-top: 10px;
-    width: 100%; /* Ocupa toda a largura do container */
-    text-align: center; /* Centraliza o texto */
-}
-
-footer {
+.create-account {
+    text-align: center;
     margin-top: 20px;
-    font-size: 12px;
-    width: 100%; /* Ocupa toda a largura do container */
-    text-align: center; /* Centraliza o texto */
+    font-size: 14px;
+}
+
+/* Estilo para Dark Theme */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #101010;
+        color: #ffffff;
+    }
+
+    .container {
+        background-color: #222222;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #011532, #0684B9);
+    }
+
+    .header .logo {
+        background-color: #0683b900;
+    }
+
+    .header h1, .header p {
+        color: #ffffff;
+    }
+
+    .header p {
+        color: #F26835;
+    }
+
+    .input-group label {
+        color: #ffffff;
+    }
+
+    .input-group input {
+        border: 2px solid #444;
+        background-color: #333;
+        color: #fff;
+    }
+
+    .toggle-password {
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #311B92;
+        color: #ffffff;
+    }
+
+    .btn-secondary {
+        background-color: transparent;
+        border: 2px solid #444;
+        color: #ffffff;
+    }
+
+    .create-account a {
+        color: #0000FF;
+    }
+}
+
+/* Estilo para White Theme */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #f4f4f4;
+        color: #000000;
+    }
+
+    .container {
+        background-color: #ffffff;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+        background: linear-gradient(135deg, #011532, #0684B9);
+    }
+
+    .header .logo {
+        background-color: #0683b900;
+    }
+
+    .header h1 {
+        color: #ffffff;
+    }
+
+    .header p {
+        color: #F26835;
+    }
+
+    .input-group label {
+        color: #555555;
+    }
+
+    .input-group input {
+        border: 2px solid #cccccc;
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .toggle-password {
+        color: #555555;
+    }
+
+    .btn-primary {
+        background-color: #311B92;
+        color: #ffffff;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-secondary {
+        background-color: transparent;
+        border: 2px solid #cccccc;
+        color: #555555;
+    }
+
+    .create-account a {
+        color: #0000FF;
+    }
+}
+
+/* Estilos Responsivos */
+
+/* Para Tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        width: 60%; 
+        max-width: 600px;
+        padding: 40px;
+        box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .header {
+        padding: 40px 20px;
+    }
+
+    .logo {
+        width: 120px;
+        height: 120px;
+    }
+
+    .input-group input {
+        padding: 15px;
+        font-size: 18px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 15px;
+        font-size: 18px;
+    }
+
+    .create-account {
+        font-size: 16px;
+    }
+}
+
+/* Para Desktop */
+@media (min-width: 1025px) {
+    .container {
+        width: 40%;
+        max-width: 800px;
+        padding: 60px;
+        box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .header {
+        padding: 60px 20px;
+    }
+
+    .logo {
+        width: 140px;
+        height: 140px;
+    }
+
+    .input-group input {
+        padding: 20px;
+        font-size: 20px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 20px;
+        font-size: 20px;
+        border-radius: 8px;
+    }
+
+    .create-account {
+        font-size: 18px;
+    }
 }

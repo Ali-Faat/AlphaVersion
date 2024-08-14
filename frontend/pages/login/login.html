@@ -1,48 +1,38 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalCast - Login</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>GOALCAST</title>
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
-
-    <main class="container content">
-        <div class="logo-container">
-            <img src="../../IMGs/logo.png" alt="Logo GoalCast">
-            <h1>GoalCast</h1>
-            <p class="slogan">O futuro é agora!</p>
+    <div class="container">
+        <div class="header">
+            <img src="../../IMGs/logo.png" alt="Logo GOALCAST" class="logo">
+            <h1>GOALCAST</h1>
+            <p>O futuro do futebol é agora!</p>
         </div>
-
-        <form id="login-form">
-            <div class="input-field">
-                <i class="material-icons prefix"></i>
-                <input type="email" id="email" name="email" required>
-                <label for="email">E-mail</label>
-            </div>
-            <div class="input-field">
-                <i class="material-icons prefix"></i>
-                <input type="password" id="password" name="password" required>
-                <label for="password">Senha</label>
-            </div>
-            <button class="btn waves-effect waves-light" type="submit">Entrar</button>
-        </form>
-
-        <div class="error-message" style="color: red; margin-top: 10px;"></div> <!-- Elemento para mensagens de erro -->
-
-        <div class="options">
-            <a href="#">Esqueceu sua senha?</a>
+        <div class="login-form">
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha:</label>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+                        <button type="button" id="togglePassword" class="toggle-password">&#128065;</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+                <button type="button" class="btn-secondary">Esqueci a senha</button>
+            </form>
+            <p class="create-account">Clique <a href="create-account.html">aqui</a> para criar uma nova conta</p>
         </div>
+    </div>
 
-        <footer>
-            <a href="#">Privacidade</a>
-        </footer>
-    </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="login.js"></script>
 </body>
 </html>

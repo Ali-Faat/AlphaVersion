@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('login-form');
+    const loginForm = document.getElementById('loginForm');
     const errorMessage = document.querySelector('.error-message'); // Elemento para exibir mensagens de erro
 
     loginForm.addEventListener('submit', async (event) => {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMessage.textContent = mensagem;
         errorMessage.classList.add('show'); // Supondo que há uma classe CSS 'show' para exibir a mensagem
 
-        // Timeout para remover a mensagem de erro após 10 segundos
+        // Timeout para remover a mensagem de erro após 3 segundos
         setTimeout(() => {
             ocultarErro();
         }, 3000);
@@ -51,5 +51,14 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
     }
 
-    M.AutoInit(); // Inicializar componentes do Materialize
+    // Inicialização de componentes adicionais (se necessário)
+    // M.AutoInit(); // Inicializar componentes do Materialize, se estiver em uso
+});
+
+// Função para alternar visibilidade da senha
+document.getElementById('togglePassword').addEventListener('click', function (e) {
+    const passwordInput = document.getElementById('password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    this.textContent = type === 'password' ? '👁️' : '🙈';
 });
