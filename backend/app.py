@@ -31,7 +31,7 @@ app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
 app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'False'
 
 # Configuração de upload de arquivos
-app.config['UPLOAD_FOLDER'] = '/../uploads/videos'
+app.config['UPLOAD_FOLDER'] = r'C:\GoalCast\AlphaVersion\backend\uploads\videos'
 app.config['ALLOWED_EXTENSIONS'] = {'mp4', 'avi', 'mov', 'mkv'}
 
 
@@ -88,7 +88,7 @@ def upload_video():
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        # Definir o caminho final do arquivo
+        # Definir o caminho final absoluto do arquivo
         filepath = os.path.join(directory, filename)
 
         # Salvar o vídeo no diretório de uploads
@@ -104,7 +104,7 @@ def upload_video():
         # Se não houver partida, criar uma nova
         if not partida:
             cursor.execute(
-                'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim,) VALUES %s, %s, %s)',
+                'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim) VALUES (%s, %s, %s)',
                 (quadra_id, dh_inicio, dh_fim)
             )
             mydb.commit()
@@ -112,13 +112,13 @@ def upload_video():
         else:
             partida_id = partida['id']
         
-        # Caminho relativo para salvar no banco de dados
-        video_url = f'../../../{os.path.relpath(filepath, start="uploads")}'
+        # Caminho absoluto relativo ao diretório de uploads para salvar no banco de dados
+        video_url = os.path.relpath(filepath, start=app.config['UPLOAD_FOLDER'])
         
         # Salvar a URL do vídeo no banco de dados
         cursor.execute(
             'INSERT INTO videos (partida_id, quadra_id, url, tipo, criador_id, data_criacao) VALUES (%s, %s, %s, %s, %s, %s)',
-            (partida_id, quadra_id, video_url, 'lance', criador_id, datetime.datetime.now())
+            (partida_id, quadra_id, video_url, tipo, criador_id, datetime.datetime.now())
         )
         mydb.commit()
         
@@ -200,6 +200,9 @@ def get_videos():
     quadra_id = request.args.get('quadra_id')
     partida_id = request.args.get('partida_id')
 
+    # Caminho base para vídeos
+    base_path = r'C:\GoalCast\AlphaVersion\backend\uploads\videos'
+
     mydb = get_db_connection()
     cursor = mydb.cursor()
 
@@ -234,21 +237,14 @@ def get_videos():
         if not videos:
             return jsonify({'error': 'Nenhum vídeo encontrado'}), 404
 
-        video_paths = []
-        for video in videos:
-            video_info = {
-                'id': video[0],
-                'partida_id': video[1],
-                'quadra_id': video[2],
-                'url': video[3],
-                'tipo': video[4],
-                'data_criacao': video[5].strftime('%Y-%m-%d %H:%M:%S') if video[5] else None,
-                'eh_criador': bool(video[6])
-            }
-            video_paths.append(video_info['url'])
+        # Obter o caminho absoluto do primeiro vídeo encontrado
+        video_info = videos[0]  # Considerando o primeiro vídeo encontrado
+        relative_path = video_info[3]  # Supondo que 'url' seja o campo onde o caminho relativo é armazenado
+        video_path = os.path.join(base_path, f'quadra_{quadra_id}', os.path.basename(relative_path))
 
-        # Enviar o primeiro vídeo encontrado como exemplo
-        video_path = video_paths[0]
+        if not os.path.exists(video_path):
+            return jsonify({'error': f'Vídeo não encontrado no caminho: {video_path}'}), 404
+
         return send_file(video_path, mimetype='video/mp4', as_attachment=False)
 
     except mysql.connector.Error as err:
