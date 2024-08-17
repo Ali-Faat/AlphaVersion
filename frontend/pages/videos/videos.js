@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const groupDiv = document.createElement('div');
                 groupDiv.classList.add('video-group');
     
-                const tipo = videoGroup[0].tipo || 'desconhecido'; // Verificação de segurança
+                const tipo = videoGroup[0].tipo || 'Lance'; // Verificação de segurança
                 const title = document.createElement('h3');
                 title.textContent = tipo;
                 groupDiv.appendChild(title);
