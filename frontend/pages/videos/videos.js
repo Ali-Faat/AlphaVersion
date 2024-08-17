@@ -79,7 +79,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Função para buscar e exibir os vídeos da partida selecionada
     async function fetchAndExibirVideos(partidaId) {
+        const spinner = document.getElementById('loading-spinner');
         try {
+            spinner.style.display = 'flex'; // Mostrar o spinner
             const quadraId = getQuadraIdFromUrl();
             console.log('Buscando vídeos para partida ID:', partidaId); // Log de depuração
             const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${partidaId}`);
@@ -94,33 +96,85 @@ document.addEventListener('DOMContentLoaded', async () => {
     
             videoContainer.innerHTML = '';
     
-            videos.forEach(video => {
-                // Decodificar o vídeo
-                const videoBlob = new Blob([Uint8Array.from(atob(video.video_blob), c => c.charCodeAt(0))], { type: 'video/mp4' });
-                const videoUrl = URL.createObjectURL(videoBlob);
+            // Função para agrupar vídeos por data_criacao (com margem de segundos)
+            const groupedVideos = videos.reduce((acc, video) => {
+                const key = new Date(video.data_criacao).getTime();
+                if (!acc[key]) acc[key] = [];
+                acc[key].push(video);
+                return acc;
+            }, {});
     
-                const videoElement = document.createElement('video');
-                videoElement.src = videoUrl;
-                videoElement.controls = true;
-                videoElement.width = 640;  // ou ajuste conforme necessário
-                videoElement.height = 360; // ou ajuste conforme necessário
+            Object.keys(groupedVideos).forEach(key => {
+                const group = groupedVideos[key];
+                const groupDiv = document.createElement('div');
+                groupDiv.classList.add('video-group');
     
-                const videoTitle = document.createElement('h3');
-                videoTitle.textContent = `${video.data_criacao} ${video.eh_criador ? "(Criador)" : ""}`;
-                const videoItem = document.createElement('div');
-                videoItem.classList.add('video-item');
+                // Adicionar título
+                const videoHeader = document.createElement('div');
+                videoHeader.classList.add('video-header');
+                videoHeader.textContent = `Tipo: ${group[0].tipo || 'Indefinido'}`;
+                groupDiv.appendChild(videoHeader);
     
-                videoItem.appendChild(videoTitle);
-                videoItem.appendChild(videoElement);
-                videoContainer.appendChild(videoItem);
+                const videoContainer = document.createElement('div');
+                videoContainer.classList.add('video-container');
+    
+                group.forEach(video => {
+                    const videoItem = document.createElement('div');
+                    videoItem.classList.add('video-item');
+                    
+                    const videoBlob = new Blob([new Uint8Array(video.video_blob.split('').map(c => c.charCodeAt(0)))], { type: 'video/mp4' });
+                    const videoUrl = URL.createObjectURL(videoBlob);
+    
+                    const videoElement = document.createElement('video');
+                    videoElement.src = videoUrl;
+                    videoElement.controls = true;
+    
+                    videoItem.appendChild(videoElement);
+                    videoContainer.appendChild(videoItem);
+                });
+    
+                // Adicionar o contêiner mesh abaixo dos vídeos de câmera
+                const meshVideos = group.filter(v => v.tipo && v.tipo.toLowerCase().includes('mesh'));
+                if (meshVideos.length) {
+                    const meshVideoContainer = document.createElement('div');
+                    meshVideoContainer.classList.add('video-container', 'mesh-video');
+    
+                    meshVideos.forEach(video => {
+                        const videoBlob = new Blob([new Uint8Array(video.video_blob.split('').map(c => c.charCodeAt(0)))], { type: 'video/mp4' });
+                        const videoUrl = URL.createObjectURL(videoBlob);
+    
+                        const videoElement = document.createElement('video');
+                        videoElement.src = videoUrl;
+                        videoElement.controls = true;
+    
+                        const videoItem = document.createElement('div');
+                        videoItem.classList.add('video-item');
+                        videoItem.appendChild(videoElement);
+    
+                        meshVideoContainer.appendChild(videoItem);
+                    });
+    
+                    groupDiv.appendChild(meshVideoContainer);
+                }
+    
+                // Adicionar data de criação
+                const creationDate = document.createElement('div');
+                creationDate.classList.add('creation-date');
+                creationDate.textContent = `Data de Criação: ${new Date(parseInt(key)).toLocaleString()}`;
+                groupDiv.appendChild(creationDate);
+    
+                videoContainer.appendChild(groupDiv);
             });
     
         } catch (error) {
             console.error('Erro ao buscar vídeos da partida:', error);
             exibirMensagem('Ocorreu um erro ao carregar os vídeos.', videoContainer);
+        } finally {
+            spinner.style.display = 'none'; // Ocultar o spinner
         }
     }
     
+        
     
     // Atualizar o select de horas com base na data selecionada
     function atualizarHorasPartida() {

@@ -1,12 +1,48 @@
 :root {
   --primary-color: #007bff;
+  --secondary-color: #6c757d;
   --border-color-light: #ced4da;
   --border-color-dark: #555;
   --text-color-light: #212529;
   --text-color-dark: #e9ecef;
   --background-color-light: #f8f9fa;
   --background-color-dark: #121212;
+  --button-hover-color: #0056b3;
+  --success-color: #28a745;
+  --error-color: #dc3545;
 }
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+  z-index: 1000;
+  color: white;
+  font-size: 16px;
+}
+
+.spinner {
+  border: 8px solid var(--border-color-light);
+  border-top: 8px solid var(--primary-color);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 body.light-theme {
   --background-color: var(--background-color-light);
@@ -53,133 +89,59 @@ h1 {
   text-align: center;
 }
 
-.form-group {
-  margin: 20px;
-  margin-left: 17%;
-}
-
-.form-row {
-  display: flex;
-  gap: 100px;
-  justify-content: center !important;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.form-item {
-  flex: 1;
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-input[type="date"], select {
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  box-sizing: border-box;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  width: 100%;
-  max-width: 48%;
-}
-
-.video-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin: 20px;
-}
-
-.error-message {
-  color: red;
-  display: none;
-  text-align: center;
-}
-
-.error-message.show {
-  display: block;
-}
-
-video {
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-}
-
-.video-item {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.video-item.destaque {
+/* Estilos para o grupo de vídeos */
+.video-group {
   border: 2px solid var(--primary-color);
-  padding: 10px;
   border-radius: 10px;
+  margin-bottom: 30px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Responsividade para dispositivos móveis */
+.video-group .video-header {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.video-group .video-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.video-group .video-container .video-item {
+  flex: 1;
+  text-align: center;
+}
+
+.video-group .video-container .video-item video {
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  width: 100%;
+  height: auto;
+}
+
+.video-group .video-container.mesh-video video {
+  width: 100%;
+  height: 180px; /* Mesh video alongado */
+}
+
+.video-group .creation-date {
+  font-size: 14px;
+  color: var(--primary-color);
+  margin-top: 10px;
+}
+
+/* Responsividade */
 @media (max-width: 767px) {
-  h1 {
-      font-size: 18px;
+  .video-group .video-container {
+    flex-direction: column;
   }
-
-  .menu-row {
-      padding: 5px;
-  }
-
-  .form-row {
-      flex-direction: column;
-      align-items: stretch;
-  }
-
-  input[type="date"], select {
-      font-size: 14px;
-      max-width: 100%;
-  }
-
-  video {
-      width: 100%;
-      height: auto;
-  }
-}
-
-/* Responsividade para tablets */
-@media (min-width: 768px) and (max-width: 1023px) {
-  h1 {
-      font-size: 20px;
-  }
-
-  input[type="date"], select {
-      font-size: 16px;
-      max-width: 48%;
-  }
-
-  video {
-      width: 100%;
-      height: auto;
-  }
-}
-
-/* Responsividade para desktops */
-@media (min-width: 1024px) {
-  h1 {
-      font-size: 24px;
-  }
-
-  .menu-row {
-      padding: 15px;
-  }
-
-  input[type="date"], select {
-      font-size: 18px;
-      max-width: 48%;
-  }
-
-  video {
-      width: 320px;
-      height: 240px;
+  .video-group .video-container.mesh-video video {
+    height: auto;
   }
 }

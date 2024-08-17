@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file, Response, stream_with_context
 from database import get_db_connection
 import mysql.connector
 import json
@@ -7,6 +7,8 @@ from flask_cors import CORS
 import hashlib
 from email_verification import send_welcome_email
 import datetime
+import base64
+import asyncio
 from werkzeug.utils import secure_filename
 import secrets
 from flask_mail import Mail
@@ -58,6 +60,33 @@ def executar_consulta(query, params=None):
     finally:
         cursor.close()
         mydb.close()
+
+async def processar_video(video, usuario_id):
+    video_id, video_path, data_criacao, criador_id, eh_criador = video
+
+    # Verificar se o arquivo de vídeo existe
+    if not os.path.exists(video_path):
+        print(f"Arquivo não encontrado: {video_path}")
+        return None
+
+    print(f"Lendo arquivo de vídeo: {video_path}")
+    # Ler e codificar o vídeo em formato blob
+    with open(video_path, 'rb') as file:
+        video_blob = base64.b64encode(file.read()).decode('utf-8')  # Usando base64
+
+    video_data = {
+        'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
+        'eh_criador': bool(eh_criador),
+        'video_blob': video_blob  # Blob codificado em base64
+    }
+
+    return video_data
+
+async def stream_videos(videos, usuario_id):
+    for video in videos:
+        video_data = await processar_video(video, usuario_id)
+        if video_data:
+            yield f"{json.dumps(video_data)}\n"
 
 @app.route('/api/quadras', methods=['GET'])
 def get_quadras():
@@ -211,39 +240,17 @@ def get_videos():
                 WHERE quadra_id = %s AND partida_id = %s
             '''
             params = (session.get('usuario_id'), quadra_id, partida_id)
-            print(f"Executing query with params: {params}")  # Log de depuração
             cursor.execute(query, params)
             videos = cursor.fetchall()
-
-            print(f"Videos encontrados: {len(videos)}")  # Log de depuração
 
             if not videos:
                 print("Nenhum vídeo encontrado para os parâmetros fornecidos.")
                 return jsonify([])
 
-            response_data = []
-            for video in videos:
-                video_id, video_path, data_criacao, criador_id, eh_criador = video
+            # Usar a função de streaming para enviar os vídeos progressivamente
+            usuario_id = session.get('usuario_id')
 
-                # Verificar se o arquivo de vídeo existe
-                if not os.path.exists(video_path):
-                    print(f"Arquivo não encontrado: {video_path}")
-                    continue
-
-                print(f"Lendo arquivo de vídeo: {video_path}")
-                # Ler o vídeo em formato blob
-                with open(video_path, 'rb') as file:
-                    video_blob = file.read()
-
-                video_data = {
-                    'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
-                    'eh_criador': bool(eh_criador),
-                    'video_blob': video_blob.decode('latin1')  # Codificar o blob para que possa ser transmitido em JSON
-                }
-                response_data.append(video_data)
-
-            print(f"Total de vídeos a serem retornados: {len(response_data)}")
-            return jsonify(response_data)
+            return Response(stream_with_context(stream_videos(videos, usuario_id)), mimetype='application/json')
 
         else:
             print("Parâmetros quadra_id e partida_id são necessários.")
@@ -255,6 +262,7 @@ def get_videos():
     finally:
         cursor.close()
         mydb.close()
+
 
 
 @app.route('/api/login', methods=['POST'])
