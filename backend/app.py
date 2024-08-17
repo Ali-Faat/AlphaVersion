@@ -271,10 +271,6 @@ def get_videos():
 
 @app.route('/api/video_stream/<int:video_id>', methods=['GET'])
 def stream_video(video_id):
-    # Verificar se o usuário está autenticado
-    if 'usuario_id' not in session:
-        abort(403)
-
     # Conectar ao banco de dados e buscar o vídeo pelo ID
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
@@ -283,11 +279,13 @@ def stream_video(video_id):
         video = cursor.fetchone()
 
         if not video:
+            print("Vídeo não encontrado.")
             abort(404)
 
         video_path = video['url']
 
         if not os.path.exists(video_path):
+            print(f"Arquivo de vídeo não encontrado: {video_path}")
             abort(404)
 
         return send_file(video_path, mimetype='video/mp4', as_attachment=False)
@@ -298,6 +296,7 @@ def stream_video(video_id):
     finally:
         cursor.close()
         mydb.close()
+
 
 
 @app.route('/api/login', methods=['POST'])
