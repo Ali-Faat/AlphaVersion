@@ -206,38 +206,41 @@ def get_videos():
     try:
         if quadra_id and partida_id:
             query = '''
-                SELECT v.id, v.url, v.data_criacao, v.criador_id, (v.criador_id = %s) AS eh_criador
-                FROM videos v 
-                JOIN partidas p ON v.partida_id = p.id 
-                WHERE p.quadra_id = %s 
-                AND p.id = %s
+                SELECT id, url, data_criacao, criador_id, (criador_id = %s) AS eh_criador
+                FROM videos
+                WHERE quadra_id = %s AND partida_id = %s
             '''
             params = (session.get('usuario_id'), quadra_id, partida_id)
-        else:
-            return jsonify({'error': 'Parametros quadra_id e partida_id são necessários'}), 400
+            cursor.execute(query, params)
+            videos = cursor.fetchall()
 
-        cursor.execute(query, params)
-        videos = cursor.fetchall()
+            if not videos:
+                return jsonify([])
 
-        response_data = []
-        for video in videos:
-            video_id, video_path, data_criacao, criador_id, eh_criador = video
+            response_data = []
+            for video in videos:
+                video_id, video_path, data_criacao, criador_id, eh_criador = video
 
-            video_blob = None
-            try:
+                # Verificar se o arquivo de vídeo existe
+                if not os.path.exists(video_path):
+                    print(f"Arquivo não encontrado: {video_path}")
+                    continue
+
+                # Ler o vídeo em formato blob
                 with open(video_path, 'rb') as file:
                     video_blob = file.read()
-            except FileNotFoundError:
-                continue  # Skip if file is not found
 
-            video_data = {
-                'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
-                'eh_criador': bool(eh_criador),
-                'video_blob': video_blob
-            }
-            response_data.append(video_data)
+                video_data = {
+                    'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
+                    'eh_criador': bool(eh_criador),
+                    'video_blob': video_blob.decode('latin1')  # Codificar o blob para que possa ser transmitido em JSON
+                }
+                response_data.append(video_data)
 
-        return jsonify(response_data)
+            return jsonify(response_data)
+
+        else:
+            return jsonify({'error': 'Parametros quadra_id e partida_id são necessários'}), 400
 
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
