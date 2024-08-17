@@ -92,70 +92,84 @@ async def stream_videos(videos, usuario_id):
 def get_quadras():
     return executar_consulta('SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media FROM quadras')
 
+@app.route('/api/upload_video', methods=['POST'])
 def upload_video():
     if 'video' not in request.files:
+        print("Nenhum arquivo de vídeo foi enviado.")  # Log de depuração
         return jsonify({'error': 'Nenhum arquivo de vídeo foi enviado.'}), 400
     
     video = request.files['video']
     
     if video.filename == '':
+        print("Nenhum arquivo foi selecionado.")  # Log de depuração
         return jsonify({'error': 'Nenhum arquivo foi selecionado.'}), 400
     
     if video and allowed_file(video.filename):
-        filename = secure_filename(video.filename)
+        try:
+            filename = secure_filename(video.filename)
 
-        # Obter os dados adicionais da requisição
-        quadra_id = request.form.get('quadra_id')
-        dh_inicio = request.form.get('dh_inicio')
-        dh_fim = request.form.get('dh_fim')
-        tipo = request.form.get('tipo', 'partida')  # Tipo do vídeo, por exemplo: 'partida', 'lance'
-        criador_id = session.get('usuario_id')
+            # Obter os dados adicionais da requisição
+            quadra_id = request.form.get('quadra_id')
+            dh_inicio = request.form.get('dh_inicio')
+            dh_fim = request.form.get('dh_fim')
+            tipo = request.form.get('tipo', 'partida')  # Tipo do vídeo, por exemplo: 'partida', 'lance'
+            criador_id = session.get('usuario_id')
 
-        # Criar o caminho dinâmico baseado no quadra_id
-        directory = os.path.join(app.config['UPLOAD_FOLDER'], f'quadra_{quadra_id}')
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+            # Criar o caminho dinâmico baseado no quadra_id
+            directory = os.path.join(app.config['UPLOAD_FOLDER'], f'quadra_{quadra_id}')
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+                print(f"Diretório criado: {directory}")  # Log de depuração
 
-        # Definir o caminho final do arquivo
-        filepath = os.path.join(directory, filename)
+            # Definir o caminho final do arquivo
+            filepath = os.path.join(directory, filename)
 
-        # Salvar o vídeo no diretório de uploads
-        video.save(filepath)
-        
-        # Verificar se há uma partida registrada para a quadra no horário fornecido
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-        
-        cursor.execute('SELECT * FROM partidas WHERE quadra_id = %s AND dh_inicio = %s', (quadra_id, dh_inicio))
-        partida = cursor.fetchone()
+            # Salvar o vídeo no diretório de uploads
+            video.save(filepath)
+            print(f"Arquivo salvo em: {filepath}")  # Log de depuração
+            
+            # Verificar se há uma partida registrada para a quadra no horário fornecido
+            mydb = get_db_connection()
+            cursor = mydb.cursor(dictionary=True)
+            
+            cursor.execute('SELECT * FROM partidas WHERE quadra_id = %s AND dh_inicio = %s', (quadra_id, dh_inicio))
+            partida = cursor.fetchone()
 
-        # Se não houver partida, criar uma nova
-        if not partida:
+            # Se não houver partida, criar uma nova
+            if not partida:
+                cursor.execute(
+                    'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim) VALUES (%s, %s, %s)',
+                    (quadra_id, dh_inicio, dh_fim)
+                )
+                mydb.commit()
+                partida_id = cursor.lastrowid
+                print(f"Nova partida criada com ID: {partida_id}")  # Log de depuração
+            else:
+                partida_id = partida['id']
+                print(f"Partida existente encontrada com ID: {partida_id}")  # Log de depuração
+            
+            # Caminho relativo para salvar no banco de dados
+            video_url = os.path.relpath(filepath, start=os.path.dirname(__file__))  # Gera o caminho relativo ao diretório do app
+            
+            # Salvar a URL do vídeo no banco de dados
             cursor.execute(
-                'INSERT INTO partidas (quadra_id, dh_inicio, dh_fim) VALUES (%s, %s, %s)',
-                (quadra_id, dh_inicio, dh_fim)
+                'INSERT INTO videos (partida_id, quadra_id, url, tipo, criador_id, data_criacao) VALUES (%s, %s, %s, %s, %s, %s)',
+                (partida_id, quadra_id, video_url, tipo, criador_id, datetime.datetime.now())
             )
             mydb.commit()
-            partida_id = cursor.lastrowid
-        else:
-            partida_id = partida['id']
-        
-        # Caminho relativo para salvar no banco de dados
-        video_url = os.path.relpath(filepath, start=os.path.dirname(__file__))  # Gera o caminho relativo ao diretório do app
-        
-        # Salvar a URL do vídeo no banco de dados
-        cursor.execute(
-            'INSERT INTO videos (partida_id, quadra_id, url, tipo, criador_id, data_criacao) VALUES (%s, %s, %s, %s, %s, %s)',
-            (partida_id, quadra_id, video_url, tipo, criador_id, datetime.datetime.now())
-        )
-        mydb.commit()
-        
-        cursor.close()
-        mydb.close()
-        
-        return jsonify({'success': True, 'message': 'Vídeo enviado com sucesso!', 'video_url': video_url}), 201
+            print(f"Vídeo registrado no banco de dados com URL: {video_url}")  # Log de depuração
+            
+            cursor.close()
+            mydb.close()
+            
+            return jsonify({'success': True, 'message': 'Vídeo enviado com sucesso!', 'video_url': video_url}), 201
+        except Exception as e:
+            print(f"Erro ao processar o upload do vídeo: {str(e)}")  # Log de depuração
+            return jsonify({'error': f'Erro ao processar o upload do vídeo: {str(e)}'}), 500
     else:
+        print("Formato de arquivo não permitido.")  # Log de depuração
         return jsonify({'error': 'Formato de arquivo não permitido.'}), 400
+
 
 @app.route('/api/usuarios/<int:usuario_id>', methods=['GET'])
 def get_usuario(usuario_id):
