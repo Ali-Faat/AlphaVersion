@@ -88,26 +88,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
     
-            // Supondo que a resposta é um JSON com uma lista de vídeos
             const videos = await response.json();
     
             console.log('Vídeos recebidos:', videos); // Log de depuração
     
-            // Limpar qualquer conteúdo anterior
             videoContainer.innerHTML = '';
     
             videos.forEach(video => {
-                const videoBlob = new Blob([video.video_blob], { type: 'video/mp4' });
+                // Decodificar o vídeo
+                const videoBlob = new Blob([Uint8Array.from(atob(video.video_blob), c => c.charCodeAt(0))], { type: 'video/mp4' });
                 const videoUrl = URL.createObjectURL(videoBlob);
     
-                // Criar o elemento de vídeo
                 const videoElement = document.createElement('video');
                 videoElement.src = videoUrl;
                 videoElement.controls = true;
                 videoElement.width = 640;  // ou ajuste conforme necessário
                 videoElement.height = 360; // ou ajuste conforme necessário
     
-                // Adicionar título e contêiner de vídeo
                 const videoTitle = document.createElement('h3');
                 videoTitle.textContent = `${video.data_criacao} ${video.eh_criador ? "(Criador)" : ""}`;
                 const videoItem = document.createElement('div');
@@ -123,7 +120,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             exibirMensagem('Ocorreu um erro ao carregar os vídeos.', videoContainer);
         }
     }
-    
     
     
     // Atualizar o select de horas com base na data selecionada

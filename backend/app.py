@@ -211,10 +211,14 @@ def get_videos():
                 WHERE quadra_id = %s AND partida_id = %s
             '''
             params = (session.get('usuario_id'), quadra_id, partida_id)
+            print(f"Executing query with params: {params}")  # Log de depuração
             cursor.execute(query, params)
             videos = cursor.fetchall()
 
+            print(f"Videos encontrados: {len(videos)}")  # Log de depuração
+
             if not videos:
+                print("Nenhum vídeo encontrado para os parâmetros fornecidos.")
                 return jsonify([])
 
             response_data = []
@@ -226,6 +230,7 @@ def get_videos():
                     print(f"Arquivo não encontrado: {video_path}")
                     continue
 
+                print(f"Lendo arquivo de vídeo: {video_path}")
                 # Ler o vídeo em formato blob
                 with open(video_path, 'rb') as file:
                     video_blob = file.read()
@@ -237,16 +242,20 @@ def get_videos():
                 }
                 response_data.append(video_data)
 
+            print(f"Total de vídeos a serem retornados: {len(response_data)}")
             return jsonify(response_data)
 
         else:
+            print("Parâmetros quadra_id e partida_id são necessários.")
             return jsonify({'error': 'Parametros quadra_id e partida_id são necessários'}), 400
 
     except mysql.connector.Error as err:
+        print(f"Erro ao buscar vídeos: {err}")
         return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
     finally:
         cursor.close()
         mydb.close()
+
 
 @app.route('/api/login', methods=['POST'])
 def login():
