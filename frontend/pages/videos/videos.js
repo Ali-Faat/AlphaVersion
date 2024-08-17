@@ -46,54 +46,91 @@ document.addEventListener('DOMContentLoaded', async () => {
         videoElement.controls = true;
         videoElement.width = 320;
         videoElement.height = 240;
+        videoElement.setAttribute('preload', 'metadata');
         return videoElement;
     }
 
+    // Função para exibir vídeos no container
+    function exibirVideos(videos) {
+        videoContainer.innerHTML = '';  // Limpar vídeos anteriores
+
+        if (videos.length === 0) {
+            const noVideosMessage = document.createElement('p');
+            noVideosMessage.textContent = 'Nenhum vídeo encontrado para esta partida.';
+            videoContainer.appendChild(noVideosMessage);
+        } else {
+            videos.forEach(video => {
+                const videoElement = criarVideoElement(video);
+                const videoTitle = document.createElement('h3');
+                videoTitle.textContent = video.tipo;
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
+
+                if (video.eh_criador) {
+                    videoItem.classList.add('destaque');
+                }
+
+                videoItem.appendChild(videoTitle);
+                videoItem.appendChild(videoElement);
+                videoContainer.appendChild(videoItem);
+            });
+        }
+    }
+
     // Função para buscar e exibir os vídeos da partida selecionada
-    async function fetchVideosByPartida(partidaId) {
+    async function fetchAndExibirVideos(partidaId) {
         try {
+            const quadraId = getQuadraIdFromUrl();
             console.log('Buscando vídeos para partida ID:', partidaId); // Log de depuração
             const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${partidaId}`);
             
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
-            
+    
+            // Supondo que a resposta é um JSON com uma lista de vídeos
             const videos = await response.json();
     
             console.log('Vídeos recebidos:', videos); // Log de depuração
     
+            // Limpar qualquer conteúdo anterior
             videoContainer.innerHTML = '';
     
-            if (videos.length === 0) {
-                exibirMensagem('Nenhum vídeo encontrado para esta partida.', videoContainer);
-            } else {
-                videos.forEach(video => {
-                    const videoElement = criarVideoElement(video);
-                    const videoTitle = document.createElement('h3');
-                    videoTitle.textContent = video.tipo;
-                    const videoItem = document.createElement('div');
-                    videoItem.classList.add('video-item');
+            videos.forEach(video => {
+                const videoBlob = new Blob([video.video_blob], { type: 'video/mp4' });
+                const videoUrl = URL.createObjectURL(videoBlob);
     
-                    if (video.eh_criador) {
-                        videoItem.classList.add('destaque');
-                    }
+                // Criar o elemento de vídeo
+                const videoElement = document.createElement('video');
+                videoElement.src = videoUrl;
+                videoElement.controls = true;
+                videoElement.width = 640;  // ou ajuste conforme necessário
+                videoElement.height = 360; // ou ajuste conforme necessário
     
-                    videoItem.appendChild(videoTitle);
-                    videoItem.appendChild(videoElement);
+                // Adicionar título e contêiner de vídeo
+                const videoTitle = document.createElement('h3');
+                videoTitle.textContent = `${video.data_criacao} ${video.eh_criador ? "(Criador)" : ""}`;
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
     
-                    videoContainer.appendChild(videoItem);
-                });
-            }
+                videoItem.appendChild(videoTitle);
+                videoItem.appendChild(videoElement);
+                videoContainer.appendChild(videoItem);
+            });
+    
         } catch (error) {
             console.error('Erro ao buscar vídeos da partida:', error);
             exibirMensagem('Ocorreu um erro ao carregar os vídeos.', videoContainer);
         }
     }
-
+    
+    
+    
     // Atualizar o select de horas com base na data selecionada
     function atualizarHorasPartida() {
         const dataSelecionada = dataPartidaInput.value;
+        const quadraId = getQuadraIdFromUrl();
+
         if (!dataSelecionada) {
             exibirMensagem('Selecione uma data.', videoContainer, false);
             return;
@@ -115,6 +152,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     
         // Limpar o select de horas
         horaPartidaSelect.innerHTML = '';
+
+        // Adicionar uma opção padrão solicitando ao usuário que selecione uma partida
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Selecione uma partida';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        horaPartidaSelect.appendChild(defaultOption);
     
         if (partidasFiltradas.length === 0) {
             exibirMensagem('Nenhuma partida encontrada para esta data.', videoContainer, false);
@@ -126,24 +171,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 option.textContent = horaInicio;
                 horaPartidaSelect.appendChild(option);
             });
-    
-            // Exibir vídeos para a primeira partida encontrada por padrão
-            const primeiraPartida = partidasFiltradas[0];
-            console.log('Atualizando vídeos para a primeira partida:', primeiraPartida);  // Log de depuração
-            fetchVideosByPartida(primeiraPartida.id);
-    
-            // Adicionar evento para atualizar vídeos ao selecionar outra hora
+
+            // Adicionar evento para atualizar vídeos ao selecionar uma hora
             horaPartidaSelect.addEventListener('change', function() {
                 const partidaSelecionadaId = horaPartidaSelect.value;
-                fetchVideosByPartida(partidaSelecionadaId);
+                if (partidaSelecionadaId) {
+                    fetchAndExibirVideos(partidaSelecionadaId);
+                }
             });
         }
     }    
 
-
-
-    // Função para buscar os vídeos da quadra
-    async function fetchVideosByQuadra(quadraId) {
+    // Função para buscar as partidas da quadra
+    async function fetchPartidasByQuadra(quadraId) {
         try {
             console.log('Buscando partidas para quadra ID:', quadraId); // Log de depuração
             const response = await fetch(`http://138.99.160.212:5000/api/partidas/${quadraId}`);
@@ -158,9 +198,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Adicionar evento de mudança ao input de data
             dataPartidaInput.addEventListener('change', atualizarHorasPartida);
-
-            // Buscar os vídeos da primeira partida por padrão (se houver)
-            atualizarHorasPartida();
         } catch (error) {
             console.error('Erro ao buscar partidas da quadra:', error);
             exibirMensagem('Ocorreu um erro ao carregar as partidas.', videoContainer);
@@ -189,7 +226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('ID da quadra obtido da URL:', quadraId); // Log de depuração
     if (quadraId) {
         fetchQuadraNome(quadraId);
-        fetchVideosByQuadra(quadraId);
+        fetchPartidasByQuadra(quadraId);
     } else {
         console.error('Nenhum ID de quadra encontrado na URL'); // Log de depuração
         window.location.href = '../quadras/quadras.html'; 

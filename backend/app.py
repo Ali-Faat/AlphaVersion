@@ -200,52 +200,44 @@ def get_videos():
     quadra_id = request.args.get('quadra_id')
     partida_id = request.args.get('partida_id')
 
-    # Caminho base para vídeos
-    base_path = r'C:\GoalCast\AlphaVersion\backend\uploads\videos'
-
     mydb = get_db_connection()
     cursor = mydb.cursor()
 
     try:
         if quadra_id and partida_id:
             query = '''
-                SELECT v.*, (v.criador_id = %s) AS eh_criador 
+                SELECT v.id, v.url, v.data_criacao, v.criador_id, (v.criador_id = %s) AS eh_criador
                 FROM videos v 
                 JOIN partidas p ON v.partida_id = p.id 
                 WHERE p.quadra_id = %s 
                 AND p.id = %s
             '''
             params = (session.get('usuario_id'), quadra_id, partida_id)
-        elif quadra_id:
-            query = '''
-                SELECT v.*, (v.criador_id = %s) AS eh_criador 
-                FROM videos v
-                JOIN partidas p ON v.partida_id = p.id 
-                WHERE p.quadra_id = %s
-            '''
-            params = (session.get('usuario_id'), quadra_id)
         else:
-            query = '''
-                SELECT v.*, (v.criador_id = %s) AS eh_criador 
-                FROM videos v
-            '''
-            params = (session.get('usuario_id'),)
+            return jsonify({'error': 'Parametros quadra_id e partida_id são necessários'}), 400
 
         cursor.execute(query, params)
         videos = cursor.fetchall()
 
-        if not videos:
-            return jsonify({'error': 'Nenhum vídeo encontrado'}), 404
+        response_data = []
+        for video in videos:
+            video_id, video_path, data_criacao, criador_id, eh_criador = video
 
-        # Obter o caminho absoluto do primeiro vídeo encontrado
-        video_info = videos[0]  # Considerando o primeiro vídeo encontrado
-        relative_path = video_info[3]  # Supondo que 'url' seja o campo onde o caminho relativo é armazenado
-        video_path = os.path.join(base_path, f'quadra_{quadra_id}', os.path.basename(relative_path))
+            video_blob = None
+            try:
+                with open(video_path, 'rb') as file:
+                    video_blob = file.read()
+            except FileNotFoundError:
+                continue  # Skip if file is not found
 
-        if not os.path.exists(video_path):
-            return jsonify({'error': f'Vídeo não encontrado no caminho: {video_path}'}), 404
+            video_data = {
+                'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
+                'eh_criador': bool(eh_criador),
+                'video_blob': video_blob
+            }
+            response_data.append(video_data)
 
-        return send_file(video_path, mimetype='video/mp4', as_attachment=False)
+        return jsonify(response_data)
 
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
