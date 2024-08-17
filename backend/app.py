@@ -31,7 +31,7 @@ app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
 app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'False'
 
 # Configuração de upload de arquivos
-app.config['UPLOAD_FOLDER'] = 'uploads/videos'
+app.config['UPLOAD_FOLDER'] = '/../uploads/videos'
 app.config['ALLOWED_EXTENSIONS'] = {'mp4', 'avi', 'mov', 'mkv'}
 
 
@@ -183,6 +183,7 @@ def get_partidas_por_quadra(quadra_id):
         partidas_json = [
             {
                 'id': partida['id'],
+                'quadra_id': partida['quadra_id'],
                 'dh_inicio': partida['dh_inicio'].isoformat() if partida['dh_inicio'] else None,
                 'dh_fim': partida['dh_fim'].isoformat() if partida['dh_fim'] else None
             } for partida in partidas

@@ -13,13 +13,13 @@ def send_welcome_email(email_destinatario, nome_completo):
     
     subject = 'Bem-vindo ao GoalCast'
     body = f"""
-    Olá {nome_completo}, 👋🏻
+    Ola {nome_completo}, 👋🏻
 
     Obrigado por se cadastrar no GoalCast!
 
     Para concluir seu cadastro, por favor, acesse o link abaixo para verificar seu e-mail:
 
-    Link para verificação: http://138.99.160.212/pages/validar/validar.html
+    Link para verificacao: http://138.99.160.212/pages/validar/validar.html
 
     Atenciosamente,
     Equipe GoalCast!
@@ -44,4 +44,4 @@ def send_welcome_email(email_destinatario, nome_completo):
 # Seção para teste do código
 if __name__ == '__main__':
     # Testar envio de e-mail com um destinatário e nome específico
-    send_welcome_email('emaildestinatario@exemplo.com', 'Nome Completo')
+    send_welcome_email('alisonribeiro875@gmail.com', 'Alison Tierris Ribeiro')

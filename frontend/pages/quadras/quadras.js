@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const quadraList = document.querySelector('.quadra-list');
     const filterInput = document.getElementById('filter-name');
-    const errorMessage = document.querySelector('.error-banner');
-    const closeBanner = document.getElementById('close-banner');
+    const errorMessage = document.querySelector('.error-message');
 
     // Função para buscar e exibir as quadras
     async function fetchQuadras(nome = '') {
@@ -25,17 +24,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 const quadraItem = document.createElement('div');
                 quadraItem.classList.add('quadra-item');
 
-                // Link para a página de vídeos da quadra
+                // Logo da quadra usando a URL do campo 'imagens'
+                const quadraLogo = document.createElement('img');
+                quadraLogo.src = quadra.imagens; // URL do campo 'imagens'
+                quadraLogo.alt = `${quadra.nome} logo`;
+                quadraLogo.classList.add('quadra-logo');
+                quadraItem.appendChild(quadraLogo);
+
+                // Nome e endereço da quadra (link)
+                const quadraInfo = document.createElement('div');
+                quadraInfo.classList.add('quadra-info');
+
                 const quadraLink = document.createElement('a');
                 quadraLink.href = `../videos/videos.html?quadra_id=${quadra.id}`;
                 quadraLink.dataset.quadraId = quadra.id;
                 quadraLink.innerHTML = `<h3>${quadra.nome}</h3>`;
-                quadraItem.appendChild(quadraLink);
+                quadraInfo.appendChild(quadraLink);
 
-                // Exibir o endereço da quadra
                 const enderecoQuadra = document.createElement('p');
                 enderecoQuadra.textContent = quadra.endereco;
-                quadraItem.appendChild(enderecoQuadra);
+                quadraInfo.appendChild(enderecoQuadra);
+
+                quadraItem.appendChild(quadraInfo);
+
+                // Avaliação da quadra com base em 'avaliacao_media'
+                const quadraRating = document.createElement('div');
+                quadraRating.classList.add('quadra-rating');
+
+                for (let i = 0; i < 5; i++) {
+                    const starIcon = document.createElement('i');
+                    starIcon.classList.add('material-icons');
+                    starIcon.textContent = i < Math.round(quadra.avaliacao_media) ? 'star' : 'star_border';
+                    quadraRating.appendChild(starIcon);
+                }
+
+                quadraItem.appendChild(quadraRating);
 
                 // Adicionar o item da quadra à lista
                 quadraList.appendChild(quadraItem);
@@ -49,23 +72,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para exibir mensagens de erro na interface
     function mostrarErro(mensagem) {
-        errorMessage.querySelector('#error-text').textContent = mensagem;
-        errorMessage.classList.add('show');
+        errorMessage.textContent = mensagem;
+        errorMessage.classList.add('show'); 
 
-        // Timeout para remover a mensagem de erro após 10 segundos
         setTimeout(() => {
             ocultarErro();
-        }, 10000);
+        }, 3000);
     }
 
     // Função para ocultar mensagens de erro na interface
     function ocultarErro() {
         errorMessage.classList.remove('show');
-        errorMessage.querySelector('#error-text').textContent = '';
+        errorMessage.textContent = ''; 
     }
-
-    // Listener para o botão de fechar o banner
-    closeBanner.addEventListener('click', ocultarErro);
 
     // Adicionar evento ao campo de entrada de nome de quadra
     if (filterInput) {
@@ -77,12 +96,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Buscar e exibir as quadras ao carregar a página
     fetchQuadras();
-
-    // Aplicar o tema com base na preferência do sistema
-    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    if (prefersDarkScheme.matches) {
-        document.documentElement.setAttribute("data-theme", "dark");
-    } else {
-        document.documentElement.setAttribute("data-theme", "light");
-    }
 });
