@@ -92,7 +92,6 @@ async def stream_videos(videos, usuario_id):
 def get_quadras():
     return executar_consulta('SELECT id_sequencial, id, nome, endereco, tipo, imagens, descricao, preco_hora, disponibilidade, avaliacao_media FROM quadras')
 
-@app.route('/api/upload_video', methods=['POST'])
 def upload_video():
     if 'video' not in request.files:
         return jsonify({'error': 'Nenhum arquivo de vídeo foi enviado.'}), 400
@@ -117,7 +116,7 @@ def upload_video():
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        # Definir o caminho final absoluto do arquivo
+        # Definir o caminho final do arquivo
         filepath = os.path.join(directory, filename)
 
         # Salvar o vídeo no diretório de uploads
@@ -141,8 +140,8 @@ def upload_video():
         else:
             partida_id = partida['id']
         
-        # Caminho absoluto relativo ao diretório de uploads para salvar no banco de dados
-        video_url = os.path.relpath(filepath, start=app.config['UPLOAD_FOLDER'])
+        # Caminho relativo para salvar no banco de dados
+        video_url = os.path.relpath(filepath, start=os.path.dirname(__file__))  # Gera o caminho relativo ao diretório do app
         
         # Salvar a URL do vídeo no banco de dados
         cursor.execute(

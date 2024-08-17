@@ -1,15 +1,11 @@
 :root {
   --primary-color: #007bff;
-  --secondary-color: #6c757d;
   --border-color-light: #ced4da;
   --border-color-dark: #555;
   --text-color-light: #212529;
   --text-color-dark: #e9ecef;
   --background-color-light: #f8f9fa;
   --background-color-dark: #121212;
-  --button-hover-color: #0056b3;
-  --success-color: #28a745;
-  --error-color: #dc3545;
 }
 
 body.light-theme {
@@ -90,6 +86,60 @@ input[type="date"], select {
   max-width: 48%;
 }
 
+/* Estilo para a exibição dos vídeos agrupados */
+.video-container {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+}
+
+.video-group {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--background-color);
+  text-align: center;
+}
+
+.video-group h3 {
+  margin-bottom: 10px;
+}
+
+.video-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.video-row .cam {
+  width: 48%;
+  height: 240px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.mesh-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.mesh-container .mesh {
+  width: 100%;
+  height: 120px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.video-group p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
 .error-message {
   color: red;
   display: none;
@@ -100,96 +150,20 @@ input[type="date"], select {
   display: block;
 }
 
-video {
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-}
-
-.video-item {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.video-item.destaque {
-  border: 2px solid var(--primary-color);
-  padding: 10px;
-  border-radius: 10px;
-}
-
-/* Estilos para Grupos de Vídeos */
-.video-group {
-  border: 2px solid var(--primary-color);
-  border-radius: 10px;
-  margin-bottom: 30px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--background-color-light);
-}
-
-.video-group .video-header {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: var(--primary-color);
-}
-
-.video-group .video-container {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-  justify-content: center;
-}
-
-.video-group .video-container .video-item {
-  flex: 1;
-  text-align: center;
-}
-
-.video-group .video-container .video-item video {
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  width: 100%;
-  height: auto;
-}
-
-.video-group .video-container.mesh-video video {
-  width: 100%;
-  height: 180px; /* Mesh video alongado */
-}
-
-.video-group .creation-date {
-  font-size: 14px;
-  color: var(--primary-color);
-  margin-top: 10px;
-}
-
-/* Estilos de Carregamento */
 .loading-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: none;
   justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
-  z-index: 1000;
-  color: white;
-  font-size: 16px;
+  align-items: center;
+  flex-direction: column;
 }
 
-.spinner {
-  border: 8px solid var(--border-color-light);
-  border-top: 8px solid var(--primary-color);
+.loading-spinner .spinner {
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--primary-color);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
@@ -197,7 +171,12 @@ video {
   100% { transform: rotate(360deg); }
 }
 
-/* Responsividade */
+.loading-spinner p {
+  margin-top: 10px;
+  color: var(--text-color);
+}
+
+/* Responsividade para dispositivos móveis */
 @media (max-width: 767px) {
   h1 {
       font-size: 18px;
@@ -209,25 +188,26 @@ video {
 
   .form-row {
       flex-direction: column;
-      align-items: stretch;
+      align-items: center;
   }
 
   input[type="date"], select {
       font-size: 14px;
-      max-width: 100%;
-  }
-
-  video {
       width: 100%;
-      height: auto;
   }
 
-  .video-group .video-container {
+  .video-row {
     flex-direction: column;
+    align-items: center;
   }
-  
-  .video-group .video-container.mesh-video video {
-    height: auto;
+
+  .video-row .cam {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .mesh-container .mesh {
+    width: 100%;
   }
 }
 

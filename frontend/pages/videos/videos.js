@@ -39,42 +39,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         container.appendChild(messageElement);
     }
 
-    // Função para criar um elemento de vídeo
-    function criarVideoElement(video) {
-        const videoElement = document.createElement('video');
-        videoElement.src = video.url;
-        videoElement.controls = true;
-        videoElement.width = 320;
-        videoElement.height = 240;
-        videoElement.setAttribute('preload', 'metadata');
-        return videoElement;
-    }
-
-    // Função para exibir vídeos no container
-    function exibirVideos(videos) {
-        videoContainer.innerHTML = '';  // Limpar vídeos anteriores
-
-        if (videos.length === 0) {
-            const noVideosMessage = document.createElement('p');
-            noVideosMessage.textContent = 'Nenhum vídeo encontrado para esta partida.';
-            videoContainer.appendChild(noVideosMessage);
-        } else {
-            videos.forEach(video => {
-                const videoElement = criarVideoElement(video);
-                const videoTitle = document.createElement('h3');
-                videoTitle.textContent = video.tipo;
-                const videoItem = document.createElement('div');
-                videoItem.classList.add('video-item');
-
-                if (video.eh_criador) {
-                    videoItem.classList.add('destaque');
-                }
-
-                videoItem.appendChild(videoTitle);
-                videoItem.appendChild(videoElement);
-                videoContainer.appendChild(videoItem);
-            });
-        }
+    function groupVideosByCreationDate(videos) {
+        const groupedVideos = {};
+    
+        videos.forEach(video => {
+            const key = video.data_criacao;
+            if (!groupedVideos[key]) {
+                groupedVideos[key] = [];
+            }
+            groupedVideos[key].push(video);
+        });
+    
+        return groupedVideos;
     }
 
     // Função para buscar e exibir os vídeos da partida selecionada
@@ -91,67 +67,65 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
     
             const videos = await response.json();
-    
             console.log('Vídeos recebidos:', videos); // Log de depuração
     
-            videoContainer.innerHTML = '';
+            const videoContainer = document.getElementById('video-container');
+            if (!videoContainer) {
+                console.error('Elemento video-container não encontrado!');
+                return;
+            }
     
-            const groupedVideos = videos.reduce((acc, video) => {
-                const key = new Date(video.data_criacao).getTime();
-                if (!acc[key]) acc[key] = [];
-                acc[key].push(video);
-                return acc;
-            }, {});
+            videoContainer.innerHTML = ''; // Limpa o container de vídeos
     
-            Object.keys(groupedVideos).forEach(key => {
-                const group = groupedVideos[key];
+            if (videos.length === 0) {
+                console.log('Nenhum vídeo encontrado para esta partida.');
+                exibirMensagem('Nenhum vídeo encontrado para esta partida.', videoContainer, false);
+                return;
+            }
+    
+            const groupedVideos = groupVideosByCreationDate(videos);
+    
+            Object.keys(groupedVideos).forEach(dateKey => {
+                const videoGroup = groupedVideos[dateKey];
                 const groupDiv = document.createElement('div');
                 groupDiv.classList.add('video-group');
     
-                const videoHeader = document.createElement('div');
-                videoHeader.classList.add('video-header');
-                videoHeader.textContent = `Tipo: ${group[0].tipo || 'Indefinido'}`;
-                groupDiv.appendChild(videoHeader);
+                const tipo = videoGroup[0].tipo || 'desconhecido'; // Verificação de segurança
+                const title = document.createElement('h3');
+                title.textContent = tipo;
+                groupDiv.appendChild(title);
     
-                const videoContainer = document.createElement('div');
-                videoContainer.classList.add('video-container');
+                const videoContainerUpper = document.createElement('div');
+                videoContainerUpper.classList.add('video-row');
     
-                group.forEach(video => {
-                    const videoItem = document.createElement('div');
-                    videoItem.classList.add('video-item');
+                let meshVideoElement = null;
     
+                videoGroup.forEach(video => {
                     const videoElement = document.createElement('video');
-                    videoElement.src = `http://138.99.160.212:5000/api/video_stream/${video.video_id}`;  // Usando a URL segura
+                    videoElement.src = `http://138.99.160.212:5000/api/video_stream/${video.video_id}`;
                     videoElement.controls = true;
     
-                    videoItem.appendChild(videoElement);
-                    videoContainer.appendChild(videoItem);
+                    if (video.tipo && video.tipo.toLowerCase().includes('mesh')) {
+                        videoElement.classList.add('mesh');
+                        meshVideoElement = videoElement;
+                    } else {
+                        videoElement.classList.add('cam');
+                        videoContainerUpper.appendChild(videoElement);
+                    }
                 });
     
-                const meshVideos = group.filter(v => v.tipo && v.tipo.toLowerCase().includes('mesh'));
-                if (meshVideos.length) {
-                    const meshVideoContainer = document.createElement('div');
-                    meshVideoContainer.classList.add('video-container', 'mesh-video');
+                groupDiv.appendChild(videoContainerUpper);
     
-                    meshVideos.forEach(video => {
-                        const videoElement = document.createElement('video');
-                        videoElement.src = `http://138.99.160.212:5000/api/video_stream/${video.video_id}`;  // Usando a URL segura
-                        videoElement.controls = true;
-    
-                        const videoItem = document.createElement('div');
-                        videoItem.classList.add('video-item');
-                        videoItem.appendChild(videoElement);
-    
-                        meshVideoContainer.appendChild(videoItem);
-                    });
-    
-                    groupDiv.appendChild(meshVideoContainer);
+                if (meshVideoElement) {
+                    const meshContainer = document.createElement('div');
+                    meshContainer.classList.add('mesh-container');
+                    meshContainer.appendChild(meshVideoElement);
+                    groupDiv.appendChild(meshContainer);
                 }
     
-                const creationDate = document.createElement('div');
-                creationDate.classList.add('creation-date');
-                creationDate.textContent = `Data de Criação: ${new Date(parseInt(key)).toLocaleString()}`;
-                groupDiv.appendChild(creationDate);
+                const dateLabel = document.createElement('p');
+                dateLabel.textContent = dateKey;
+                groupDiv.appendChild(dateLabel);
     
                 videoContainer.appendChild(groupDiv);
             });
@@ -165,7 +139,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     
-        
     
     // Atualizar o select de horas com base na data selecionada
     function atualizarHorasPartida() {
@@ -274,5 +247,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Inicializar componentes do Materialize
-    M.AutoInit();
+    const M = M.AutoInit();
 });
