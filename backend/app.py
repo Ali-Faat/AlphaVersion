@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file, Response, stream_with_context
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, abort, send_file, Response, stream_with_context
 from database import get_db_connection
 import mysql.connector
 import json
@@ -235,7 +235,7 @@ def get_videos():
     try:
         if quadra_id and partida_id:
             query = '''
-                SELECT id, url, data_criacao, criador_id, (criador_id = %s) AS eh_criador
+                SELECT id, data_criacao, criador_id, (criador_id = %s) AS eh_criador
                 FROM videos
                 WHERE quadra_id = %s AND partida_id = %s
             '''
@@ -248,20 +248,12 @@ def get_videos():
 
             response_data = []
             for video in videos:
-                video_id, video_path, data_criacao, criador_id, eh_criador = video
-
-                # Verificar se o arquivo de vídeo existe
-                if not os.path.exists(video_path):
-                    continue
-
-                # Ler o vídeo em formato blob
-                with open(video_path, 'rb') as file:
-                    video_blob = base64.b64encode(file.read()).decode('utf-8')
+                video_id, data_criacao, criador_id, eh_criador = video
 
                 video_data = {
+                    'video_id': video_id,  # Enviar o ID do vídeo para o frontend
                     'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
-                    'eh_criador': bool(eh_criador),
-                    'video_blob': video_blob  # Blob codificado em base64
+                    'eh_criador': bool(eh_criador)
                 }
                 response_data.append(video_data)
 
@@ -276,6 +268,36 @@ def get_videos():
         cursor.close()
         mydb.close()
 
+
+@app.route('/api/video_stream/<int:video_id>', methods=['GET'])
+def stream_video(video_id):
+    # Verificar se o usuário está autenticado
+    if 'usuario_id' not in session:
+        abort(403)
+
+    # Conectar ao banco de dados e buscar o vídeo pelo ID
+    mydb = get_db_connection()
+    cursor = mydb.cursor(dictionary=True)
+    try:
+        cursor.execute('SELECT url, criador_id FROM videos WHERE id = %s', (video_id,))
+        video = cursor.fetchone()
+
+        if not video:
+            abort(404)
+
+        video_path = video['url']
+
+        if not os.path.exists(video_path):
+            abort(404)
+
+        return send_file(video_path, mimetype='video/mp4', as_attachment=False)
+
+    except mysql.connector.Error as err:
+        print(f"Erro ao buscar vídeo: {err}")
+        abort(500)
+    finally:
+        cursor.close()
+        mydb.close()
 
 
 @app.route('/api/login', methods=['POST'])

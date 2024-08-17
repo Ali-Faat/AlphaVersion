@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     
             videoContainer.innerHTML = '';
     
-            // Função para agrupar vídeos por data_criacao (com margem de segundos)
             const groupedVideos = videos.reduce((acc, video) => {
                 const key = new Date(video.data_criacao).getTime();
                 if (!acc[key]) acc[key] = [];
@@ -109,7 +108,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const groupDiv = document.createElement('div');
                 groupDiv.classList.add('video-group');
     
-                // Adicionar título
                 const videoHeader = document.createElement('div');
                 videoHeader.classList.add('video-header');
                 videoHeader.textContent = `Tipo: ${group[0].tipo || 'Indefinido'}`;
@@ -122,51 +120,34 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const videoItem = document.createElement('div');
                     videoItem.classList.add('video-item');
     
-                    try {
-                        // Decodificar o blob base64 para criar o URL do vídeo
-                        const videoBlob = base64ToBlob(video.video_blob, 'video/mp4');
-                        const videoUrl = URL.createObjectURL(videoBlob);
+                    const videoElement = document.createElement('video');
+                    videoElement.src = `http://138.99.160.212:5000/api/video_stream/${video.video_id}`;  // Usando a URL segura
+                    videoElement.controls = true;
     
-                        const videoElement = document.createElement('video');
-                        videoElement.src = videoUrl;
-                        videoElement.controls = true;
-    
-                        videoItem.appendChild(videoElement);
-                        videoContainer.appendChild(videoItem);
-                    } catch (error) {
-                        console.error('Erro ao decodificar o vídeo:', error);
-                    }
+                    videoItem.appendChild(videoElement);
+                    videoContainer.appendChild(videoItem);
                 });
     
-                // Adicionar o contêiner mesh abaixo dos vídeos de câmera
                 const meshVideos = group.filter(v => v.tipo && v.tipo.toLowerCase().includes('mesh'));
                 if (meshVideos.length) {
                     const meshVideoContainer = document.createElement('div');
                     meshVideoContainer.classList.add('video-container', 'mesh-video');
     
                     meshVideos.forEach(video => {
-                        try {
-                            const videoBlob = base64ToBlob(video.video_blob, 'video/mp4');
-                            const videoUrl = URL.createObjectURL(videoBlob);
+                        const videoElement = document.createElement('video');
+                        videoElement.src = `http://138.99.160.212:5000/api/video_stream/${video.video_id}`;  // Usando a URL segura
+                        videoElement.controls = true;
     
-                            const videoElement = document.createElement('video');
-                            videoElement.src = videoUrl;
-                            videoElement.controls = true;
+                        const videoItem = document.createElement('div');
+                        videoItem.classList.add('video-item');
+                        videoItem.appendChild(videoElement);
     
-                            const videoItem = document.createElement('div');
-                            videoItem.classList.add('video-item');
-                            videoItem.appendChild(videoElement);
-    
-                            meshVideoContainer.appendChild(videoItem);
-                        } catch (error) {
-                            console.error('Erro ao decodificar o vídeo:', error);
-                        }
+                        meshVideoContainer.appendChild(videoItem);
                     });
     
                     groupDiv.appendChild(meshVideoContainer);
                 }
     
-                // Adicionar data de criação
                 const creationDate = document.createElement('div');
                 creationDate.classList.add('creation-date');
                 creationDate.textContent = `Data de Criação: ${new Date(parseInt(key)).toLocaleString()}`;
@@ -182,23 +163,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             spinner.style.display = 'none'; // Ocultar o spinner
         }
     }
-    
-    // Função para converter base64 em Blob com verificação
-    function base64ToBlob(base64, mime) {
-        try {
-            const byteCharacters = atob(base64);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            return new Blob([byteArray], {type: mime});
-        } catch (error) {
-            console.error('Erro na decodificação base64:', error);
-            throw error;
-        }
-    }
-    
     
     
         
