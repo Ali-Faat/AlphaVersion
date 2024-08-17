@@ -121,16 +121,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 group.forEach(video => {
                     const videoItem = document.createElement('div');
                     videoItem.classList.add('video-item');
-                    
-                    const videoBlob = new Blob([new Uint8Array(video.video_blob.split('').map(c => c.charCodeAt(0)))], { type: 'video/mp4' });
-                    const videoUrl = URL.createObjectURL(videoBlob);
     
-                    const videoElement = document.createElement('video');
-                    videoElement.src = videoUrl;
-                    videoElement.controls = true;
+                    try {
+                        // Decodificar o blob base64 para criar o URL do vídeo
+                        const videoBlob = base64ToBlob(video.video_blob, 'video/mp4');
+                        const videoUrl = URL.createObjectURL(videoBlob);
     
-                    videoItem.appendChild(videoElement);
-                    videoContainer.appendChild(videoItem);
+                        const videoElement = document.createElement('video');
+                        videoElement.src = videoUrl;
+                        videoElement.controls = true;
+    
+                        videoItem.appendChild(videoElement);
+                        videoContainer.appendChild(videoItem);
+                    } catch (error) {
+                        console.error('Erro ao decodificar o vídeo:', error);
+                    }
                 });
     
                 // Adicionar o contêiner mesh abaixo dos vídeos de câmera
@@ -140,18 +145,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                     meshVideoContainer.classList.add('video-container', 'mesh-video');
     
                     meshVideos.forEach(video => {
-                        const videoBlob = new Blob([new Uint8Array(video.video_blob.split('').map(c => c.charCodeAt(0)))], { type: 'video/mp4' });
-                        const videoUrl = URL.createObjectURL(videoBlob);
+                        try {
+                            const videoBlob = base64ToBlob(video.video_blob, 'video/mp4');
+                            const videoUrl = URL.createObjectURL(videoBlob);
     
-                        const videoElement = document.createElement('video');
-                        videoElement.src = videoUrl;
-                        videoElement.controls = true;
+                            const videoElement = document.createElement('video');
+                            videoElement.src = videoUrl;
+                            videoElement.controls = true;
     
-                        const videoItem = document.createElement('div');
-                        videoItem.classList.add('video-item');
-                        videoItem.appendChild(videoElement);
+                            const videoItem = document.createElement('div');
+                            videoItem.classList.add('video-item');
+                            videoItem.appendChild(videoElement);
     
-                        meshVideoContainer.appendChild(videoItem);
+                            meshVideoContainer.appendChild(videoItem);
+                        } catch (error) {
+                            console.error('Erro ao decodificar o vídeo:', error);
+                        }
                     });
     
                     groupDiv.appendChild(meshVideoContainer);
@@ -173,6 +182,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             spinner.style.display = 'none'; // Ocultar o spinner
         }
     }
+    
+    // Função para converter base64 em Blob com verificação
+    function base64ToBlob(base64, mime) {
+        try {
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            return new Blob([byteArray], {type: mime});
+        } catch (error) {
+            console.error('Erro na decodificação base64:', error);
+            throw error;
+        }
+    }
+    
+    
     
         
     

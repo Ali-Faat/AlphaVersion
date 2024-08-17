@@ -72,7 +72,7 @@ async def processar_video(video, usuario_id):
     print(f"Lendo arquivo de vídeo: {video_path}")
     # Ler e codificar o vídeo em formato blob
     with open(video_path, 'rb') as file:
-        video_blob = base64.b64encode(file.read()).decode('utf-8')  # Usando base64
+        video_blob = base64.b64encode(file.read()).decode('utf-8')
 
     video_data = {
         'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
@@ -244,20 +244,33 @@ def get_videos():
             videos = cursor.fetchall()
 
             if not videos:
-                print("Nenhum vídeo encontrado para os parâmetros fornecidos.")
                 return jsonify([])
 
-            # Usar a função de streaming para enviar os vídeos progressivamente
-            usuario_id = session.get('usuario_id')
+            response_data = []
+            for video in videos:
+                video_id, video_path, data_criacao, criador_id, eh_criador = video
 
-            return Response(stream_with_context(stream_videos(videos, usuario_id)), mimetype='application/json')
+                # Verificar se o arquivo de vídeo existe
+                if not os.path.exists(video_path):
+                    continue
+
+                # Ler o vídeo em formato blob
+                with open(video_path, 'rb') as file:
+                    video_blob = base64.b64encode(file.read()).decode('utf-8')
+
+                video_data = {
+                    'data_criacao': data_criacao.strftime('%Y-%m-%d %H:%M:%S'),
+                    'eh_criador': bool(eh_criador),
+                    'video_blob': video_blob  # Blob codificado em base64
+                }
+                response_data.append(video_data)
+
+            return jsonify(response_data)
 
         else:
-            print("Parâmetros quadra_id e partida_id são necessários.")
             return jsonify({'error': 'Parametros quadra_id e partida_id são necessários'}), 400
 
     except mysql.connector.Error as err:
-        print(f"Erro ao buscar vídeos: {err}")
         return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
     finally:
         cursor.close()
