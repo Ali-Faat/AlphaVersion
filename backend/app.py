@@ -199,22 +199,20 @@ def get_partidas_por_quadra(quadra_id):
 def get_videos():
     quadra_id = request.args.get('quadra_id')
     partida_id = request.args.get('partida_id')
-    data_inicio = request.args.get('data_inicio')
 
     mydb = get_db_connection()
     cursor = mydb.cursor()
 
     try:
-        if quadra_id and partida_id and data_inicio:
+        if quadra_id and partida_id:
             query = '''
                 SELECT v.*, (v.criador_id = %s) AS eh_criador 
                 FROM videos v 
                 JOIN partidas p ON v.partida_id = p.id 
                 WHERE p.quadra_id = %s 
-                AND p.id = %s 
-                AND DATE(v.data_criacao) = %s
+                AND p.id = %s
             '''
-            params = (session.get('usuario_id'), quadra_id, partida_id, data_inicio)
+            params = (session.get('usuario_id'), quadra_id, partida_id)
         elif quadra_id:
             query = '''
                 SELECT v.*, (v.criador_id = %s) AS eh_criador 

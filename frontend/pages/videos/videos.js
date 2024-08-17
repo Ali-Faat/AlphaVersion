@@ -54,15 +54,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             console.log('Buscando vídeos para partida ID:', partidaId); // Log de depuração
             const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${partidaId}`);
+            
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }
+            
             const videos = await response.json();
-
+    
             console.log('Vídeos recebidos:', videos); // Log de depuração
-
+    
             videoContainer.innerHTML = '';
-
+    
             if (videos.length === 0) {
                 exibirMensagem('Nenhum vídeo encontrado para esta partida.', videoContainer);
             } else {
@@ -72,14 +74,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     videoTitle.textContent = video.tipo;
                     const videoItem = document.createElement('div');
                     videoItem.classList.add('video-item');
-
+    
                     if (video.eh_criador) {
                         videoItem.classList.add('destaque');
                     }
-
+    
                     videoItem.appendChild(videoTitle);
                     videoItem.appendChild(videoElement);
-
+    
                     videoContainer.appendChild(videoItem);
                 });
             }
@@ -98,22 +100,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     
         console.log('Data Selecionada:', dataSelecionada);  // Log de depuração
-        console.log('Estrutura completa das partidas recebidas:', partidas);  // Log detalhado
     
-        // Filtrar as partidas pela data selecionada, manualmente atribuindo quadra_id
         const partidasFiltradas = partidas.filter(partida => {
-            const dataPartida = partida.dh_inicio.split('T')[0]; // Obter apenas a parte da data
-            const quadraIdPartida = quadraId; // Manualmente associando o quadra_id
+            const dataPartida = partida.dh_inicio.split('T')[0];
+            const quadraIdPartida = partida.quadra_id;
     
-            console.log('Comparando:', dataPartida, 'com', dataSelecionada);  // Verificação
-            console.log('Comparando quadra_id:', quadraIdPartida, 'com', quadraId); // Verificação
+            console.log('Comparando:', dataPartida, 'com', dataSelecionada);
+            console.log('Comparando quadra_id:', quadraIdPartida, 'com', quadraId);
     
-            return dataPartida === dataSelecionada && quadraIdPartida == quadraId;
+            return dataPartida === dataSelecionada && quadraIdPartida === quadraId;
         });
     
         console.log('Partidas Filtradas:', partidasFiltradas);  // Log de depuração
     
-        // Limpar o select
+        // Limpar o select de horas
         horaPartidaSelect.innerHTML = '';
     
         if (partidasFiltradas.length === 0) {
@@ -127,18 +127,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 horaPartidaSelect.appendChild(option);
             });
     
-            // Atualizar os vídeos para a primeira partida encontrada
+            // Exibir vídeos para a primeira partida encontrada por padrão
             const primeiraPartida = partidasFiltradas[0];
             console.log('Atualizando vídeos para a primeira partida:', primeiraPartida);  // Log de depuração
             fetchVideosByPartida(primeiraPartida.id);
+    
+            // Adicionar evento para atualizar vídeos ao selecionar outra hora
+            horaPartidaSelect.addEventListener('change', function() {
+                const partidaSelecionadaId = horaPartidaSelect.value;
+                fetchVideosByPartida(partidaSelecionadaId);
+            });
         }
-    }
-    
-    
-    
-    
-    
-    
+    }    
+
+
 
     // Função para buscar os vídeos da quadra
     async function fetchVideosByQuadra(quadraId) {
