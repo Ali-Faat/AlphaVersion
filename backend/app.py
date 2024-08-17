@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 from database import get_db_connection
 import mysql.connector
 import json
@@ -231,8 +231,12 @@ def get_videos():
         cursor.execute(query, params)
         videos = cursor.fetchall()
 
-        videos_json = [
-            {
+        if not videos:
+            return jsonify({'error': 'Nenhum vídeo encontrado'}), 404
+
+        video_paths = []
+        for video in videos:
+            video_info = {
                 'id': video[0],
                 'partida_id': video[1],
                 'quadra_id': video[2],
@@ -240,10 +244,13 @@ def get_videos():
                 'tipo': video[4],
                 'data_criacao': video[5].strftime('%Y-%m-%d %H:%M:%S') if video[5] else None,
                 'eh_criador': bool(video[6])
-            } for video in videos
-        ]
+            }
+            video_paths.append(video_info['url'])
 
-        return jsonify(videos_json)
+        # Enviar o primeiro vídeo encontrado como exemplo
+        video_path = video_paths[0]
+        return send_file(video_path, mimetype='video/mp4', as_attachment=False)
+
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao buscar vídeos: {err}'}), 500
     finally:
