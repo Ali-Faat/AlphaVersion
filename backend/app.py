@@ -462,15 +462,24 @@ def cadastro():
         salt = secrets.token_hex(16)
         senha_hash = hashlib.sha256((senha + salt).encode()).hexdigest()
 
+        # Marca o usuário como não verificado inicialmente
         cursor.execute(
             'INSERT INTO usuarios (nome, apelido, email, celular, senha, salt, verificado) VALUES (%s, %s, %s, %s, %s, %s, %s)',
             (nome_completo, apelido, email, celular, senha_hash, salt, True)
         )
         mydb.commit()
 
-        send_welcome_email(email, nome_completo)
+        # Link de verificação
+        verification_link = f"http://goalcast.com.br:8000/pages/validar/validar.html"
 
-        return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail.'}), 201
+        # Envia o e-mail de verificação
+        subject = "Verifique seu e-mail"
+        body_text = f"Olá {nome_completo},\n\nPor favor, verifique seu e-mail clicando no link a seguir: {verification_link}"
+        body_html = f"<p>Olá {nome_completo},</p><p>Por favor, verifique seu e-mail clicando no link a seguir:</p><p><a href='{verification_link}'>Verificar E-mail</a></p>"
+
+        send_email(subject, email, body_text, body_html)
+
+        return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail para ativar sua conta.'}), 201
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
