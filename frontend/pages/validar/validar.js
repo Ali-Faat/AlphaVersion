@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             if (data.success) {
                 console.log('Validação bem-sucedida:', data);
+                window.location.href = `http://goalcast.com.br:8000/pages/validar/validar.html?token=${token}`;
             } else {
                 mensagemVerificacao.textContent = data.error;
                 mensagemBoasVindas.style.display = 'none';
