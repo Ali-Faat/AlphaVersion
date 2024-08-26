@@ -34,9 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Verifica a resposta da API
             if (response.ok) {
                 const result = await response.json();
-                alert(result.message || 'Senha redefinida com sucesso!');
                 // Redirecionar ou limpar o formulário conforme necessário
-                window.location.href = '/login'; // Exemplo de redirecionamento após sucesso
+                window.location.href = 'http://goalcast.com.br:8000/pages/login/login.html'; // Exemplo de redirecionamento após sucesso
             } else {
                 const error = await response.json();
                 alert(error.message || 'Ocorreu um erro ao redefinir a senha.');
