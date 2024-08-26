@@ -427,38 +427,37 @@ def reset_password_handler():  # Renomeado para evitar conflitos
 
 
 @app.route('/api/reset-password', methods=['POST'])
-def reset_password():
+def reset_password_handler():
     data = request.get_json()
     email = data.get('email')
+    nova_senha = data.get('password')
 
-    if not email:
-        return jsonify({'error': 'Email é necessário'}), 400
+    if not email or not nova_senha:
+        return jsonify({'error': 'Dados insuficientes para redefinição de senha'}), 400
 
     try:
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
+
+        # Verifica se o usuário existe no banco de dados
         cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
         usuario = cursor.fetchone()
 
         if not usuario:
-            return jsonify({'message': 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.'}), 200
+            return jsonify({'error': 'Usuário não encontrado'}), 404
 
-        if not usuario['verificado']:
-            return jsonify({'error': 'E-mail não verificado. Verifique seu e-mail antes de solicitar a redefinição de senha.'}), 400
+        # Gera um novo hash e salt para a nova senha
+        salt = generate_salt()
+        senha_hashed = generate_password_hash(nova_senha, salt)
 
-        # Construção do corpo do e-mail
-        subject = "Redefinição de Senha"
-        body_text = f"Você solicitou a redefinição de sua senha. Clique no link para redefinir: http://goalcast.com.br:8000/redefinirsenha/redefinirsenha.html"
-        body_html = f"<p>Você solicitou a redefinição de sua senha. Clique no link para redefinir:</p><p><a href='http://goalcast.com.br:8000/redefinirsenha/redefinirsenha.html'>Redefinir Senha</a></p>"
+        # Atualiza a senha no banco de dados
+        cursor.execute('UPDATE usuarios SET senha = %s, salt = %s WHERE email = %s', (senha_hashed, salt, email))
+        mydb.commit()
 
-        # Envia o e-mail usando a função send_email
-        if send_email(subject, email, body_text, body_html):
-            return jsonify({'message': 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.'}), 200
-        else:
-            return jsonify({'error': 'Erro ao enviar o e-mail. Tente novamente mais tarde.'}), 500
+        return jsonify({'message': 'Senha redefinida com sucesso'}), 200
 
     except mysql.connector.Error as err:
-        return jsonify({'error': f'Erro ao processar a solicitação: {err}'}), 500
+        return jsonify({'error': f'Erro ao redefinir a senha: {err}'}), 500
 
     finally:
         cursor.close()
