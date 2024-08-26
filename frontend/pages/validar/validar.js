@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
+    const apelido = urlParams.get('apelido');
     const mensagemBoasVindas = document.getElementById('mensagem-boas-vindas');
     const apelidoUsuarioSpan = document.getElementById('apelido-usuario');
     const senhaInput = document.getElementById('senha');
@@ -12,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // Exibe o apelido diretamente da URL
+    apelidoUsuarioSpan.textContent = apelido || 'Usuário';
+
     // Primeira requisição: Obter dados do usuário (GET)
     fetch(`http://138.99.160.212:5000/validar_email?token=${token}`)
         .then(response => {
@@ -22,8 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             if (data.success) {
-                const usuario = data.usuario;
-                apelidoUsuarioSpan.textContent = usuario.apelido;
+                // Dados do usuário são válidos, nada a fazer pois o apelido já foi inserido
             } else {
                 mensagemVerificacao.textContent = data.error;
                 mensagemBoasVindas.style.display = 'none';
@@ -41,6 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Segunda requisição: Confirmar email com senha (POST)
     validarEmailBtn.addEventListener('click', () => {
         const senha = senhaInput.value;
+
+        if (!senha) {
+            mensagemVerificacao.textContent = 'Por favor, insira uma senha.';
+            return;
+        }
+
+        // Desabilita o botão para evitar múltiplos cliques
+        validarEmailBtn.disabled = true;
+        mensagemVerificacao.textContent = 'Validando, por favor aguarde...';
+
         fetch('http://138.99.160.212:5000/confirmar_email', {
             method: 'POST',
             headers: {
@@ -62,10 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 3000);
             } else {
                 mensagemVerificacao.textContent = data.error;
+                validarEmailBtn.disabled = false;
             }
         })
         .catch(error => {
             mensagemVerificacao.textContent = error.message;
+            validarEmailBtn.disabled = false;
         });
     });
 });
