@@ -462,15 +462,19 @@ def cadastro():
         salt = secrets.token_hex(16)
         senha_hash = hashlib.sha256((senha + salt).encode()).hexdigest()
 
-        # Marca o usuário como não verificado inicialmente
+        # Gera um token de verificação
+        verification_token = secrets.token_urlsafe(32)
+
+        # Insere o usuário no banco de dados, com o campo verificado como False
         cursor.execute(
-            'INSERT INTO usuarios (nome, apelido, email, celular, senha, salt, verificado) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-            (nome_completo, apelido, email, celular, senha_hash, salt, True)
+            'INSERT INTO usuarios (nome, apelido, email, celular, senha, salt, verificado, verification_token) '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+            (nome_completo, apelido, email, celular, senha_hash, salt, False, verification_token)
         )
         mydb.commit()
 
         # Link de verificação
-        verification_link = f"http://goalcast.com.br:8000/pages/validar/validar.html"
+        verification_link = f"http://goalcast.com.br:5000/validar_email?token={verification_token}&apelido={apelido}"
 
         # Envia o e-mail de verificação
         subject = "Verifique seu e-mail"
@@ -488,23 +492,32 @@ def cadastro():
         cursor.close()
         mydb.close()
 
+
 @app.route('/validar_email', methods=['GET'])
 def validar_email():
     token = request.args.get('token')
+    apelido = request.args.get('apelido')
 
-    if not token:
-        return jsonify({'success': False, 'error': 'Token não fornecido'}), 400
+    if not token or not apelido:
+        return jsonify({'success': False, 'error': 'Token ou apelido não fornecido'}), 400
 
     try:
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
-        cursor.execute('SELECT id, apelido FROM usuarios WHERE verification_token = %s', (token,))
+        
+        # Verifica se o token existe e corresponde ao apelido fornecido
+        cursor.execute('SELECT id, apelido FROM usuarios WHERE verification_token = %s AND apelido = %s', (token, apelido))
         usuario = cursor.fetchone()
 
         if usuario:
+            # Atualiza o campo verificado para True
+            cursor.execute('UPDATE usuarios SET verificado = %s WHERE id = %s', (True, usuario['id']))
+            mydb.commit()
+
+            # Redireciona para a página de validação
             return render_template('validar/validar.html', apelido=usuario['apelido'], token=token)
         else:
-            return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
+            return jsonify({'success': False, 'error': 'Token inválido, expirado ou apelido incorreto'}), 400
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
