@@ -1,17 +1,24 @@
 /* validar.css */
 
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos Globais */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Readex Pro', sans-serif;
+    background-color: var(--background-color);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
 }
 
 .container {
-    background-color: #fff;
+    background-color: var(--container-bg-color);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -28,6 +35,7 @@ body {
 #mensagem-boas-vindas {
     font-size: 18px;
     margin-bottom: 20px;
+    color: var(--header-text-color);
 }
 
 .input-field {
@@ -39,22 +47,26 @@ body {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: var(--label-color);
 }
 
 .input-field input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-radius: 5px;
+    background-color: var(--input-bg-color);
+    color: var(--input-text-color);
 }
 
 .btn {
-    background-color: #007bff;
+    background-color: #311B92;
     color: #fff;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-family: 'Outfit', sans-serif;
 }
 
 .btn:disabled {
@@ -64,4 +76,30 @@ body {
 #mensagem-verificacao {
     margin-top: 20px;
     color: red;
+}
+
+/* Tema Escuro */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #101010;
+        --container-bg-color: #222222;
+        --header-text-color: #ffffff;
+        --label-color: #ffffff;
+        --input-border-color: #444;
+        --input-bg-color: #333;
+        --input-text-color: #ffffff;
+    }
+}
+
+/* Tema Claro */
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-color: #f4f4f4;
+        --container-bg-color: #ffffff;
+        --header-text-color: #333333;
+        --label-color: #555555;
+        --input-border-color: #cccccc;
+        --input-bg-color: #ffffff;
+        --input-text-color: #000000;
+    }
 }
