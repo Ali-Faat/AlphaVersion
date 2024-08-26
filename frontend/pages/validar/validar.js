@@ -1,48 +1,49 @@
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
-    const apelido = urlParams.get('apelido');
-    const mensagemBoasVindas = document.getElementById('mensagem-boas-vindas');
+    const apelido = urlParams.get('apelido'); // Extrai o apelido da URL
     const apelidoUsuarioSpan = document.getElementById('apelido-usuario');
+    const mensagemBoasVindas = document.getElementById('mensagem-boas-vindas');
     const senhaInput = document.getElementById('senha');
     const validarEmailBtn = document.getElementById('validar-email');
     const mensagemVerificacao = document.getElementById('mensagem-verificacao');
 
-    if (!token || !apelido) {
-        console.error('Token ou apelido ausente na URL');
-        return;
+    // Preenche o apelido no elemento de boas-vindas
+    if (apelido) {
+        apelidoUsuarioSpan.textContent = apelido;
+    } else {
+        apelidoUsuarioSpan.textContent = 'Usuário';
     }
 
-    // Exibe o apelido diretamente da URL
-    apelidoUsuarioSpan.textContent = apelido || 'Usuário';
-
-    // Primeira requisição: Obter dados do usuário (GET)
-    fetch(`http://138.99.160.212:5000/validar_email?token=${token}&apelido=${apelido}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao validar token.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                console.log('Validação bem-sucedida:', data);
-                window.location.href = `http://goalcast.com.br:8000/pages/validar/validar.html?token=${token}`;
-            } else {
-                mensagemVerificacao.textContent = data.error;
+    // Validação do token (GET)
+    if (token) {
+        fetch(`http://138.99.160.212:5000/validar_email?token=${token}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao validar token.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data.success) {
+                    mensagemVerificacao.textContent = data.error;
+                    mensagemBoasVindas.style.display = 'none';
+                    senhaInput.style.display = 'none';
+                    validarEmailBtn.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                mensagemVerificacao.textContent = error.message;
                 mensagemBoasVindas.style.display = 'none';
                 senhaInput.style.display = 'none';
                 validarEmailBtn.style.display = 'none';
-            }
-        })
-        .catch(error => {
-            mensagemVerificacao.textContent = error.message;
-            mensagemBoasVindas.style.display = 'none';
-            senhaInput.style.display = 'none';
-            validarEmailBtn.style.display = 'none';
-        });
+            });
+    } else {
+        console.error('Token ausente na URL');
+        return;
+    }
 
-    // Segunda requisição: Confirmar email com senha (POST)
+    // Confirmação do e-mail com senha (POST)
     validarEmailBtn.addEventListener('click', () => {
         const senha = senhaInput.value;
 
@@ -51,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Desabilita o botão para evitar múltiplos cliques
         validarEmailBtn.disabled = true;
         mensagemVerificacao.textContent = 'Validando, por favor aguarde...';
 

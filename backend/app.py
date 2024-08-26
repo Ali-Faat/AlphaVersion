@@ -479,7 +479,7 @@ def cadastro():
         mydb.commit()
 
         # Link de verificação
-        verification_link = f"http://goalcast.com.br:8000/validar_email?token={verification_token}&apelido={apelido}"
+        verification_link = f"http://goalcast.com.br:5000/validar_email?token={verification_token}&apelido={apelido}"
 
         # Envia o e-mail de verificação
         subject = "Verifique seu e-mail"
@@ -509,12 +509,14 @@ def validar_email():
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
 
-        cursor.execute('SELECT id FROM usuarios WHERE verification_token = %s', (token,))
+        # Validação do token no banco de dados
+        cursor.execute('SELECT apelido FROM usuarios WHERE verification_token = %s', (token,))
         usuario = cursor.fetchone()
 
         if usuario:
-            # Se o token for válido, redirecione para a página de validação de senha
-            return jsonify({'success': True, 'Sucess': 'Token validade com sucesso'}), 200
+            # Se o token for válido, redirecione para o frontend com o apelido
+            apelido = usuario['apelido']
+            return redirect(f'http://goalcast.com.br:8000/pages/validar/validar.html?apelido={apelido}')
         else:
             return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
 
