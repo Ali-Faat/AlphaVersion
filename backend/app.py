@@ -11,15 +11,21 @@ import base64
 import asyncio
 from werkzeug.utils import secure_filename
 import secrets
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from dotenv import load_dotenv
-import urllib.parse
+import jwt
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
 app = Flask(__name__, template_folder='../frontend/pages')
 app.secret_key = os.getenv('SECRET_KEY')
+
+# Configuração do JWT
+app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')  # Usando a mesma chave secreta
+jwt = jwt.JWTManager(app)
 
 # Configuração do CORS
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -30,7 +36,7 @@ app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
-app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'False'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
 
 # Configuração de upload de arquivos
 app.config['UPLOAD_FOLDER'] = r'C:\GoalCast\AlphaVersion\backend\uploads\videos'
@@ -87,6 +93,28 @@ async def stream_videos(videos, usuario_id):
         video_data = await processar_video(video, usuario_id)
         if video_data:
             yield f"{json.dumps(video_data)}\n"
+
+def send_email(subject, recipient, body_text, body_html=None):
+    """
+    Envia um e-mail com o assunto e corpo fornecidos.
+
+    :param subject: Assunto do e-mail
+    :param recipient: Endereço de e-mail do destinatário
+    :param body_text: Corpo do e-mail em texto simples
+    :param body_html: Corpo do e-mail em HTML (opcional)
+    """
+    msg = Message(subject, recipients=[recipient])
+    msg.body = body_text
+    if body_html:
+        msg.html = body_html
+    
+    try:
+        mail.send(msg)
+        return True
+    except Exception as e:
+        print(f'Erro ao enviar e-mail: {e}')
+        return False
+
 
 @app.route('/api/quadras', methods=['GET'])
 def get_quadras():
@@ -311,7 +339,6 @@ def stream_video(video_id):
         mydb.close()
 
 
-
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -339,6 +366,44 @@ def login():
 
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro na autenticação: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+@app.route('/api/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'error': 'Email é necessário'}), 400
+
+    try:
+        mydb = get_db_connection()
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
+        usuario = cursor.fetchone()
+
+        if not usuario:
+            return jsonify({'message': 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.'}), 200
+
+        if not usuario['verificado']:
+            return jsonify({'error': 'E-mail não verificado. Verifique seu e-mail antes de solicitar a redefinição de senha.'}), 400
+
+        # Construção do corpo do e-mail
+        subject = "Redefinição de Senha"
+        body_text = f"Você solicitou a redefinição de sua senha. Clique no link para redefinir: http://goalcast.com.br:8000/redefinirsenha/redefinirsenha.html"
+        body_html = f"<p>Você solicitou a redefinição de sua senha. Clique no link para redefinir:</p><p><a href='http://goalcast.com.br:8000/redefinirsenha/redefinirsenha.html'>Redefinir Senha</a></p>"
+
+        # Envia o e-mail usando a função send_email
+        if send_email(subject, email, body_text, body_html):
+            return jsonify({'message': 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.'}), 200
+        else:
+            return jsonify({'error': 'Erro ao enviar o e-mail. Tente novamente mais tarde.'}), 500
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao processar a solicitação: {err}'}), 500
 
     finally:
         cursor.close()

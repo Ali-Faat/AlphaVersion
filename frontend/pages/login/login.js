@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Manipulação do formulário de login
     const loginForm = document.getElementById('loginForm');
     const errorMessage = document.querySelector('.error-message'); // Elemento para exibir mensagens de erro
 
@@ -51,14 +52,75 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
     }
 
-    // Inicialização de componentes adicionais (se necessário)
-    // M.AutoInit(); // Inicializar componentes do Materialize, se estiver em uso
+    // Função para alternar visibilidade da senha
+    document.getElementById('togglePassword').addEventListener('click', function (e) {
+        const passwordInput = document.getElementById('password');
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    // Inicializa a funcionalidade de redefinição de senha
+    initResetPassword();
 });
 
-// Função para alternar visibilidade da senha
-document.getElementById('togglePassword').addEventListener('click', function (e) {
-    const passwordInput = document.getElementById('password');
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-    this.textContent = type === 'password' ? '👁️' : '🙈';
-});
+function initResetPassword() {
+    const forgotPasswordBtn = document.querySelector('.btn-secondary');
+    const resetPasswordPopup = document.getElementById('resetPasswordPopup');
+    const closePopupBtn = document.getElementById('closePopup');
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
+    const infoMessage = document.getElementById('infoMessage');
+
+    // Mostrar o pop-up quando o botão "Esqueci a senha" for clicado
+    forgotPasswordBtn.addEventListener('click', () => {
+        resetPasswordPopup.style.display = 'block';
+    });
+
+    // Fechar o pop-up quando o botão de fechar for clicado
+    closePopupBtn.addEventListener('click', () => {
+        resetPasswordPopup.style.display = 'none';
+        infoMessage.style.display = 'none'; // Esconde a mensagem de informação, se houver
+    });
+
+    // Enviar o formulário de redefinição de senha
+    resetPasswordForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const email = document.getElementById('resetEmail').value;
+
+        try {
+            const response = await fetch('http://138.99.160.212:5000/api/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email
+                })
+            });
+
+            if (response.ok) {
+                infoMessage.textContent = 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.';
+                infoMessage.style.display = 'block';
+                infoMessage.style.color = 'green';
+            } else {
+                infoMessage.textContent = 'Erro ao enviar o e-mail. Tente novamente mais tarde.';
+                infoMessage.style.display = 'block';
+                infoMessage.style.color = 'red';
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            infoMessage.textContent = 'Erro na requisição. Tente novamente mais tarde.';
+            infoMessage.style.display = 'block';
+            infoMessage.style.color = 'red';
+        }
+    });
+
+    // Fechar o pop-up se o usuário clicar fora dele
+    window.addEventListener('click', (event) => {
+        if (event.target == resetPasswordPopup) {
+            resetPasswordPopup.style.display = 'none';
+            infoMessage.style.display = 'none'; // Esconde a mensagem de informação, se houver
+        }
+    });
+}

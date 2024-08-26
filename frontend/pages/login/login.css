@@ -106,6 +106,50 @@ body {
     font-size: 14px;
 }
 
+/* Estilo para o pop-up */
+.popup {
+    display: none; /* Inicialmente escondido */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escurecido */
+}
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.info-message {
+    margin-top: 10px;
+    color: green;
+    display: none;
+}
+
+
 /* Estilo para Dark Theme */
 @media (prefers-color-scheme: dark) {
     body {
@@ -160,6 +204,25 @@ body {
 
     .create-account a {
         color: #0000FF;
+    }
+
+    .popup-content {
+        background-color: #333;
+        color: #ffffff;
+        border: 1px solid #444;
+    }
+
+    .close-btn {
+        color: #ccc;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+        color: #fff;
+    }
+
+    .info-message {
+        color: #00ff00;
     }
 }
 
@@ -219,6 +282,25 @@ body {
 
     .create-account a {
         color: #0000FF;
+    }
+
+    .popup-content {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #cccccc;
+    }
+
+    .close-btn {
+        color: #aaa;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+        color: #000;
+    }
+
+    .info-message {
+        color: green;
     }
 }
 

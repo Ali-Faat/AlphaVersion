@@ -33,6 +33,21 @@
         </div>
     </div>
 
+    <div id="resetPasswordPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" id="closePopup">&times;</span>
+            <h2>Redefinir Senha</h2>
+            <form id="resetPasswordForm">
+                <div class="input-group">
+                    <label for="resetEmail">Email:</label>
+                    <input type="email" id="resetEmail" name="resetEmail" placeholder="Digite seu email" required>
+                </div>
+                <button type="submit" class="btn-primary">Enviar</button>
+            </form>
+            <p class="info-message" id="infoMessage"></p>
+        </div>
+    </div>
+    
     <script src="login.js"></script>
 </body>
 </html>
