@@ -505,20 +505,15 @@ def validar_email():
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
         
-        # Certifique-se de que a consulta SQL inclui o campo apelido
         cursor.execute('SELECT id, apelido FROM usuarios WHERE verification_token = %s AND apelido = %s', (token, apelido))
         usuario = cursor.fetchone()
 
         if usuario:
-            # Verifica se o campo 'apelido' realmente existe no resultado da consulta
-            if 'apelido' in usuario:
-                cursor.execute('UPDATE usuarios SET verificado = %s WHERE id = %s', (True, usuario['id']))
-                mydb.commit()
+            cursor.execute('UPDATE usuarios SET verificado = %s WHERE id = %s', (True, usuario['id']))
+            mydb.commit()
 
-                # Renderiza o template com as informações
-                return render_template('validar.html', apelido=usuario['apelido'], token=token)
-            else:
-                return jsonify({'success': False, 'error': 'Apelido não encontrado.'}), 400
+            # Redireciona para a página HTML pura que é servida como arquivo estático
+            return redirect(f"/static/pages/validar/validar.html?token={token}&apelido={apelido}")
         else:
             return jsonify({'success': False, 'error': 'Token inválido, expirado ou apelido incorreto'}), 400
 
