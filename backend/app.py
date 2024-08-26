@@ -509,14 +509,12 @@ def validar_email():
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
 
-        # Verifica se o token é válido
         cursor.execute('SELECT id FROM usuarios WHERE verification_token = %s', (token,))
         usuario = cursor.fetchone()
 
         if usuario:
-            # Se o token for válido, retorne um sucesso
-            redirect(f"pages/validar/validar.html?token={token}")
-            return jsonify({'success': True, 'message': 'Token válido. Insira sua nova senha.'}), 200
+            # Se o token for válido, redirecione para a página de validação de senha
+            return redirect(f'/pages/validar/validar.html?token={token}')
         else:
             return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
 
@@ -527,6 +525,7 @@ def validar_email():
         cursor.close()
         mydb.close()
 
+        
 @app.route('/confirmar_email', methods=['POST'])
 def confirmar_email():
     data = request.get_json()
