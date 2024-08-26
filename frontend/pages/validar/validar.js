@@ -36,25 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({ email: email, senha: senha })
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao confirmar email.');
-            }
             return response.json();
         })
         .then(data => {
             if (data.success) {
-                mensagemVerificacao.textContent = data.message;
-                setTimeout(() => {
-                    window.location.href = '../login/login.html';
-                }, 3000);
+                alert(data.message);  // Exibe a mensagem de sucesso
+                window.location.href = 'http://goalcast.com.br:8000/pages/login/login.html';  // Redireciona
             } else {
-                mensagemVerificacao.textContent = data.error;
-                validarEmailBtn.disabled = false;
+                alert(data.error);  // Exibe a mensagem de erro
             }
         })
         .catch(error => {
-            mensagemVerificacao.textContent = error.message;
-            validarEmailBtn.disabled = false;
+            console.error('Erro:', error);
         });
     });
 });
