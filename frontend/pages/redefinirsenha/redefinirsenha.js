@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Envio dos dados para a API
-            const response = await fetch('/api/reset-password', {
+            const response = await fetch('http://138.99.160.212:5000/api/reset-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

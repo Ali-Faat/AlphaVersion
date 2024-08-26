@@ -54,12 +54,11 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def generate_salt():
-    # Gera um salt de 16 bytes usando um gerador de números aleatórios criptograficamente seguro
-    return os.urandom(16)
+    return base64.b64encode(os.urandom(16)).decode('utf-8')
 
 def generate_password_hash(password, salt):
-    # Combina a senha com o salt e usa SHA-256 para gerar o hash
-    password_salt_combined = password.encode('utf-8') + salt
+    salt_bytes = base64.b64decode(salt.encode('utf-8'))
+    password_salt_combined = password.encode('utf-8') + salt_bytes
     return hashlib.sha256(password_salt_combined).hexdigest()
 
 def check_password_hash(stored_password, provided_password, salt):
