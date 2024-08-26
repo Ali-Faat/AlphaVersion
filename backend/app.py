@@ -501,29 +501,27 @@ def cadastro():
 @app.route('/validar_email', methods=['GET'])
 def validar_email():
     token = request.args.get('token')
-    apelido = request.args.get('apelido')
 
-    if not token or not apelido:
-        return jsonify({'success': False, 'error': 'Token ou apelido não fornecido'}), 400
+    if not token:
+        return jsonify({'success': False, 'error': 'Token não fornecido'}), 400
 
     try:
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
-        
-        cursor.execute('SELECT id, apelido FROM usuarios WHERE verification_token = %s AND apelido = %s', (token, apelido))
+
+        # Verifica se o token é válido
+        cursor.execute('SELECT id FROM usuarios WHERE verification_token = %s', (token,))
         usuario = cursor.fetchone()
 
         if usuario:
-            cursor.execute('UPDATE usuarios SET verificado = %s WHERE id = %s', (True, usuario['id']))
-            mydb.commit()
-
-            # Redireciona para a página HTML pura que é servida como arquivo estático
-            return redirect(f"pages/validar/validar.html?token={token}&apelido={apelido}")
+            # Se o token for válido, retorne um sucesso
+            return jsonify({'success': True, 'message': 'Token válido. Insira sua nova senha.'}), 200
         else:
-            return jsonify({'success': False, 'error': 'Token inválido, expirado ou apelido incorreto'}), 400
+            return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
 
     except mysql.connector.Error as err:
         return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
+
     finally:
         cursor.close()
         mydb.close()
