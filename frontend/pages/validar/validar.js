@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const validarEmailBtn = document.getElementById('validar-email');
     const mensagemVerificacao = document.getElementById('mensagem-verificacao');
 
-    if (!token) {
-        mensagemVerificacao.textContent = 'Token de verificação não encontrado na URL.';
+    if (!token || !apelido) {
+        console.error('Token ou apelido ausente na URL');
         return;
     }
 
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     apelidoUsuarioSpan.textContent = apelido || 'Usuário';
 
     // Primeira requisição: Obter dados do usuário (GET)
-    fetch(`http://138.99.160.212:5000/validar_email?token=${token}`)
+    fetch(`http://138.99.160.212:5000/validar_email?token=${token}&apelido=${apelido}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao validar token.');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             if (data.success) {
-                // Dados do usuário são válidos, nada a fazer pois o apelido já foi inserido
+                console.log('Validação bem-sucedida:', data);
             } else {
                 mensagemVerificacao.textContent = data.error;
                 mensagemBoasVindas.style.display = 'none';

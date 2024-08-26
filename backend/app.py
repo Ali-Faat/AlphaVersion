@@ -27,9 +27,11 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')  # Usando a mesma chave secreta
 jwt = JWTManager(app)
 
-# Configuração do CORS
-CORS(app, resources={r"/api/*": {"origins": "http://138.99.160.212:8000"}})
-CORS(app, resources={r"/*": {"origins": "http://goalcast.com.br:8000"}})
+# Configuração do CORS para múltiplas origens
+CORS(app, resources={
+    r"/api/*": {"origins": ["http://138.99.160.212:8000", "http://goalcast.com.br:8000"]},
+    r"/*": {"origins": ["http://138.99.160.212:8000", "http://goalcast.com.br:8000"]}
+})
 
 
 # Configuração do e-mail
@@ -471,12 +473,12 @@ def cadastro():
         cursor.execute(
             'INSERT INTO usuarios (nome, apelido, email, celular, senha, salt, verificado, verification_token) '
             'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
-            (nome_completo, apelido, email, celular, senha_hash, salt, False, verification_token)
+            (nome_completo, apelido, email, celular, senha_hash, salt, True, verification_token)
         )
         mydb.commit()
 
         # Link de verificação
-        verification_link = f"http://goalcast.com.br:5000/validar_email?token={verification_token}&apelido={apelido}"
+        verification_link = f"http://goalcast.com.br:8000/validar_email?token={verification_token}&apelido={apelido}"
 
         # Envia o e-mail de verificação
         subject = "Verifique seu e-mail"
