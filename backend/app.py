@@ -28,7 +28,9 @@ app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')  # Usando a mesma chave s
 jwt = JWTManager(app)
 
 # Configuração do CORS
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {"origins": "http://138.99.160.212:8000"}})
+CORS(app, resources={r"/*": {"origins": "http://goalcast.com.br:8000"}})
+
 
 # Configuração do e-mail
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
