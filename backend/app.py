@@ -389,7 +389,7 @@ def login():
         mydb.close()
 
 @app.route('/api/reset-password', methods=['POST'])
-def reset_password():
+def reset_password_handler():  # Renomeado para evitar conflitos
     data = request.get_json()
     email = data.get('email')
     nova_senha = data.get('password')
