@@ -513,7 +513,7 @@ def validar_email():
             mydb.commit()
 
             # Redireciona para a página HTML pura que é servida como arquivo estático
-            return redirect(f"/static/pages/validar/validar.html?token={token}&apelido={apelido}")
+            return redirect(f"pages/validar/validar.html?token={token}&apelido={apelido}")
         else:
             return jsonify({'success': False, 'error': 'Token inválido, expirado ou apelido incorreto'}), 400
 
