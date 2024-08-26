@@ -9,8 +9,12 @@
 <body>
     <div class="container">
         <img src="../../IMGs/e-mail.jpg" alt="Logo da plataforma" class="logo">
-        <p id="mensagem-boas-vindas">Olá, <span id="apelido-usuario">{{apelido}}</span>! É um prazer te dar as boas-vindas ao nosso sistema. Para finalizar seu cadastro, digite sua senha para validar seu e-mail.</p>
+        <p id="mensagem-boas-vindas">Olá, <span id="apelido-usuario">{{apelido}}</span>! É um prazer te dar as boas-vindas ao nosso sistema. Para finalizar seu cadastro, insira seu e-mail e senha para validar seu e-mail.</p>
 
+        <div class="input-field">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" required>
+        </div>
         <div class="input-field">
             <label for="senha">Senha:</label>
             <input type="password" id="senha" required>
