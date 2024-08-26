@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, abort, send_file, Response, stream_with_context
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, abort, send_file, Response, stream_with_context, current_app
 from database import get_db_connection
 import mysql.connector
 import json
@@ -94,7 +94,8 @@ async def stream_videos(videos, usuario_id):
         if video_data:
             yield f"{json.dumps(video_data)}\n"
 
-def send_email(subject, recipient, body_text, body_html=None):
+
+def send_email(subject, recipient, body_text, body_html=None, sender=None):
     """
     Envia um e-mail com o assunto e corpo fornecidos.
 
@@ -102,8 +103,10 @@ def send_email(subject, recipient, body_text, body_html=None):
     :param recipient: Endereço de e-mail do destinatário
     :param body_text: Corpo do e-mail em texto simples
     :param body_html: Corpo do e-mail em HTML (opcional)
+    :param sender: Endereço de e-mail do remetente (opcional)
     """
-    msg = Message(subject, recipients=[recipient])
+    sender = sender or current_app.config.get('MAIL_DEFAULT_SENDER', 'default@example.com')
+    msg = Message(subject, recipients=[recipient], sender=sender)
     msg.body = body_text
     if body_html:
         msg.html = body_html
@@ -112,7 +115,7 @@ def send_email(subject, recipient, body_text, body_html=None):
         mail.send(msg)
         return True
     except Exception as e:
-        print(f'Erro ao enviar e-mail: {e}')
+        current_app.logger.error(f'Erro ao enviar e-mail: {e}')
         return False
 
 
