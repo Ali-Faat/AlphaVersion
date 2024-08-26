@@ -544,12 +544,9 @@ def confirmar_email():
         usuario = cursor.fetchone()
 
         if usuario and check_password_hash(usuario['senha'], senha, usuario['salt']):
-            if not usuario['verificado']:
-                cursor.execute('UPDATE usuarios SET verificado = TRUE WHERE id = %s', (usuario['id'],))
-                mydb.commit()
-                return redirect('http://goalcast.com.br:8000/pages/login/login.html')
-            else:
-                return jsonify({'success': False, 'error': 'E-mail já foi verificado anteriormente.'}), 400
+            cursor.execute('UPDATE usuarios SET verificado = TRUE WHERE id = %s', (usuario['id'],))
+            mydb.commit()
+            return redirect('http://goalcast.com.br:8000/pages/login/login.html')
         else:
             return jsonify({'success': False, 'error': 'E-mail ou senha inválidos.'}), 401
 
