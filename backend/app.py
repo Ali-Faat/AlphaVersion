@@ -389,7 +389,7 @@ def login():
         mydb.close()
 
 @app.route('/api/reset-password', methods=['POST'])
-def reset_password_handler():  # Renomeado para evitar conflitos
+def handle_reset_password():  # Nome da função alterado para evitar conflitos
     data = request.get_json()
     email = data.get('email')
     nova_senha = data.get('password')
@@ -420,71 +420,6 @@ def reset_password_handler():  # Renomeado para evitar conflitos
 
     except mysql.connector.Error as err:
         return jsonify({'error': f'Erro ao redefinir a senha: {err}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-
-@app.route('/api/reset-password', methods=['POST'])
-def reset_password_handler():
-    data = request.get_json()
-    email = data.get('email')
-    nova_senha = data.get('password')
-
-    if not email or not nova_senha:
-        return jsonify({'error': 'Dados insuficientes para redefinição de senha'}), 400
-
-    try:
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-
-        # Verifica se o usuário existe no banco de dados
-        cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
-        usuario = cursor.fetchone()
-
-        if not usuario:
-            return jsonify({'error': 'Usuário não encontrado'}), 404
-
-        # Gera um novo hash e salt para a nova senha
-        salt = generate_salt()
-        senha_hashed = generate_password_hash(nova_senha, salt)
-
-        # Atualiza a senha no banco de dados
-        cursor.execute('UPDATE usuarios SET senha = %s, salt = %s WHERE email = %s', (senha_hashed, salt, email))
-        mydb.commit()
-
-        return jsonify({'message': 'Senha redefinida com sucesso'}), 200
-
-    except mysql.connector.Error as err:
-        return jsonify({'error': f'Erro ao redefinir a senha: {err}'}), 500
-
-    finally:
-        cursor.close()
-        mydb.close()
-
-@app.route('/api/verificar_autorizacao', methods=['POST'])
-def verificar_autorizacao():
-    try:
-        data = request.get_json()
-        usuario_id = data.get('usuario_id')
-        senha = data.get('senha')
-
-        if not usuario_id or not senha:
-            return jsonify({'success': False, 'error': 'ID do usuário e senha são obrigatórios'}), 400
-
-        mydb = get_db_connection()
-        cursor = mydb.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (usuario_id,))
-        usuario = cursor.fetchone()
-
-        if usuario and check_password_hash(usuario['senha'], senha, usuario['salt']):
-            return jsonify({'success': True, 'autorizado': True}), 200
-        else:
-            return jsonify({'success': True, 'autorizado': False}), 200
-
-    except mysql.connector.Error as err:
-        return jsonify({'success': False, 'error': f'Erro no banco de dados: {err.msg}'}), 500
 
     finally:
         cursor.close()
