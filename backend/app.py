@@ -27,11 +27,11 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')  # Usando a mesma chave secreta
 jwt = JWTManager(app)
 
-# Configuração do CORS para liberar todas as rotas necessárias
 # Configuração do CORS para permitir múltiplas origens
 CORS(app, resources={
     r"/api/*": {"origins": ["http://127.0.0.1:5500", "http://138.99.160.212:8000", "http://goalcast.com.br:8000"]},
-    r"/validar_email": {"origins": ["http://goalcast.com.br:8000"]}
+    r"/validar_email": {"origins": ["http://goalcast.com.br:8000"]},
+    r"/confirmar_email": {"origins": ["http://goalcast.com.br:8000"]}
 })
 
 
@@ -547,7 +547,7 @@ def confirmar_email():
             if not usuario['verificado']:
                 cursor.execute('UPDATE usuarios SET verificado = TRUE WHERE id = %s', (usuario['id'],))
                 mydb.commit()
-                return jsonify({'success': True, 'message': 'E-mail verificado com sucesso!'}), 200
+                return redirect('http://goalcast.com.br:8000/pages/login/login.html')
             else:
                 return jsonify({'success': False, 'error': 'E-mail já foi verificado anteriormente.'}), 400
         else:
