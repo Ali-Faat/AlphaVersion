@@ -27,10 +27,9 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')  # Usando a mesma chave secreta
 jwt = JWTManager(app)
 
-# Configuração do CORS para múltiplas origens
+# Configuração do CORS para liberar todas as rotas necessárias
 CORS(app, resources={
-    r"/api/*": {"origins": ["http://138.99.160.212:8000", "http://goalcast.com.br:8000"]},
-    r"/*": {"origins": ["http://138.99.160.212:8000", "http://goalcast.com.br:8000"]}
+    r"/api/*": {"origins": ["http://127.0.0.1:5500", "http://138.99.160.212:8000", "http://goalcast.com.br:8000"]}
 })
 
 
