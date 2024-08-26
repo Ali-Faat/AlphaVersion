@@ -13,7 +13,7 @@ from werkzeug.utils import secure_filename
 import secrets
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
-import jwt
+from flask_jwt_extended import JWTManager
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -25,7 +25,7 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 # Configuração do JWT
 app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')  # Usando a mesma chave secreta
-jwt = jwt.JWTManager(app)
+jwt = JWTManager(app)
 
 # Configuração do CORS
 CORS(app, resources={r"/api/*": {"origins": "*"}})
