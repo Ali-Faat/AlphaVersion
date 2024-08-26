@@ -515,6 +515,7 @@ def validar_email():
 
         if usuario:
             # Se o token for válido, retorne um sucesso
+            redirect(f"pages/validar/validar.html?token={token}")
             return jsonify({'success': True, 'message': 'Token válido. Insira sua nova senha.'}), 200
         else:
             return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
