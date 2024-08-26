@@ -53,6 +53,15 @@ mail = Mail(app)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+def generate_salt():
+    # Gera um salt de 16 bytes usando um gerador de números aleatórios criptograficamente seguro
+    return os.urandom(16)
+
+def generate_password_hash(password, salt):
+    # Combina a senha com o salt e usa SHA-256 para gerar o hash
+    password_salt_combined = password.encode('utf-8') + salt
+    return hashlib.sha256(password_salt_combined).hexdigest()
+
 def check_password_hash(stored_password, provided_password, salt):
     return hashlib.sha256((provided_password + salt).encode()).hexdigest() == stored_password
 
@@ -378,6 +387,44 @@ def login():
     finally:
         cursor.close()
         mydb.close()
+
+@app.route('/api/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    email = data.get('email')
+    nova_senha = data.get('password')
+
+    if not email or not nova_senha:
+        return jsonify({'error': 'Dados insuficientes para redefinição de senha'}), 400
+
+    try:
+        mydb = get_db_connection()
+        cursor = mydb.cursor(dictionary=True)
+
+        # Verifica se o usuário existe no banco de dados
+        cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
+        usuario = cursor.fetchone()
+
+        if not usuario:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
+
+        # Gera um novo hash e salt para a nova senha
+        salt = generate_salt()
+        senha_hashed = generate_password_hash(nova_senha, salt)
+
+        # Atualiza a senha no banco de dados
+        cursor.execute('UPDATE usuarios SET senha = %s, salt = %s WHERE email = %s', (senha_hashed, salt, email))
+        mydb.commit()
+
+        return jsonify({'message': 'Senha redefinida com sucesso'}), 200
+
+    except mysql.connector.Error as err:
+        return jsonify({'error': f'Erro ao redefinir a senha: {err}'}), 500
+
+    finally:
+        cursor.close()
+        mydb.close()
+
 
 @app.route('/api/reset-password', methods=['POST'])
 def reset_password():

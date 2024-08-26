@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinição de Senha</title>
+    <link rel="stylesheet" href="redefinirsenha.css">
+</head>
+<body>
+    <div class="reset-container">
+        <div class="header">
+            <img src="../../IMGs/logo.png" alt="Logo da Empresa" class="logo">
+            <h1>Redefinição de Senha</h1>
+            <p>Por favor, insira seu e-mail e nova senha.</p>
+        </div>
+        <form class="reset-form" action="/reset-password" method="POST">
+            <div class="form-group">
+                <label for="email">Confirme seu e-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Nova Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirme sua Senha</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+            <button type="submit" class="btn-primary">Redefinir Senha</button>
+        </form>
+    </div>
+
+    <script src="redefinirsenha.js"></script>
+</body>
+</html>

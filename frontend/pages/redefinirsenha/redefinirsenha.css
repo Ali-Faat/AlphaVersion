@@ -1,0 +1,161 @@
+/* Reset de estilo básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos Globais */
+body {
+    font-family: 'Readex Pro', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-color);
+}
+
+.reset-container {
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    background-color: var(--container-bg-color);
+    box-shadow: var(--container-box-shadow);
+    padding: 20px;
+    text-align: center;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.header h1 {
+    margin-bottom: 10px;
+    font-family: 'Outfit', sans-serif;
+    color: var(--header-text-color);
+}
+
+.header p {
+    font-size: 14px;
+    color: var(--header-subtext-color);
+}
+
+/* Estilos do Formulário */
+.reset-form .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.reset-form label {
+    font-size: 14px;
+    color: var(--label-color);
+}
+
+.reset-form input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid var(--input-border-color);
+    background-color: var(--input-bg-color);
+    color: var(--input-text-color);
+    font-size: 14px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    background-color: #311B92;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    box-shadow: var(--button-box-shadow);
+}
+
+/* Tema Escuro */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #101010;
+        --container-bg-color: #222222;
+        --container-box-shadow: none;
+        --header-text-color: #ffffff;
+        --header-subtext-color: #F26835;
+        --label-color: #ffffff;
+        --input-border-color: #444;
+        --input-bg-color: #333;
+        --input-text-color: #ffffff;
+        --button-box-shadow: none;
+    }
+}
+
+/* Tema Claro */
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-color: #f4f4f4;
+        --container-bg-color: #ffffff;
+        --container-box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        --header-text-color: #ffffff;
+        --header-subtext-color: #F26835;
+        --label-color: #555555;
+        --input-border-color: #cccccc;
+        --input-bg-color: #ffffff;
+        --input-text-color: #000000;
+        --button-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Estilos Responsivos */
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .reset-container {
+        max-width: 600px;
+        padding: 40px;
+    }
+
+    .logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .reset-form input {
+        padding: 15px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        padding: 15px;
+        font-size: 18px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    .reset-container {
+        max-width: 800px;
+        padding: 60px;
+    }
+
+    .logo {
+        width: 120px;
+        height: 120px;
+    }
+
+    .reset-form input {
+        padding: 20px;
+        font-size: 18px;
+    }
+
+    .btn-primary {
+        padding: 18px;
+        font-size: 20px;
+        border-radius: 8px;
+    }
+}
