@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportiFlyx</title>
+    <title>SportFlyx</title>
+    <!-- Carregar o Materialize CSS primeiro -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Carregar o CSS Personalizado depois -->
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <img src="../../IMGs/logo.png" alt="Logo SportiFlyx" class="logo">
-            <h1>SportiFlyx</h1>
+            <img src="../../IMGs/logo.png" alt="Logo SportFlyx" class="logo">
+            <h1>SportFlyx</h1>
             <p>O futuro do futebol é agora!</p>
         </div>
         <div class="login-form">
@@ -31,23 +34,26 @@
             </form>
             <p class="create-account">Clique <a href="../cadastro/cadastro.html">aqui</a> para criar uma nova conta</p>
         </div>
-    </div>
 
-    <div id="resetPasswordPopup" class="popup">
-        <div class="popup-content">
-            <span class="close-btn" id="closePopup">&times;</span>
-            <h2>Redefinir Senha</h2>
-            <form id="resetPasswordForm">
-                <div class="input-group">
-                    <label for="resetEmail">Email:</label>
-                    <input type="email" id="resetEmail" name="resetEmail" placeholder="Digite seu email" required>
-                </div>
-                <button type="submit" class="btn-primary">Enviar</button>
-            </form>
-            <p class="info-message" id="infoMessage"></p>
+        <!-- Modal de Redefinição de Senha -->
+        <div id="resetPasswordPopup" class="modal">
+            <div class="modal-content">
+                <span class="modal-close material-icons" id="closePopup" style="cursor: pointer;">close</span>
+                <h4>Redefinir Senha</h4>
+                <form id="resetPasswordForm">
+                    <div class="input-field">
+                        <input type="email" id="resetEmail" name="resetEmail" placeholder="Digite seu email" required>
+                        <label for="resetEmail">Email</label>
+                    </div>
+                    <button type="submit" class="btn waves-effect waves-light">Enviar</button>
+                </form>
+                <p class="info-message" id="infoMessage"></p>
+            </div>
         </div>
-    </div>
     
+    <!-- Carregar o Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Carregar o JS Personalizado -->
     <script src="login.js"></script>
 </body>
 </html>

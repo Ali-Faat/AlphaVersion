@@ -2,60 +2,37 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-}
-
-.nav-wrapper {
-    padding: 10px;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('IMGs/backgroundsportflix.jpg'); /* Substitua pelo caminho da sua imagem */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     display: flex;
-    background: #333;
+    align-items: center;
+    justify-content: center;
     color: white;
-    width: 100%;
-    height: 30px;
+    text-align: center;
 }
 
-img{
-    height: 30px;
+.container {
+    background-color: rgba(204, 204, 204, 0.35);
+    border: none;
+    border-radius: 5px;
+    margin: 30px;
+    width: 278px;
+    max-height: 224px;
+    box-shadow: 0px 8px 16px rgb(0, 0, 0);
+
+    & button{
+        background: none;
+        border: none;
+    }
 }
 
-.brand-logo {
-    font-size: 1.5em;
-    color: white;
-    height: 10px;
-}
-
-ul.right {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-ul.right li {
-    display: inline;
-    margin-left: 15px;
-}
-
-ul.right li a {
-    color: white;
-    text-decoration: none;
-}
-
-.sidenav {
-    display: none; /* Hidden by default */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100%;
-    background: #333;
-    color: white;
-    padding: 20px;
-}
-
-.sidenav a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    margin: 10px 0;
+.container:hover{
+    background-color: #ccc;
+    box-shadow: 0px 12px 16px rgb(255, 255, 255);
 }
 
 .section {
@@ -63,22 +40,12 @@ ul.right li a {
     margin: 20px 0;
 }
 
-.container {
-    width: 100%;
-    margin: 0 auto;
-}
-
-.cta-button {
-    background: #007bff;
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-}
-
-footer {
-    background: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
+/* Responsividade para Mobile */
+@media (max-width: 1000px) {
+    body{
+        background-image: url('IMGs/background_mobile.png'); /* Substitua pelo caminho da sua imagem */
+        display: grid;
+        align-items: center;
+        justify-content: center;
+    }
 }

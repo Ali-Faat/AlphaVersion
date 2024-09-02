@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Manipulação do formulário de login
     const loginForm = document.getElementById('loginForm');
-    const errorMessage = document.querySelector('.error-message'); // Elemento para exibir mensagens de erro
+    const errorMessage = document.querySelector('.error-message'); // Verifique se este seletor está correto e se o elemento existe no HTML
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -37,19 +37,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para exibir mensagens de erro na interface
     function mostrarErro(mensagem) {
-        errorMessage.textContent = mensagem;
-        errorMessage.classList.add('show'); // Supondo que há uma classe CSS 'show' para exibir a mensagem
+        if (errorMessage) {
+            errorMessage.textContent = mensagem;
+            errorMessage.classList.add('show'); // Certifique-se que essa classe CSS existe e está estilizada no CSS
 
-        // Timeout para remover a mensagem de erro após 3 segundos
-        setTimeout(() => {
-            ocultarErro();
-        }, 3000);
+            // Timeout para remover a mensagem de erro após 3 segundos
+            setTimeout(() => {
+                ocultarErro();
+            }, 3000);
+        } else {
+            console.error('Elemento de mensagem de erro não encontrado no DOM.');
+        }
     }
 
     // Função para ocultar mensagens de erro na interface
     function ocultarErro() {
-        errorMessage.classList.remove('show'); // Supondo que há uma classe CSS 'show' para ocultar a mensagem
-        errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
+        if (errorMessage) {
+            errorMessage.classList.remove('show'); // Supondo que há uma classe CSS 'show' para ocultar a mensagem
+            errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
+        }
     }
 
     // Função para alternar visibilidade da senha
