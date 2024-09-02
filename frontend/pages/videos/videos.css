@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #007bff;
+  --primary-color: #009600;
   --border-color-light: #ced4da;
   --border-color-dark: #555;
   --text-color-light: #212529;
@@ -23,6 +23,7 @@ body.dark-theme {
 body {
   font-family: 'Readex Pro', sans-serif;
   margin-top: 0 !important;
+  background-image: url('../../IMGs/backgroundsportflix.jpg'); /* Substitua pelo caminho da sua imagem */
   margin: 20px;
   max-width: 100%;
   justify-content: center;
@@ -188,7 +189,6 @@ input[type="date"], select {
 
   .form-row {
       flex-direction: column;
-      align-items: center;
   }
 
   input[type="date"], select {

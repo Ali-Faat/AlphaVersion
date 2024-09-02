@@ -10,8 +10,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px;
-    background: linear-gradient(180deg, #0684B9 0%, #F26835);
+    margin: 20px;
+    background-image: url('../../IMGs/backgroundsportflix.jpg'); /* Substitua pelo caminho da sua imagem */
 }
 
 /* Contêiner principal */
@@ -21,7 +21,7 @@ body {
     background-color: #ffffff;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.144);
     text-align: center;
 }
 
@@ -35,11 +35,12 @@ body {
 .signup-form h1 {
     font-size: 28px;
     margin-bottom: 8px;
+    color: white;
 }
 
 .signup-form p {
-    font-size: 16px;
-    color: #F26835;
+    font-size: 10px;
+    color: #ffffff;
     margin-bottom: 24px;
 }
 
@@ -88,8 +89,8 @@ body {
 .btn-primary {
     width: 100%;
     padding: 12px;
-    background-color: #6a0dad;
-    color: #ffffff;
+    background-color: #0dad7a;
+    color: #fff;
     border: none;
     border-radius: 8px;
     font-size: 18px;
@@ -98,7 +99,7 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #5909a3;
+    background-color: #0dad7a;
 }
 
 /* Estilos dos links e termos */
@@ -109,7 +110,7 @@ body {
 }
 
 .terms a {
-    color: #0000FF;
+    color: #0dad7a;
     text-decoration: none;
 }
 
@@ -130,7 +131,7 @@ body {
     }
 
     .input-group input:focus {
-        border-color: #9b59b6;
+        border-color: #0dad7a;
         background-color: #555;
     }
 
@@ -139,7 +140,7 @@ body {
     }
 
     .btn-primary {
-        background-color: #8e44ad;
+        background-color: #0dad7a;
     }
 
     .terms {

@@ -10,6 +10,7 @@ body {
     font-family: 'Readex Pro', sans-serif;
     display: flex;
     justify-content: center;
+    background-image: url('../../IMGs/backgroundsportflix.jpg'); /* Substitua pelo caminho da sua imagem */
     align-items: center;
     height: 100vh;
     background-color: var(--background-color);
@@ -30,7 +31,7 @@ body {
 .header {
     text-align: center;
     padding: 20px;
-    background: linear-gradient(135deg, #011532, #0684B9);
+    background: linear-gradient(135deg, #163000, #0bb105);
     color: var(--header-text-color);
 }
 
@@ -113,7 +114,7 @@ body {
     font-size: 16px;
     cursor: pointer;
     margin-bottom: 10px;
-    background-color: #311B92;
+    background-color: #57921b;
     color: #ffffff;
 }
 
@@ -137,7 +138,7 @@ body {
 }
 
 .create-account a {
-    color: #F26835; /* Harmonizando com o restante do design */
+    color: #ecc660; /* Harmonizando com o restante do design */
 }
 
 /* Modal de Redefinição de Senha */
@@ -171,7 +172,7 @@ body {
         --container-bg-color: #222222;
         --container-box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
         --header-text-color: #ffffff;
-        --header-subtext-color: #F26835;
+        --header-subtext-color: #ffffff;
         --label-color: #ffffff;
         --input-border-color: #444;
         --input-bg-color: #333;
@@ -190,7 +191,7 @@ body {
         --container-bg-color: #ffffff;
         --container-box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
         --header-text-color: #ffffff;
-        --header-subtext-color: #F26835;
+        --header-subtext-color: #ecc660;
         --label-color: #555555;
         --input-border-color: #cccccc;
         --input-bg-color: #ffffff;
