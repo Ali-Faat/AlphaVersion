@@ -13,6 +13,7 @@
 
 body {
     margin: 0;
+    margin-top: 350px;
     font-family: 'Roboto', sans-serif;
     background-color: var(--background-color-light);
     background-image: url('../../IMGs/backgroundsportflix.jpg'); /* Substitua pelo caminho da sua imagem */
@@ -32,6 +33,10 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 8px 16px rgb(0, 0, 0);
+    background-color: rgba(204, 204, 204, 0.35);
 }
 
 .header h1 {
@@ -47,23 +52,6 @@ body {
     justify-content: center;
 }
 
-.search-bar {
-    margin: 20px;
-    border: solid var(--item-background-dark) 2px;
-    border-radius: 5px;
-    padding: 5px;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid var(--text-color-light);
-    color: var(--text-color-light);
-    background-color: var(--item-background-light);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
 .error-banner{
     display: none;
 }
@@ -71,10 +59,10 @@ body {
 .quadra-item {
     display: flex;
     align-items: center;
-    padding: 15px;
-    background-color: var(--item-background-light);
+    padding: 15px;   
+    box-shadow: 0px 8px 16px rgb(0, 0, 0);
+    background-color: rgba(204, 204, 204, 0.35);
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     color: var(--item-text-color-light);
     margin-bottom: 10px;
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -126,11 +114,6 @@ body {
         color: var(--text-color-dark);
     }
 
-    .quadra-item {
-        background-color: var(--item-background-dark);
-        color: var(--item-text-color-dark);
-    }
-
     .quadra-info h3 {
         color: var(--text-color-dark);
     }
@@ -154,11 +137,6 @@ body {
     .search-bar input {
         background-color: var(--item-background-light);
         color: var(--text-color-light);
-    }
-
-    .quadra-item {
-        background-color: var(--item-background-light);
-        color: var(--item-text-color-light);
     }
 
     .quadra-info h3 {
