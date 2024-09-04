@@ -21,6 +21,7 @@ body {
     border-radius: 10px;
     overflow: hidden;
     width: 90%;
+    height: 95%;
     max-width: 400px;
     margin: auto;
     background-color: var(--container-bg-color);
@@ -29,17 +30,15 @@ body {
 
 /* Header */
 .header {
+    border-radius: 10px;
     text-align: center;
-    padding: 20px;
-    background: linear-gradient(135deg, #163000, #0bb105);
-    color: var(--header-text-color);
+    /*background-image: url('../../IMGs/logo_dark.jpg');  Substitua pelo caminho da sua imagem */
 }
 
 .header .logo {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
 }
 
 .header h1 {
