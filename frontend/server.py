@@ -1,5 +1,5 @@
-# Importe o módulo HTTP do Python
 from http.server import SimpleHTTPRequestHandler, HTTPServer
+import ssl
 
 # Defina a porta que o servidor irá usar
 PORT = 8000
@@ -14,8 +14,14 @@ class CustomHandler(SimpleHTTPRequestHandler):
 # Crie um servidor HTTP na porta especificada, usando a classe customizada
 httpd = HTTPServer(('0.0.0.0', PORT), CustomHandler)
 
+# Adicione suporte a SSL
+httpd.socket = ssl.wrap_socket(httpd.socket,
+                               keyfile='../backend/ssl/private.key',
+                               certfile='../backend/ssl/certificate.crt',
+                               server_side=True)
+
 # Imprima a mensagem de inicialização do servidor
-print(f'Servidor rodando na porta {PORT}')
+print(f'Servidor rodando na porta {PORT} com SSL')
 
 # Inicie o servidor
 httpd.serve_forever()
