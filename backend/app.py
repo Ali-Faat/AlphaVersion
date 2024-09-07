@@ -29,9 +29,12 @@ jwt = JWTManager(app)
 
 # Configuração do CORS para permitir múltiplas origens
 CORS(app, resources={
-    r"/api/*": {"origins": ["http://127.0.0.1:5500", "http://138.99.160.212:8000", "http://goalcast.com.br:8000"]},
-    r"/validar_email": {"origins": ["http://goalcast.com.br:8000"]},
-    r"/confirmar_email": {"origins": ["http://goalcast.com.br:8000"]}
+    r"/api/*": {"origins": ["http://127.0.0.1:5500", "http://138.99.160.212:8000", "http://goalcast.com.br:8000",
+                            "https://127.0.0.1:5500", "https://138.99.160.212:8000", "https://goalcast.com.br:8000"]},
+    r"/validar_email": {"origins": ["http://goalcast.com.br:8000",
+                                    "https://goalcast.com.br:8000"]},
+    r"/confirmar_email": {"origins": ["http://goalcast.com.br:8000",
+                                      "https://goalcast.com.br:8000"]}
 })
 
 
