@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 const data = await response.json();
-                window.location.href = '../quadras/quadras.html';
+                window.location.href = '../home/home.html';
             } else {
                 const errorData = await response.json();
                 console.error('Erro no login:', errorData.error);
