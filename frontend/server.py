@@ -1,5 +1,5 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
-import ssl
+#import ssl
 
 # Defina a porta que o servidor irá usar
 PORT = 8000
@@ -20,8 +20,8 @@ httpd.socket = ssl.wrap_socket(httpd.socket,
                                certfile='../backend/ssl/certificate.crt',
                                server_side=True)"""
 
-# Imprima a mensagem de inicialização do servidor
-print(f'Servidor rodando na porta {PORT} com SSL')
+"""# Imprima a mensagem de inicialização do servidor
+print(f'Servidor rodando na porta {PORT} com SSL')"""
 
 # Inicie o servidor
 httpd.serve_forever()
