@@ -14,11 +14,11 @@ class CustomHandler(SimpleHTTPRequestHandler):
 # Crie um servidor HTTP na porta especificada, usando a classe customizada
 httpd = HTTPServer(('0.0.0.0', PORT), CustomHandler)
 
-# Adicione suporte a SSL
+"""# Adicione suporte a SSL
 httpd.socket = ssl.wrap_socket(httpd.socket,
                                keyfile='../backend/ssl/private.key',
                                certfile='../backend/ssl/certificate.crt',
-                               server_side=True)
+                               server_side=True)"""
 
 # Imprima a mensagem de inicialização do servidor
 print(f'Servidor rodando na porta {PORT} com SSL')

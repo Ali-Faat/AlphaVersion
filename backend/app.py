@@ -550,7 +550,10 @@ def confirmar_email():
         cursor.close()
         mydb.close()
 
+
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
+
+    ssl_context = ('./ssl/certificate.crt', './ssl/private.key')
     app.run(host='0.0.0.0', port=5000)
