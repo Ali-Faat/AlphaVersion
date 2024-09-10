@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
 
         try {
-            const response = await fetch('https://138.99.160.212:5000/api/login', {
+            const response = await fetch('http://138.99.160.212:5000/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,7 +95,7 @@ function initResetPassword() {
         const email = document.getElementById('resetEmail').value;
 
         try {
-            const response = await fetch('https://138.99.160.212:5000/api/reset-password', {
+            const response = await fetch('http://138.99.160.212:5000/api/reset-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
