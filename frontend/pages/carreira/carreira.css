@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../../IMGs/backgroundsportflix.jpg'); /* Substitua pelo caminho da sua imagem */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    background-color: rgba(204, 204, 204, 0.35);
+    border: none;
+    border-radius: 5px;
+    margin: 30px;
+    width: 278px;
+    max-height: 224px;
+    box-shadow: 0px 8px 16px rgb(0, 0, 0);
+
+    & button{
+        background: none;
+        border: none;
+    }
+}
+
+#live{
+    position: absolute;
+    margin-top: 550px;
+    width: 60%;
+}
+
+.container:hover{
+    background-color: #ccc;
+    box-shadow: 0px 12px 16px rgb(255, 255, 255);
+}
+
+.section {
+    padding: 50px 20px;
+    margin: 20px 0;
+}
+
+/* Responsividade para Mobile */
+@media (max-width: 1000px) {
+    body{
+        background-image: url('IMGs/background_mobile.png'); /* Substitua pelo caminho da sua imagem */
+        display: grid;
+        align-items: center;
+        justify-content: center;
+    }
+}
