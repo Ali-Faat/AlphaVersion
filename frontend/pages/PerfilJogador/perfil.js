@@ -23,7 +23,7 @@ function enviarDados() {
     };
 
     // Faz a requisição POST para a API Flask
-    fetch('http://192.168.1.12:5000/add_jogador', {
+    fetch('http://138.99.160.212:5000/add_jogador', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

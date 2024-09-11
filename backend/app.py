@@ -126,13 +126,52 @@ def send_email(subject, recipient, body_text, body_html=None, sender=None):
     msg.body = body_text
     if body_html:
         msg.html = body_html
-    
+
     try:
         mail.send(msg)
         return True
     except Exception as e:
         current_app.logger.error(f'Erro ao enviar e-mail: {e}')
         return False
+
+
+# Endpoint para adicionar um novo jogador
+@app.route('/add_jogador', methods=['POST'])
+def add_jogador():
+    try:
+        # Pega os dados da requisição JSON
+        data = request.json
+        user = data.get('user')
+        nascimento = data.get('nascimento')
+        bio = data.get('bio')
+        nCamiseta = data.get('nCamiseta')
+        posicao = data.get('posicao')
+        altura = data.get('altura')
+        peso = data.get('peso')
+        peDominante = data.get('peDominante')
+
+        # Conecta ao banco de dados
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Cria a query de inserção
+        insert_query = """
+        INSERT INTO jogador (user, Nascimento, Bio, nCamiseta, posicao, altura, peso, peDominante)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (user, nascimento, bio, nCamiseta, posicao, altura, peso, peDominante))
+
+        # Confirma a transação
+        connection.commit()
+
+        # Fecha a conexão
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Jogador adicionado com sucesso!'}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/quadras', methods=['GET'])
