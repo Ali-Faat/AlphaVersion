@@ -1,4 +1,4 @@
-function enviarDados() {
+document.getElementById("salvar").addEventListener('click', function () {
     // Captura os dados dos inputs
     const nickname = document.getElementById('nickname').value;
     const nome = document.getElementById('nome').value;
@@ -13,6 +13,7 @@ function enviarDados() {
     // Dados para enviar na requisição
     const dados = {
         user: nickname,
+        nome: nome, // Adicionado nome no objeto
         nascimento: nascimento,
         bio: descricao,
         nCamiseta: parseInt(numero),
@@ -30,7 +31,12 @@ function enviarDados() {
         },
         body: JSON.stringify(dados), // Converte os dados para JSON
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
     .then(data => {
         // Exibe uma mensagem de sucesso ou erro
         alert('Jogador adicionado com sucesso!');
@@ -40,4 +46,4 @@ function enviarDados() {
         console.error('Error:', error);
         alert('Ocorreu um erro ao adicionar o jogador.');
     });
-}
+});
