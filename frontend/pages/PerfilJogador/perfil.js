@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Função para verificar se o usuário está autenticado via sessão
     function verificarAutenticacao() {
-        fetch('/api/check_auth', { // Endereço fictício que o backend usará para verificar se o usuário está autenticado
+        fetch('http://138.99.160.212:5000/api/check_auth', { // Endereço fictício que o backend usará para verificar se o usuário está autenticado
             method: 'GET',
             credentials: 'include' // Envia os cookies de sessão
         })
