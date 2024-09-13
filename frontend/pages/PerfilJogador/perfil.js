@@ -1,27 +1,43 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Função para carregar CSS dinamicamente
+    function carregarCSS(href) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = href;
+        document.head.appendChild(link);
+    }
+
     // Função para verificar se o usuário está autenticado via sessão
     function verificarAutenticacao() {
-        fetch('http://138.99.160.212:5000/api/check_auth', { // Endereço fictício que o backend usará para verificar se o usuário está autenticado
+        fetch('http://138.99.160.212:5000/api/check_auth', { // Verifique se o caminho está correto
             method: 'GET',
             credentials: 'include' // Envia os cookies de sessão
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na verificação de autenticação: ' + response.status);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.autenticado) {
-                // Se o usuário estiver autenticado, exibe o formulário de perfil
+                // Se o usuário estiver autenticado, exibe o formulário de perfil e carrega o CSS de perfil
                 document.getElementById('perfil-form').style.display = 'block';
                 document.getElementById('login-container').style.display = 'none';
+                carregarCSS('perfil.css'); // Carrega o CSS do perfil
             } else {
-                // Se o usuário não estiver autenticado, exibe o formulário de login
+                // Se o usuário não estiver autenticado, exibe o formulário de login e carrega o CSS de login
                 document.getElementById('perfil-form').style.display = 'none';
                 document.getElementById('login-container').style.display = 'block';
+                carregarCSS('login.css'); // Carrega o CSS do login
             }
         })
         .catch(error => {
             console.error('Erro ao verificar autenticação:', error);
-            // Em caso de erro, exibe o formulário de login
+            // Em caso de erro, exibe o formulário de login e carrega o CSS de login
             document.getElementById('perfil-form').style.display = 'none';
             document.getElementById('login-container').style.display = 'block';
+            carregarCSS('login.css');
         });
     }
 
@@ -49,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Realiza a requisição de login
-        fetch('/api/login', {
+        fetch('http://138.99.160.212:5000/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,12 +73,18 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify(loginData),
             credentials: 'include' // Envia os cookies de sessão
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Login falhou: ' + response.statusText);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.message === 'Login bem-sucedido') {
-                // Login bem-sucedido, exibe o formulário de perfil
+                // Login bem-sucedido, exibe o formulário de perfil e carrega o CSS de perfil
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('perfil-form').style.display = 'block';
+                carregarCSS('perfil.css'); // Carrega o CSS do perfil
             } else {
                 alert('Erro: ' + data.error);
             }
@@ -101,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Envia os dados para o servidor
-        fetch('/api/add_jogador', {
+        fetch('http://138.99.160.212:5000/api/add_jogador', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

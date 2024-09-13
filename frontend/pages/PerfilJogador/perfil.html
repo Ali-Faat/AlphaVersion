@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SportFlyx - Perfil do Jogador</title>
-    <!-- Carregar o Materialize CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <!-- Estilos Gerais -->
-    <link rel="stylesheet" href="perfil.css">
-    <!-- Estilos Específicos para Login -->
-    <link rel="stylesheet" href="login.css">
+    <!-- Aqui será carregado dinamicamente o CSS correspondente -->
 </head>
 <body>
-    <!-- Container de Login -->
-    <div id="login-container" class="container" style="display:none;">
+    <!-- Container de Login, oculto quando o usuário estiver autenticado -->
+    <div id="login-container" class="login-section" style="display:none;">
         <div class="header">
             <img src="../../IMGs/logo_dark.jpg" alt="Logo SportFlyx" class="logo">
         </div>
@@ -23,12 +18,10 @@
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" placeholder="Digite seu email" required>
                 </div>
-                <div class="input-group">
+                <div class="input-group password-container">
                     <label for="password">Senha:</label>
-                    <div class="password-container">
-                        <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
-                        <button type="button" id="togglePassword" class="toggle-password">&#128065;</button>
-                    </div>
+                    <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+                    <button type="button" id="togglePassword" class="toggle-password">&#128065;</button>
                 </div>
                 <button type="submit" class="btn-primary">Entrar</button>
                 <button type="button" class="btn-secondary">Esqueci a senha</button>
@@ -36,70 +29,70 @@
             <p class="create-account">Clique <a href="../cadastro/cadastro.html">aqui</a> para criar uma nova conta</p>
         </div>
 
-        <!-- Modal de Redefinição de Senha -->
+        <!-- Modal de Redefinição de Senha (opcional) -->
         <div id="resetPasswordPopup" class="modal">
             <div class="modal-content">
                 <span class="modal-close material-icons" id="closePopup" style="cursor: pointer;">close</span>
                 <h4>Redefinir Senha</h4>
                 <form id="resetPasswordForm">
-                    <div class="input-field">
+                    <div class="input-group">
+                        <label for="resetEmail">Email:</label>
                         <input type="email" id="resetEmail" name="resetEmail" placeholder="Digite seu email" required>
-                        <label for="resetEmail">Email</label>
                     </div>
-                    <button type="submit" class="btn waves-effect waves-light">Enviar</button>
+                    <button type="submit" class="btn-primary">Enviar</button>
                 </form>
                 <p class="info-message" id="infoMessage"></p>
             </div>
         </div>
     </div>
 
-    <!-- Container do Formulário de Perfil (apenas visível após login) -->
-    <form id="perfil-form" class="container" style="display:none;">
+    <!-- Container do Formulário de Perfil, oculto quando o usuário não estiver autenticado -->
+    <div id="perfil-form" class="perfil-section" style="display:none;">
         <div class="header">
             <img src="../../IMGs/logo_dark.jpg" alt="Logo SportFlyx" class="logo">
         </div>
-        <div class="input-group">
-            <label for="nickname">Usuário: </label>
-            <input type="text" id="nickname" name="nickname" placeholder="@" required>
-        </div>
-        <div class="input-group">
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" placeholder="" readonly>
-        </div>
-        <div class="input-group">
-            <label for="nascimento">Data de Nascimento:</label>
-            <input type="date" id="nascimento" name="nascimento" placeholder="" required>
-        </div>
-        <div class="input-group">
-            <label for="descricao">Biografia:</label>
-            <textarea id="descricao" name="descricao" placeholder="" required></textarea>
-        </div>
-
-        <div class="input-group">
-            <label for="numero">Nº Da Camisa:</label>
-            <input type="number" id="numero" name="numero" placeholder="" required>
-        </div>
-        <div class="input-group">
-            <label for="posicao">Posição:</label>
-            <input type="text" id="posicao" name="posicao" placeholder="" required>
-        </div>
-        <div class="input-group">
-            <label for="altura">Altura:</label>
-            <input type="number" id="altura" name="altura" placeholder="" required>
-        </div>
-        <div class="input-group">
-            <label for="peso">Peso:</label>
-            <input type="number" id="peso" name="peso" placeholder="" required>
-        </div>
-        <div class="input-group">
-            <label for="pePref">Pé Dominante: </label>
-            <input type="text" id="pePref" name="pePref" placeholder="" required>
-        </div>
-        <button class="btn-primary" id="salvar">Salvar</button>
-    </form>
+        <form>
+            <div class="input-group">
+                <label for="nickname">Usuário:</label>
+                <input type="text" id="nickname" name="nickname" placeholder="@" required>
+            </div>
+            <div class="input-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="" readonly>
+            </div>
+            <div class="input-group">
+                <label for="nascimento">Data de Nascimento:</label>
+                <input type="date" id="nascimento" name="nascimento" placeholder="" required>
+            </div>
+            <div class="input-group">
+                <label for="descricao">Biografia:</label>
+                <textarea id="descricao" name="descricao" placeholder="" required></textarea>
+            </div>
+            <div class="input-group">
+                <label for="numero">Nº Da Camisa:</label>
+                <input type="number" id="numero" name="numero" placeholder="" required>
+            </div>
+            <div class="input-group">
+                <label for="posicao">Posição:</label>
+                <input type="text" id="posicao" name="posicao" placeholder="" required>
+            </div>
+            <div class="input-group">
+                <label for="altura">Altura:</label>
+                <input type="number" id="altura" name="altura" placeholder="" required>
+            </div>
+            <div class="input-group">
+                <label for="peso">Peso:</label>
+                <input type="number" id="peso" name="peso" placeholder="" required>
+            </div>
+            <div class="input-group">
+                <label for="pePref">Pé Dominante:</label>
+                <input type="text" id="pePref" name="pePref" placeholder="" required>
+            </div>
+            <button class="btn-primary" id="salvar">Salvar</button>
+        </form>
+    </div>
 
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="perfil.js"></script>
 </body>
 </html>
