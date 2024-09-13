@@ -429,6 +429,15 @@ def login():
         cursor.close()
         mydb.close()
 
+
+@app.route('/api/check_auth', methods=['GET'])
+def check_auth():
+    if 'usuario_id' in session:
+        return jsonify({'autenticado': True})
+    else:
+        return jsonify({'autenticado': False}), 401
+
+
 @app.route('/api/reset-password', methods=['POST'])
 def handle_reset_password():
     print("Recebendo solicitação para redefinição de senha")

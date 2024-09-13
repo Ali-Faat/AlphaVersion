@@ -1,24 +1,11 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
-    background-image: url(../../IMGs/backgroundsportflix.jpg);
-    background-size: cover;
-    
-}
-
-form#perfil {
-    background-color: #ffffff;
-    margin-top: 15px;
-    margin-bottom: 45px;
-    padding: 70px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
+/* Estilizações Gerais para o Formulário de Perfil */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .input-group {
@@ -28,57 +15,24 @@ form#perfil {
 .input-group label {
     display: block;
     margin-bottom: 5px;
-    color: #333;
 }
 
-.input-group input,
-.input-group textarea {
+.input-group input, .input-group textarea {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
+    border-radius: 5px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
 }
 
-.input-group textarea {
-    resize: vertical;
-    height: 70px;
-}
-
-.input-group input:focus,
-.input-group textarea:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.header {
-    margin-top: -40px;
-    display: flex;
-    justify-content: center; /* Centraliza o logo horizontalmente */
-    align-items: center; /* Centraliza o logo verticalmente dentro da div */
-    background-color: #f0f0f0; 
-    position: relative; /* Define a posição relativa */
-  }
-
-  .logo {
-    max-height: 200px; /* Ajusta o tamanho máximo do logo para caber na header */
-    object-fit: contain; /* Mantém a proporção da imagem */
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-}
-  .button{
-    color: #333;
-    background-color: rgb(198, 235, 198);
+.btn-primary {
+    background-color: #57921b;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 10px;
-    margin-top: 25px;
-    width: 100px;
-    height: 50px;
-    border-width: 0.5px;
+}
 
-  }
-  .button:hover{
-    background-color: rgb(209, 238, 209);
-  }
+.btn-primary:hover {
+    background-color: #457b1a;
+}

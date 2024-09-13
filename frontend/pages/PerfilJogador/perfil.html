@@ -1,14 +1,62 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil Do Jogador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportFlyx - Perfil do Jogador</title>
+    <!-- Carregar o Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Estilos Gerais -->
     <link rel="stylesheet" href="perfil.css">
+    <!-- Estilos Específicos para Login -->
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <form id="perfil">
-        <div class="header"></div>
-            <img src="../../IMGs/logo_dark.jpg" alt="SportFlyx" class="logo">
+    <!-- Container de Login -->
+    <div id="login-container" class="container" style="display:none;">
+        <div class="header">
+            <img src="../../IMGs/logo_dark.jpg" alt="Logo SportFlyx" class="logo">
+        </div>
+        <div class="login-form">
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha:</label>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+                        <button type="button" id="togglePassword" class="toggle-password">&#128065;</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+                <button type="button" class="btn-secondary">Esqueci a senha</button>
+            </form>
+            <p class="create-account">Clique <a href="../cadastro/cadastro.html">aqui</a> para criar uma nova conta</p>
+        </div>
+
+        <!-- Modal de Redefinição de Senha -->
+        <div id="resetPasswordPopup" class="modal">
+            <div class="modal-content">
+                <span class="modal-close material-icons" id="closePopup" style="cursor: pointer;">close</span>
+                <h4>Redefinir Senha</h4>
+                <form id="resetPasswordForm">
+                    <div class="input-field">
+                        <input type="email" id="resetEmail" name="resetEmail" placeholder="Digite seu email" required>
+                        <label for="resetEmail">Email</label>
+                    </div>
+                    <button type="submit" class="btn waves-effect waves-light">Enviar</button>
+                </form>
+                <p class="info-message" id="infoMessage"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container do Formulário de Perfil (apenas visível após login) -->
+    <form id="perfil-form" class="container" style="display:none;">
+        <div class="header">
+            <img src="../../IMGs/logo_dark.jpg" alt="Logo SportFlyx" class="logo">
         </div>
         <div class="input-group">
             <label for="nickname">Usuário: </label>
@@ -47,8 +95,11 @@
             <label for="pePref">Pé Dominante: </label>
             <input type="text" id="pePref" name="pePref" placeholder="" required>
         </div>
-        <button class="button" id="salvar">Salvar</button>
+        <button class="btn-primary" id="salvar">Salvar</button>
     </form>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="perfil.js"></script>
 </body>
 </html>
