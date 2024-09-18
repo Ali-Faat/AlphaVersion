@@ -36,7 +36,7 @@ CORS(app, supports_credentials=True, resources={
             "http://goalcast.com.br:8000",
             "https://127.0.0.1:5500",
             "https://138.99.160.212:8000",
-            "https://goalcast.com.br:8000"
+            "https://goalcast.com.br:8000" 
         ]
     },
     r"/validar_email": {
@@ -188,6 +188,48 @@ def add_jogador():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# Rota para adicionar clube
+@app.route('/api/clubes', methods=['POST'])
+def add_clube():
+    data = request.get_json()
+
+    # Validação dos dados recebidos
+    if not data or not 'idusuariocriador' in data or not 'nome' in data or not 'senha' in data:
+        return jsonify({'message': 'Dados incompletos'}), 400
+
+    idusuariocriador = data['idusuariocriador']
+    nome = data['nome']
+    icon = data.get('icon', None)  # Campo opcional
+    idarenasede = data.get('idarenasede', None)  # Campo opcional
+    senha = data['senha']
+
+    try:
+        # Conexão ao banco de dados
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            # Monta a query SQL
+            sql = """
+                INSERT INTO clubes (idusuariocriador, nome, icon, idarenasede, senha)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            # Executa a query
+            cursor.execute(sql, (idusuariocriador, nome, icon, idarenasede, senha))
+            connection.commit()
+
+            # Obtém o ID do clube recém-criado
+            id_clube = cursor.lastrowid
+
+        # Fecha a conexão
+        connection.close()
+
+        # Retorna uma resposta de sucesso com o ID do novo clube
+        return jsonify({'idclubes': id_clube, 'message': 'Clube criado com sucesso!'}), 201
+
+    except Exception as e:
+        # Em caso de erro, retorna a mensagem de erro
+        return jsonify({'message': str(e)}), 500
 
 
 @app.route('/api/quadras', methods=['GET'])

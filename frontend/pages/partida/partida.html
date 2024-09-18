@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização da Partida</title>
+    <link rel="stylesheet" href="partida.css">
+</head>
+<body>
+    <div class="formation-select">
+        <div>
+            <label for="formationA">Formação Time A:</label>
+            <select id="formationA" onchange="alterarFormacaoA()">
+                <option value="433">4-3-3</option>
+                <option value="442">4-4-2</option>
+                <option value="352">3-5-2</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="formationB">Formação Time B:</label>
+            <select id="formationB" onchange="alterarFormacaoB()">
+                <option value="433">4-3-3</option>
+                <option value="442">4-4-2</option>
+                <option value="352">3-5-2</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="campo-container">
+        <div class="jogadores">
+            <!-- Goleiro -->
+            <button class="jogador jogador-a" data-time="a" data-num="goleiro">G</button>
+            <!-- Botões para jogadores do Time A -->
+            <button class="jogador jogador-a" data-time="a" data-num="1">1</button>
+            <button class="jogador jogador-a" data-time="a" data-num="2">2</button>
+            <button class="jogador jogador-a" data-time="a" data-num="3">3</button>
+            <button class="jogador jogador-a" data-time="a" data-num="4">4</button>
+            <button class="jogador jogador-a" data-time="a" data-num="5">5</button>
+            <button class="jogador jogador-a" data-time="a" data-num="6">6</button>
+            <button class="jogador jogador-a" data-time="a" data-num="7">7</button>
+            <button class="jogador jogador-a" data-time="a" data-num="8">8</button>
+            <button class="jogador jogador-a" data-time="a" data-num="9">9</button>
+            <button class="jogador jogador-a" data-time="a" data-num="10">10</button>
+            <button class="jogador jogador-a" data-time="a" data-num="11">11</button>
+            
+            <!-- Botões para jogadores do Time B -->
+            <button class="jogador jogador-b" data-time="b" data-num="1">1</button>
+            <button class="jogador jogador-b" data-time="b" data-num="2">2</button>
+            <button class="jogador jogador-b" data-time="b" data-num="3">3</button>
+            <button class="jogador jogador-b" data-time="b" data-num="4">4</button>
+            <button class="jogador jogador-b" data-time="b" data-num="5">5</button>
+            <button class="jogador jogador-b" data-time="b" data-num="6">6</button>
+            <button class="jogador jogador-b" data-time="b" data-num="7">7</button>
+            <button class="jogador jogador-b" data-time="b" data-num="8">8</button>
+            <button class="jogador jogador-b" data-time="b" data-num="9">9</button>
+            <button class="jogador jogador-b" data-time="b" data-num="10">10</button>
+            <button class="jogador jogador-b" data-time="b" data-num="11">11</button>
+        </div>
+    </div>
+
+    <script src="partida.js"></script>
+</body>
+</html>
