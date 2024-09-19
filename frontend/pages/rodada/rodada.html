@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página da Rodada</title>
+    <link rel="stylesheet" href="rodada.css">
+</head>
+<body>
+    <div class="background-overlay"></div> <!-- Adicionando overlay claro para o fundo da imagen -->
+    <header class="header">
+        <div class="header-content">
+            <h1>Rodada <span id="rodada-numero">1</span></h1>
+            <button class="close-btn">X</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="button-container">
+            <div class="button" id="timeA">Time A</div>
+            <div class="button" id="timeB">Time B</div>
+            <div class="button" id="partida">Partida</div>
+        </div>
+    </main>
+
+    <script>
+        // Simulação de como o número da rodada seria atualizado (VER COM ALISON)
+        const numeroRodada = 5; // Exemplo do número da rodada vindo do backend teste (VER COM ALISON)
+        document.getElementById('rodada-numero').textContent = numeroRodada;
+    </script>
+</body>
+</html>
