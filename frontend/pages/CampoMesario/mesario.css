@@ -1,0 +1,145 @@
+/* para tudo */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0; /* Cor de fundo clara */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Cabeçalho */
+.header {
+    width: 100%;
+    background-color: #004225; /* Verde escuro */
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 4px solid #006837;
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.close-btn, .settings-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover, .settings-btn:hover {
+    color: #ff5c5c; /* Cor de destaque */
+}
+
+/* Conteúdo Principal */
+.main-content {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 1200px; /*tamanho máximo */
+}
+
+/* timers*/
+.top-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 66, 37, 0.8); /* Fundo verde escuro com transparência */
+    padding: 10px 20px;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.team-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.timer-container {
+    display: flex;
+    align-items: center;
+}
+
+#timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin: 0 20px;
+}
+
+.control-btn {
+    background-color: transparent; /* Remove fundo */
+    border: none; /* Remove borda */
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: transform 0.3s;
+}
+
+.control-btn:hover {
+    transform: scale(1.2); /* Aumenta o tamanho ao passar o mouse */
+}
+
+/* Imagem do Campo */
+.image-container {
+    width: 80%; /* largura da imagem */
+    margin-bottom: 20px;
+}
+
+.field-image {
+    width: 100%; /* Mantém a largura da imagem dentro do container */
+    height: auto;
+    display: block;
+    border-radius: 10px;
+}
+
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os botões quebrem linha */
+    justify-content: center;
+    gap: 15px; /* Espaço entre os botões */
+    width: 100%;
+}
+
+.action-btn {
+    background-color: rgba(154, 225, 157, 0.9); /* Verde claro com opacidade */
+    border: 2px solid #004225; /* Borda verde escura */
+    color: #004225; /* Cor do texto verde escuro */
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 120px;
+}
+
+.action-btn:hover {
+    background-color: rgba(120, 198, 121, 0.9); /* Verde claro escuro */
+    transform: translateY(-3px);
+}
+
+.action-btn:active {
+    background-color: rgba(86, 164, 100, 0.9); /* Verde claro ainda mais escuro */
+    transform: translateY(0);
+}

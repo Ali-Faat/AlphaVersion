@@ -92,7 +92,7 @@ h1 {
     transform: translateY(-5px);
 }
 
-.button:active {
+.button:active {  /* Pulinho ao interagir*/
     background-color: rgba(86, 164, 100, 0.9);
     transform: translateY(0);
 }

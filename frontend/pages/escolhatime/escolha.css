@@ -1,0 +1,182 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    position: relative;
+    min-height: 100vh; /* Garante que a altura mínima seja de 100% da janela */
+    background-color: #f0f0f0; /* Cor de fundo secundária para quando a imagem não estiver disponível */
+    display: flex;
+    flex-direction: column; /* Permite que o rodapé fique sempre no final */
+}
+
+/* Imagem de fundo */
+.background-overlay {
+    position: fixed; /* Fixa o overlay em toda a tela */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../IMGs/backgroundsportflix.jpg'); /* Imagem de fundo */
+    background-size: cover; /* Cobre toda a área da tela */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Não repete a imagem */
+    opacity: 0.7; /* Deixa a imagem mais clara */
+    z-index: -1; /* Coloca a imagem atrás de todo o conteúdo */
+}
+
+/* Cabeçalho */
+.header {
+    background-color: rgba(0, 66, 37, 0.9); /* Verde escuro com opacidade */
+    color: white;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Conteúdo principal */
+.main-content {
+    flex: 1;
+    padding: 30px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+}
+
+/* Container dos jogadores */
+.players-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 800px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* Fundo branco com opacidade */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Cartão de jogador */
+.player-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.player-card:hover {
+    background-color: #e9e9e9;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre o checkbox e o nome do jogador */
+}
+
+.player-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: #004225; /* Cor do checkbox (verde escuro) */
+}
+
+.shirt-number {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shirt-number input {
+    width: 60px;
+    font-size: 18px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #fff;
+    color: #333;
+}
+
+.shirt-number input:focus {
+    border-color: #004225;
+    outline: none;
+}
+
+.edit-btn {
+    background-color: #004225;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.edit-btn:hover {
+    background-color: #006837;
+}
+
+/* Rodapé */
+.footer {
+    display: flex;
+    justify-content: space-between; /* Separa os botões para os cantos */
+    padding: 20px;
+    background-color: rgba(0, 66, 37, 0.9);
+    border-top: 1px solid;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Garante que o rodapé ocupe toda a largura */
+    position: sticky; /* Mantém o rodapé fixo no final da página */
+    bottom: 0; /* Fixa o rodapé no fundo */
+}
+
+.back-btn, .save-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.back-btn {
+    background-color: #bbb;
+    color: #333;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #218838;
+}
+
+.back-btn:hover {
+    background-color: #999;
+}
