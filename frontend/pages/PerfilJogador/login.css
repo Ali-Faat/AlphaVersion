@@ -162,3 +162,37 @@ body {
     font-size: 18px;
     color: #57921b;
 }
+/* Estilizando o container do span */
+#span {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Estilizando o parágrafo */
+#span p {
+    font-size: 20px; /* Tamanho da fonte */
+    color: white; /* Cor do texto */
+    font-weight: bold;
+    font-family: 'Readex Pro', sans-serif; /* Mantém a fonte padrão */
+    line-height: 1.5; /* Espaçamento entre linhas */
+    margin-bottom: 20px; /* Espaçamento inferior */
+}
+
+/* Estilizando o botão "PRÓXIMO" */
+#prx {
+    background-color: #57921b; /* Cor de fundo verde */
+    color: white; /* Cor do texto branca */
+    padding: 12px 24px; /* Espaçamento interno do botão */
+    border: none; /* Remove a borda */
+    border-radius: 5px; /* Arredonda os cantos */
+    cursor: pointer; /* Muda o cursor para a mãozinha ao passar sobre o botão */
+    font-size: 18px; /* Tamanho do texto no botão */
+    transition: background-color 0.3s ease; /* Animação suave na mudança de cor */
+    margin-top: 10px; /* Espaçamento superior */
+}
+
+/* Efeito ao passar o mouse sobre o botão */
+#prx:hover {
+    background-color: #4e801a; /* Escurece o verde ao passar o mouse */
+}
+
