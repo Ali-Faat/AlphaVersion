@@ -5,11 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
         link.rel = "stylesheet";
         link.href = href;
         document.head.appendChild(link);
+        document.getElementById('login-container').style.display = 'none';
     }
+
+    // Função para salvar os dados do perfil
+    const prx = document.getElementById('prx');
+    prx.addEventListener('click', function(event) {
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('span').style.display = 'none';
+    });
 
     // Função para verificar se o usuário está autenticado via sessão
     function verificarAutenticacao() {
-        fetch('http://138.99.160.212:5000/api/check_auth', { // Verifique se o caminho está correto
+        fetch('http://187.0.238.233:5000/api/check_auth', { // Verifique se o caminho está correto
             method: 'GET',
             credentials: 'include' // Envia os cookies de sessão
         })
@@ -65,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Realiza a requisição de login
-        fetch('http://138.99.160.212:5000/api/login', {
+        fetch('http://187.0.238.233:5000/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -123,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Envia os dados para o servidor
-        fetch('http://138.99.160.212:5000/api/add_jogador', {
+        fetch('http://187.0.238.233:5000/api/add_jogador', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
