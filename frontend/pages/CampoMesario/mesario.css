@@ -1,4 +1,3 @@
-/* para tudo */
 * {
     margin: 0;
     padding: 0;
@@ -6,175 +5,146 @@
 }
 
 body {
-    background-image: url('../../IMGs/campo.jpg');
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0; /* Cor de fundo clara */
     display: flex;
     flex-direction: column;
-    align-items: center;
     height: 100vh;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.6);
 }
 
-/* Cabeçalho */
 .header {
-    width: 100%;
-    background-color: #004225; /* Verde escuro */
+    background-color: #006837; /* Cor de fundo mais clara */
     color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    border-bottom: 4px solid #006837;
-}
-
-.jogadores {
+    text-align: center;
+    padding: 20px;
+    font-size: 26px;
+    z-index: 2;
     position: relative;
-    width: 100%;
-    height: 100%;
+}
+.botao-voltar {
+    position: absolute; /* Posiciona o botão em relação ao container */
+    top: 29px; /* Distância do topo */
+    right: 28px; /* Distância da direita */
+    padding: 10px 15px; /* Espaçamento interno */
+    background-color:  #006837; /* Cor de fundo do botão */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove o sublinhado */
+    border-radius: 50px; /* Bordas arredondadas caso ponha bottom */
 }
 
-.jogador {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    color: #fff;
-    font-weight: bold;
-    position: absolute;
-    cursor: pointer;
-    transform: translate(-50%, -50%);
+.botao-voltar:hover {
+    color: rgb(199, 100, 100); /* Cor de fundo ao passar o mouse */
+}
+
+/* Estilo do Cronômetro e Botões */
+.timer-container {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.jogador-a {
-    background-color: #ff0000; /* Vermelho para o time A */
-}
-
-.jogador-a[data-num="goleiro"] {
-    top: 55%;
-    left: 5%;
-}
-
-.jogador-b {
-    background-color: #0000ff; /* Azul para o time B */
-}
-
-
-.header h1 {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.close-btn, .settings-btn {
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close-btn:hover, .settings-btn:hover {
-    color: #ff5c5c; /* Cor de destaque */
-}
-
-/* Conteúdo Principal */
-.main-content {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 80%;
-    max-width: 1200px; /*tamanho máximo */
-}
-
-/* timers*/
-.top-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(0, 66, 37, 0.8); /* Fundo verde escuro com transparência */
-    padding: 10px 20px;
-    border-radius: 8px;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.team-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-}
-
-.timer-container {
-    display: flex;
-    align-items: center;
+    margin: 20px 0;
+    gap: 17px; /* Aumentado o espaço entre o cronômetro e os botões */
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
 }
 
 #timer {
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-    margin: 0 20px;
+    font-size: 20px; /* Aumentado o tamanho do cronômetro */
+    color: #ffffff;
+    background-color: rgba(51, 51, 51, 0.7);
+    padding: 10px 25px;
+    border-radius: 8px;
 }
 
-.control-btn {
-    background-color: transparent; /* Remove fundo */
-    border: none; /* Remove borda */
-    color: white;
-    font-size: 28px;
+button {
+    padding: 10px 15px; /* Aumentado o tamanho dos botões */
+    border: none;
+    background-color: rgba(153, 204, 153, 0.7); 
+    font-size: 18px; /* Aumentado o tamanho do texto (emoji) */
+    border-radius: 8px;
     cursor: pointer;
-    margin: 0 5px;
-    transition: transform 0.3s;
 }
 
-.control-btn:hover {
-    transform: scale(1.2); /* Aumenta o tamanho ao passar o mouse */
+button:hover {
+    background-color: rgba(136, 187, 136, 0.7);
 }
 
-/* Imagem do Campo */
-.image-container {
-    width: 80%; /* largura da imagem */
-    margin-bottom: 20px;
-}
-
-.field-image {
-    width: 100%; /* Mantém a largura da imagem dentro do container */
-    height: auto;
-    display: block;
-    border-radius: 10px;
-}
-
-
-.action-buttons {
-    display: flex;
-    flex-wrap: wrap; /* Permite que os botões quebrem linha */
-    justify-content: center;
-    gap: 15px; /* Espaço entre os botões */
+.field-container {
+    position: relative;
     width: 100%;
+    height: 100%;
+    background-image: url('../../IMGs/campo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.9; /* Mantendo a imagem clara */
+}
+
+/* Estilização dos botões de ação */
+.buttons-left, .buttons-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Mais espaço entre os botões */
+}
+
+.buttons-left {
+    left: 2%;
+}
+
+.buttons-right {
+    right: 2%;
 }
 
 .action-btn {
-    background-color: rgba(154, 225, 157, 0.9); /* Verde claro com opacidade */
-    border: 2px solid #004225; /* Borda verde escura */
-    color: #004225; /* Cor do texto verde escuro */
-    font-size: 16px;
-    font-weight: bold;
-    padding: 10px 15px;
+    background-color: #99cc99;
+    border: none;
+    padding: 15px 25px; /* Botões maiores */
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    font-size: 18px; /* Texto maior */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 120px;
+    transition: background-color 0.3s;
 }
 
 .action-btn:hover {
-    background-color: rgba(120, 198, 121, 0.9); /* Verde claro escuro */
-    transform: translateY(-3px);
+    background-color: #88bb88;
 }
 
-.action-btn:active {
-    background-color: rgba(86, 164, 100, 0.9); /* Verde claro ainda mais escuro */
-    transform: translateY(0);
+/* Estilização dos jogadores como botões clicáveis */
+.player {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: red;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+    z-index: 2;
+}
+
+.time{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: blue;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+    z-index: 2;
+
+}
+.time:hover{
+    background-color: rgb(44, 44, 231);
+}
+
+.player:hover {
+    background-color: #ff4d4d;
 }
