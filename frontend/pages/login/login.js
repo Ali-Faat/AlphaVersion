@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', async function() {
 
+    // Inicialização do modal do Materialize
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+
     // Função para carregar a URL da API a partir do arquivo config.json
     async function getApiUrl() {
         try {
-            const response = await fetch('../../config.json'); // Caminho para o config.json
+            const response = await fetch('http://138.99.160.212:5000/api/login/'); // Caminho ajustado
             if (!response.ok) {
                 throw new Error('Erro ao carregar o arquivo config.json');
             }
@@ -14,7 +18,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             return null; // Lidar com o erro de forma apropriada
         }
     }
-
 
     // Função para buscar a URL da API
     const apiUrl = await getApiUrl(); // Carrega a URL da API dinamicamente
@@ -68,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Se não existir, cria o elemento
             errorMessage = document.createElement('div');
             errorMessage.classList.add('error-message');
-            errorMessage.style.color = 'red'; // Estilização básica, você pode mover isso para o CSS
+            errorMessage.style.color = 'red';
             errorMessage.style.marginTop = '10px';
 
             // Insere o elemento de erro logo após o formulário
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Define a mensagem de erro e mostra o elemento
         errorMessage.textContent = mensagem;
-        errorMessage.classList.add('show'); // Se houver uma classe CSS para exibir o erro
+        errorMessage.classList.add('show');
 
         // Timeout para remover a mensagem de erro após 3 segundos
         setTimeout(() => {
@@ -106,61 +109,3 @@ document.addEventListener('DOMContentLoaded', async function() {
     initResetPassword();
 });
 
-// Função para inicializar o reset de senha
-function initResetPassword() {
-    const forgotPasswordBtn = document.querySelector('.btn-secondary');
-    const resetPasswordPopup = document.getElementById('resetPasswordPopup');
-    const closePopupBtn = document.getElementById('closePopup');
-    const resetPasswordForm = document.getElementById('resetPasswordForm');
-    const infoMessage = document.getElementById('infoMessage');
-
-    forgotPasswordBtn.addEventListener('click', () => {
-        resetPasswordPopup.style.display = 'block';
-    });
-
-    closePopupBtn.addEventListener('click', () => {
-        resetPasswordPopup.style.display = 'none';
-        infoMessage.style.display = 'none';
-    });
-
-    resetPasswordForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const email = document.getElementById('resetEmail').value;
-        const apiUrl = await getApiUrl(); // Carrega a URL da API dinamicamente para o reset de senha
-
-        try {
-            const response = await fetch(`${apiUrl}api/reset-password`, { // Usando a URL da API carregada
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email
-                })
-            });
-
-            if (response.ok) {
-                infoMessage.textContent = 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.';
-                infoMessage.style.display = 'block';
-                infoMessage.style.color = 'green';
-            } else {
-                infoMessage.textContent = 'Erro ao enviar o e-mail. Tente novamente mais tarde.';
-                infoMessage.style.display = 'block';
-                infoMessage.style.color = 'red';
-            }
-        } catch (error) {
-            console.error('Erro na requisição:', error);
-            infoMessage.textContent = 'Erro na requisição. Tente novamente mais tarde.';
-            infoMessage.style.display = 'block';
-            infoMessage.style.color = 'red';
-        }
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target == resetPasswordPopup) {
-            resetPasswordPopup.style.display = 'none';
-            infoMessage.style.display = 'none';
-        }
-    });
-}

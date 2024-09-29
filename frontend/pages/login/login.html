@@ -27,16 +27,17 @@
                         <button type="button" id="togglePassword" class="toggle-password">&#128065;</button>
                     </div>
                 </div>
+                <div class="error-message" style="color: red; margin-top: 10px;"></div> <!-- Contêiner para mensagens de erro -->
                 <button type="submit" class="btn-primary">Entrar</button>
                 <button type="button" class="btn-secondary">Esqueci a senha</button>
             </form>
             <p class="create-account">Clique <a href="../cadastro/cadastro.html">aqui</a> para criar uma nova conta</p>
         </div>
-
+    
         <!-- Modal de Redefinição de Senha -->
         <div id="resetPasswordPopup" class="modal">
             <div class="modal-content">
-                <span class="modal-close material-icons" id="closePopup" style="cursor: pointer;">close</span>
+                <span id="closePopup" class="modal-close">&#10005;</span>
                 <h4>Redefinir Senha</h4>
                 <form id="resetPasswordForm">
                     <div class="input-field">
@@ -49,9 +50,7 @@
             </div>
         </div>
     
-    <!-- Carregar o Materialize JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <!-- Carregar o JS Personalizado -->
-    <script src="login.js"></script>
+    </div>
+    <script href="login.js"></script>    
 </body>
 </html>
