@@ -1,7 +1,14 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Função para buscar a URL da API
+    const apiUrl = await getApiUrl(); // Carrega a URL da API dinamicamente
+
+    if (!apiUrl) {
+        console.error('Não foi possível carregar a URL da API.');
+        return; // Pare a execução se a URL da API não foi carregada
+    }
+
     // Manipulação do formulário de login
     const loginForm = document.getElementById('loginForm');
-    const errorMessage = document.querySelector('.error-message'); // Verifique se este seletor está correto e se o elemento existe no HTML
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -10,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
 
         try {
-            const response = await fetch('http://138.99.160.212:5000/api/login', {
+            const response = await fetch(`${apiUrl}api/login`, { // Usando a URL da API carregada
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -37,24 +44,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para exibir mensagens de erro na interface
     function mostrarErro(mensagem) {
-        if (errorMessage) {
-            errorMessage.textContent = mensagem;
-            errorMessage.classList.add('show'); // Certifique-se que essa classe CSS existe e está estilizada no CSS
+        let errorMessage = document.querySelector('.error-message');
 
-            // Timeout para remover a mensagem de erro após 3 segundos
-            setTimeout(() => {
-                ocultarErro();
-            }, 3000);
-        } else {
-            console.error('Elemento de mensagem de erro não encontrado no DOM.');
+        // Verifica se o elemento já existe
+        if (!errorMessage) {
+            // Se não existir, cria o elemento
+            errorMessage = document.createElement('div');
+            errorMessage.classList.add('error-message');
+            errorMessage.style.color = 'red'; // Estilização básica, você pode mover isso para o CSS
+            errorMessage.style.marginTop = '10px';
+
+            // Insere o elemento de erro logo após o formulário
+            loginForm.parentNode.insertBefore(errorMessage, loginForm.nextSibling);
         }
+
+        // Define a mensagem de erro e mostra o elemento
+        errorMessage.textContent = mensagem;
+        errorMessage.classList.add('show'); // Se houver uma classe CSS para exibir o erro
+
+        // Timeout para remover a mensagem de erro após 3 segundos
+        setTimeout(() => {
+            ocultarErro();
+        }, 3000);
     }
 
-    // Função para ocultar mensagens de erro na interface
+    // Função para ocultar a mensagem de erro
     function ocultarErro() {
+        const errorMessage = document.querySelector('.error-message');
         if (errorMessage) {
-            errorMessage.classList.remove('show'); // Supondo que há uma classe CSS 'show' para ocultar a mensagem
-            errorMessage.textContent = ''; // Limpar o texto da mensagem de erro
+            errorMessage.classList.remove('show');
+            errorMessage.textContent = ''; // Limpa o texto da mensagem
         }
     }
 
@@ -70,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initResetPassword();
 });
 
+// Função para inicializar o reset de senha
 function initResetPassword() {
     const forgotPasswordBtn = document.querySelector('.btn-secondary');
     const resetPasswordPopup = document.getElementById('resetPasswordPopup');
@@ -77,25 +97,23 @@ function initResetPassword() {
     const resetPasswordForm = document.getElementById('resetPasswordForm');
     const infoMessage = document.getElementById('infoMessage');
 
-    // Mostrar o pop-up quando o botão "Esqueci a senha" for clicado
     forgotPasswordBtn.addEventListener('click', () => {
         resetPasswordPopup.style.display = 'block';
     });
 
-    // Fechar o pop-up quando o botão de fechar for clicado
     closePopupBtn.addEventListener('click', () => {
         resetPasswordPopup.style.display = 'none';
-        infoMessage.style.display = 'none'; // Esconde a mensagem de informação, se houver
+        infoMessage.style.display = 'none';
     });
 
-    // Enviar o formulário de redefinição de senha
     resetPasswordForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const email = document.getElementById('resetEmail').value;
+        const apiUrl = await getApiUrl(); // Carrega a URL da API dinamicamente para o reset de senha
 
         try {
-            const response = await fetch('http://138.99.160.212:5000/api/reset-password', {
+            const response = await fetch(`${apiUrl}api/reset-password`, { // Usando a URL da API carregada
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -122,11 +140,10 @@ function initResetPassword() {
         }
     });
 
-    // Fechar o pop-up se o usuário clicar fora dele
     window.addEventListener('click', (event) => {
         if (event.target == resetPasswordPopup) {
             resetPasswordPopup.style.display = 'none';
-            infoMessage.style.display = 'none'; // Esconde a mensagem de informação, se houver
+            infoMessage.style.display = 'none';
         }
     });
 }
