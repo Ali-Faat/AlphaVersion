@@ -33,22 +33,22 @@ CORS(app, supports_credentials=True, resources={
         "origins": [
             "http://127.0.0.1:5500",
             "http://138.99.160.212:8000",
-            "http://goalcast.com.br:8000",
+            "http://beta.sportflyx.com:8000",
             "https://127.0.0.1:5500",
             "https://138.99.160.212:8000",
-            "https://goalcast.com.br:8000" 
+            "https://beta.sportflyx.com:8000" 
         ]
     },
     r"/validar_email": {
         "origins": [
-            "http://goalcast.com.br:8000",
-            "https://goalcast.com.br:8000"
+            "http://beta.sportflyx.com:8000",
+            "https://beta.sportflyx.com:8000"
         ]
     },
     r"/confirmar_email": {
         "origins": [
-            "http://goalcast.com.br:8000",
-            "https://goalcast.com.br:8000"
+            "http://beta.sportflyx.com:8000",
+            "https://beta.sportflyx.com:8000"
         ]
     }
 })
@@ -578,7 +578,7 @@ def cadastro():
         mydb.commit()
 
         # Link de verificação
-        verification_link = f"http://goalcast.com.br:5000/validar_email?token={verification_token}&apelido={apelido}"
+        verification_link = f"http://beta.sportflyx.com:5000/validar_email?token={verification_token}&apelido={apelido}"
 
         # Envia o e-mail de verificação
         subject = "Verifique seu e-mail"
@@ -615,7 +615,7 @@ def validar_email():
         if usuario:
             # Se o token for válido, redirecione para o frontend com o apelido
             apelido = usuario['apelido']
-            return redirect(f'http://goalcast.com.br:8000/pages/validar/validar.html?apelido={apelido}')
+            return redirect(f'http://beta.sportflyx.com:8000/pages/validar/validar.html?apelido={apelido}')
         else:
             return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
 
