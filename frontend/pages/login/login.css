@@ -10,54 +10,47 @@ body {
     font-family: 'Readex Pro', sans-serif;
     display: flex;
     justify-content: center;
-    background-image: url('../../IMGs/backgroundsportflix.jpg'); /* Substitua pelo caminho da sua imagem */
     align-items: center;
-    height: 100vh;
+    height: 100%;
+    min-height: 100vh;
+    background-image: url('../../IMGs/backgroundsportflix.jpg');
+    background-size: cover;
+    background-position: center;
     background-color: var(--background-color);
 }
 
 /* Container Principal */
 .container {
-    border-radius: 10px;
+    border-radius: 20px;
     overflow: hidden;
     width: 90%;
     height: 70%;
     margin: auto;
     background-color: var(--container-bg-color);
-    box-shadow: var(--container-box-shadow);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suavizada */
 }
 
 /* Header */
 .header {
     border-radius: 10px;
     text-align: center;
-    /*background-image: url('../../IMGs/logo_dark.jpg');  Substitua pelo caminho da sua imagem */
 }
 
 .header .logo {
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
+    max-width: 350px;
+    margin-top: 20px;
+    height: auto;
+    border-radius: 5px;
 }
-
-/*.header h1 {
-    margin-top: 10px;
-    font-family: 'Outfit', sans-serif;
-}*/
-
-/*.header p {
-    font-size: 14px;
-    color: var(--header-subtext-color);
-}*/
 
 /* Formulário de Login */
 .login-form {
-    padding: 20px;
+    padding: 50px;
 }
 
 .input-group {
     margin-bottom: 15px;
-    position: relative; /* Necessário para posicionar o ícone */
+    position: relative;
 }
 
 .input-group label {
@@ -69,12 +62,20 @@ body {
 
 .input-group input {
     width: 100%;
-    /*padding: 10px;*/
-    border-radius: 5px;
-    border: 2px solid var(--input-border-color);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--input-border-color);
     font-size: 14px;
     background-color: var(--input-bg-color);
     color: var(--input-text-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave para foco */
+}
+
+/* Estilo de foco nos inputs */
+.input-group input:focus {
+    outline: none;
+    border-color: #57921b; /* Cor em harmonia com o design */
+    box-shadow: 0 0 5px rgba(87, 146, 27, 0.5);
 }
 
 /* Ajuste do ícone de visibilidade de senha */
@@ -99,10 +100,6 @@ body {
     color: var(--toggle-password-color);
 }
 
-.toggle-password i {
-    font-family: 'Material Icons';
-}
-
 /* Botões personalizados */
 .btn-primary {
     width: 100%;
@@ -114,6 +111,13 @@ body {
     margin-bottom: 10px;
     background-color: #57921b;
     color: #ffffff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estado de hover nos botões */
+.btn-primary:hover {
+    background-color: #467017;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary {
@@ -126,6 +130,13 @@ body {
     background-color: transparent;
     border: 2px solid var(--input-border-color);
     color: var(--label-color);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #57921b;
+    color: #ffffff;
+    border-color: #57921b;
 }
 
 .create-account {
@@ -136,13 +147,19 @@ body {
 }
 
 .create-account a {
-    color: #ecc660; /* Harmonizando com o restante do design */
+    color: #ecc660;
 }
 
 /* Modal de Redefinição de Senha */
 .modal {
-    display: none;
-    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease-in-out;
+}
+
+.modal.show {
+    visibility: visible;
+    opacity: 1;
 }
 
 .modal-content {
@@ -165,8 +182,17 @@ body {
 
 /* Estilos Específicos para Dark Theme */
 @media (prefers-color-scheme: dark) {
+
+    .header .logo{
+        margin-top: 20px;
+        width: 90%;
+        height: auto;
+        border-radius: 5px;
+        content: url('../../IMGs/logo_lithe.jpg'); /* Imagem padrão para o tema escuro */
+    }
+
     :root {
-        --background-color: #101010;
+        --background-color: #000;
         --container-bg-color: #222222;
         --container-box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
         --header-text-color: #ffffff;
@@ -184,6 +210,15 @@ body {
 
 /* Estilos Específicos para Light Theme */
 @media (prefers-color-scheme: light) {
+
+    .header .logo{
+        margin-top: 20px;
+        width: 90%;
+        height: auto;
+        border-radius: 5px;
+        content: url('../../IMGs/logo_dark.jpg'); /* Imagem padrão para o tema claro */
+    }
+
     :root {
         --background-color: #f4f4f4;
         --container-bg-color: #ffffff;
@@ -207,19 +242,17 @@ body {
 @media (min-width: 768px) and (max-width: 1024px) {
     .container {
         width: 60%; 
-        /*max-width: 600px;*/
         padding: 40px;
-        box-shadow: var(--container-box-shadow);
     }
 
     .logo {
         width: 120px;
-        height: 120px;
+        height: auto;
     }
 
     .input-group input {
         padding: 15px;
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .btn-primary, .btn-secondary {
@@ -237,18 +270,15 @@ body {
     .container {
         height: 90%;
         width: 40%;
-        /*max-width: 800px;*/
-        padding: 60px;
-        box-shadow: var(--container-box-shadow);
+        padding: 10px;
     }
 
-    .logo {
-        width: 140px;
-        height: 140px;
+    .header .logo {
+        max-width: 600px;
     }
 
     .input-group input {
-        padding: 20px;
+        padding: 10px;
         font-size: 20px;
     }
 

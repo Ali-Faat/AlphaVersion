@@ -12,10 +12,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="../../IMGs/logo_dark.jpg" alt="Logo SportFlyx" class="logo">
+            <img src="#" alt="Logotipo da SportFlyx" class="logo">
         </div>
         <div class="login-form">
-            <form id="loginForm">
+            <form method="post">
                 <div class="input-group">
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" placeholder="Digite seu email" required>
@@ -27,11 +27,16 @@
                         <button type="button" id="togglePassword" class="toggle-password">&#128065;</button>
                     </div>
                 </div>
-                <div class="error-message" style="color: red; margin-top: 10px;"></div> <!-- Contêiner para mensagens de erro -->
-                <button type="submit" class="btn-primary">Entrar</button>
+                <button type="submit" id="loginForm" class="btn-primary">Entrar</button>
                 <button type="button" class="btn-secondary">Esqueci a senha</button>
             </form>
-            <p class="create-account">Clique <a href="../cadastro/cadastro.html">aqui</a> para criar uma nova conta</p>
+            <!-- Mensagem de erro -->
+            <div class="error-message" style="color: red; margin-top: 10px; display: none;"></div>
+
+            <!-- Feedback de carregamento -->
+            <div class="carregando" style="display:none; text-align:center; color: blue;">Carregando...</div>
+
+            <p class="create-account"><a href="../cadastro/cadastro.html">CRIAR NOVA CONTA</a></p>
         </div>
     
         <!-- Modal de Redefinição de Senha -->
@@ -49,8 +54,9 @@
                 <p class="info-message" id="infoMessage"></p>
             </div>
         </div>
-    
     </div>
-    <script href="login.js"></script>    
+
+    <!-- Carregar o JavaScript -->
+    <script src="login.js"></script>
 </body>
 </html>
