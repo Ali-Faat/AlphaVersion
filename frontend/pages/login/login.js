@@ -1,4 +1,21 @@
 document.addEventListener('DOMContentLoaded', async function() {
+
+    // Função para carregar a URL da API a partir do arquivo config.json
+    async function getApiUrl() {
+        try {
+            const response = await fetch('../../config.json'); // Caminho para o config.json
+            if (!response.ok) {
+                throw new Error('Erro ao carregar o arquivo config.json');
+            }
+            const config = await response.json();
+            return config.API.API_URL; // Retorna a URL da API
+        } catch (error) {
+            console.error('Erro ao buscar a URL da API:', error);
+            return null; // Lidar com o erro de forma apropriada
+        }
+    }
+
+
     // Função para buscar a URL da API
     const apiUrl = await getApiUrl(); // Carrega a URL da API dinamicamente
 
