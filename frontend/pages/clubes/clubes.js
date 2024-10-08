@@ -19,7 +19,7 @@ document.getElementById('addClubeForm').addEventListener('submit', async functio
 
     try {
         // Envio da requisição POST para a API
-        const response = await fetch('http://localhost:5000/api/clubes', {
+        const response = await fetch('https://api.sportflyx.com/api/clubes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

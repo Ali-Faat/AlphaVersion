@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         try {
-            const response = await fetch('http://138.99.160.212:5000/api/cadastro', {
+            const response = await fetch('https://api.sportflyx.com:5000/api/cadastro', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

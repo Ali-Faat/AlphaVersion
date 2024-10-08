@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para verificar se o usuário está autenticado via sessão
     function verificarAutenticacao() {
-        fetch('http://187.0.238.233:5000/api/check_auth', { // Verifique se o caminho está correto
+        fetch('https://api.sportflyx.com:5000/api/check_auth', { // Verifique se o caminho está correto
             method: 'GET',
             credentials: 'include' // Envia os cookies de sessão
         })
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Realiza a requisição de login
-        fetch('http://187.0.238.233:5000/api/login', {
+        fetch('https://api.sportflyx.com:5000/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Envia os dados para o servidor
-        fetch('http://187.0.238.233:5000/api/add_jogador', {
+        fetch('https://api.sportflyx.com:5000/api/add_jogador', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

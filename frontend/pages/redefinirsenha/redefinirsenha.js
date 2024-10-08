@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Envio dos dados para a API
-            const response = await fetch('http://138.99.160.212:5000/api/reset-password', {
+            const response = await fetch('https://api.sportflyx.com:5000/api/reset-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const result = await response.json();
                 // Redirecionar ou limpar o formulário conforme necessário
-                window.location.href = 'http://goalcast.com.br:8000/pages/login/login.html'; // Exemplo de redirecionamento após sucesso
+                window.location.href = 'https://sportflyx.com/pages/login/login.html'; // Exemplo de redirecionamento após sucesso
             } else {
                 const error = await response.json();
                 alert(error.message || 'Ocorreu um erro ao redefinir a senha.');

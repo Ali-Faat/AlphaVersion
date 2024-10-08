@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para buscar e exibir as quadras
     async function fetchQuadras(nome = '') {
         try {
-            let url = 'http://138.99.160.212:5000/api/quadras';
+            let url = 'https://api.sportflyx.com:5000/api/quadras';
             if (nome) {
                 url += `?nome=${encodeURIComponent(nome)}`;
             }

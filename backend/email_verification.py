@@ -19,7 +19,7 @@ def send_welcome_email(email_destinatario, nome_completo):
 
     Para concluir seu cadastro, por favor, acesse o link abaixo para verificar seu e-mail:
 
-    Link para verificacao: http://138.99.160.212/pages/validar/validar.html
+    Link para verificacao: https://sportflyx.com/pages/validar/validar.html
 
     Atenciosamente,
     Equipe GoalCast!

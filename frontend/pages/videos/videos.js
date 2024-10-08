@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             spinner.style.display = 'flex'; // Mostrar o spinner
             const quadraId = getQuadraIdFromUrl();
             console.log('Buscando vídeos para partida ID:', partidaId); // Log de depuração
-            const response = await fetch(`http://138.99.160.212:5000/api/videos?quadra_id=${quadraId}&partida_id=${partidaId}`);
+            const response = await fetch(`https://api.sportflyx.com:5000/api/videos?quadra_id=${quadraId}&partida_id=${partidaId}`);
             
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
                 videoGroup.forEach(video => {
                     const videoElement = document.createElement('video');
-                    videoElement.src = `http://138.99.160.212:5000/api/video_stream/${video.video_id}`;
+                    videoElement.src = `https://api.sportflyx.com:5000/api/video_stream/${video.video_id}`;
                     videoElement.controls = true;
     
                     if (video.tipo && video.tipo.toLowerCase().includes('mesh')) {
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function fetchPartidasByQuadra(quadraId) {
         try {
             console.log('Buscando partidas para quadra ID:', quadraId); // Log de depuração
-            const response = await fetch(`http://138.99.160.212:5000/api/partidas/${quadraId}`);
+            const response = await fetch(`https://api.sportflyx.com:5000/api/partidas/${quadraId}`);
 
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function fetchQuadraNome(quadraId) {
         try {
             console.log('Buscando nome da quadra para ID:', quadraId); // Log de depuração
-            const response = await fetch(`http://138.99.160.212:5000/api/quadras/${quadraId}`);
+            const response = await fetch(`https://api.sportflyx.com:5000/api/quadras/${quadraId}`);
             if (!response.ok) {
                 throw new Error(`Erro HTTP: ${response.status}`);
             }

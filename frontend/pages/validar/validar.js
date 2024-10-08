@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         validarEmailBtn.disabled = true;
         mensagemVerificacao.textContent = 'Validando, por favor aguarde...';
 
-        fetch('http://138.99.160.212:5000/confirmar_email', {
+        fetch('https://api.sportflyx.com:5000/confirmar_email', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             if (data.success) {
                 alert(data.message);  // Exibe a mensagem de sucesso
-                window.location.href = 'http://goalcast.com.br:8000/pages/login/login.html';  // Redireciona
+                window.location.href = 'https://sportflyx.com/pages/login/login.html';  // Redireciona
             } else {
                 alert(data.error);  // Exibe a mensagem de erro
             }
