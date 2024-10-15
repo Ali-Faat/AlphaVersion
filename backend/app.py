@@ -504,43 +504,36 @@ def check_auth():
 
 @app.route('/api/reset-password', methods=['POST'])
 def handle_reset_password():
-    print("Recebendo solicitação para redefinição de senha")
 
     data = request.get_json()
     email = data.get('email')
     nova_senha = data.get('password')
 
     if not email or not nova_senha:
-        print("Dados insuficientes fornecidos")
         return jsonify({'error': 'Dados insuficientes para redefinição de senha'}), 400
 
     try:
         mydb = get_db_connection()
         cursor = mydb.cursor(dictionary=True)
-        print(f"Conectado ao banco de dados, procurando usuário com email: {email}")
 
         # Verifica se o usuário existe no banco de dados
         cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
         usuario = cursor.fetchone()
 
         if not usuario:
-            print(f"Usuário não encontrado para o email: {email}")
             return jsonify({'error': 'Usuário não encontrado'}), 404
 
         # Gera um novo hash e salt para a nova senha
         salt = generate_salt()
         senha_hashed = generate_password_hash(nova_senha, salt)
-        print(f"Senha e salt gerados para o usuário: {email}")
 
         # Atualiza a senha no banco de dados
         cursor.execute('UPDATE usuarios SET senha = %s, salt = %s WHERE email = %s', (senha_hashed, salt, email))
         mydb.commit()
-        print(f"Senha atualizada com sucesso para o usuário: {email}")
 
         return jsonify({'message': 'Senha redefinida com sucesso'}), 200
 
     except mysql.connector.Error as err:
-        print(f"Erro ao redefinir a senha: {err}")
         return jsonify({'error': f'Erro ao redefinir a senha: {err}'}), 500
 
     finally:
@@ -591,7 +584,7 @@ def cadastro():
         body_text = f"Olá {nome_completo},\n\nPor favor, verifique seu e-mail clicando no link a seguir: {verification_link}"
         body_html = f"<p>Olá {nome_completo},</p><p>Por favor, verifique seu e-mail clicando no link a seguir:</p><p><a href='{verification_link}'>Verificar E-mail</a></p>"
 
-        send_email(subject, email, body_text, body_html)
+        send_email(subject, email, body_text, body_html, sender="verficador.sportflyx@gmail.com")
 
         return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso! Verifique seu e-mail para ativar sua conta.'}), 201
 

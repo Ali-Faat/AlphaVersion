@@ -1,29 +1,20 @@
-CREATE DATABASE  IF NOT EXISTS `goalcast` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE IF NOT EXISTS `goalcast` 
+  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
 USE `goalcast`;
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
---
--- Host: localhost    Database: goalcast
--- ------------------------------------------------------
--- Server version	8.0.37
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `arbitros_partidas`
---
+SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT;
+SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS;
+SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION;
+SET NAMES utf8mb4;
+SET @OLD_TIME_ZONE=@@TIME_ZONE;
+SET TIME_ZONE='+00:00';
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
+SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0;
 
 DROP TABLE IF EXISTS `arbitros_partidas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `arbitros_partidas` (
   `arbitro_id` int NOT NULL,
   `partida_id` int NOT NULL,
@@ -32,15 +23,8 @@ CREATE TABLE `arbitros_partidas` (
   CONSTRAINT `arbitros_partidas_ibfk_1` FOREIGN KEY (`arbitro_id`) REFERENCES `usuarios` (`id`),
   CONSTRAINT `arbitros_partidas_ibfk_2` FOREIGN KEY (`partida_id`) REFERENCES `partidas` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `avaliacoes_quadras`
---
 
 DROP TABLE IF EXISTS `avaliacoes_quadras`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `avaliacoes_quadras` (
   `id` int NOT NULL AUTO_INCREMENT,
   `quadra_id` varchar(45) DEFAULT NULL,
@@ -53,15 +37,8 @@ CREATE TABLE `avaliacoes_quadras` (
   CONSTRAINT `avaliacoes_quadras_ibfk_1` FOREIGN KEY (`quadra_id`) REFERENCES `quadras` (`id`),
   CONSTRAINT `avaliacoes_quadras_ibfk_2` FOREIGN KEY (`jogador_id`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `jogador`
---
 
 DROP TABLE IF EXISTS `jogador`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `jogador` (
   `idjogador` int NOT NULL AUTO_INCREMENT,
   `user` varchar(45) NOT NULL,
@@ -74,15 +51,8 @@ CREATE TABLE `jogador` (
   `peDominante` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idjogador`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `partidas`
---
 
 DROP TABLE IF EXISTS `partidas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `partidas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `organizador_id` int DEFAULT NULL,
@@ -100,15 +70,8 @@ CREATE TABLE `partidas` (
   CONSTRAINT `partidas_ibfk_1` FOREIGN KEY (`organizador_id`) REFERENCES `usuarios` (`id`),
   CONSTRAINT `partidas_ibfk_2` FOREIGN KEY (`quadra_id`) REFERENCES `quadras` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `partidas_jogadores`
---
 
 DROP TABLE IF EXISTS `partidas_jogadores`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `partidas_jogadores` (
   `partida_id` int NOT NULL,
   `jogador_id` int NOT NULL,
@@ -119,15 +82,8 @@ CREATE TABLE `partidas_jogadores` (
   CONSTRAINT `partidas_jogadores_ibfk_1` FOREIGN KEY (`partida_id`) REFERENCES `partidas` (`id`),
   CONSTRAINT `partidas_jogadores_ibfk_2` FOREIGN KEY (`jogador_id`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `quadras`
---
 
 DROP TABLE IF EXISTS `quadras`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `quadras` (
   `id_sequencial` int NOT NULL AUTO_INCREMENT,
   `id` varchar(255) NOT NULL,
@@ -142,15 +98,8 @@ CREATE TABLE `quadras` (
   PRIMARY KEY (`id_sequencial`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `usuarios`
---
 
 DROP TABLE IF EXISTS `usuarios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuarios` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(255) DEFAULT NULL,
@@ -169,15 +118,8 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `videos`
---
 
 DROP TABLE IF EXISTS `videos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `videos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `partida_id` int DEFAULT NULL,
@@ -192,16 +134,4 @@ CREATE TABLE `videos` (
   KEY `criador_id` (`criador_id`),
   CONSTRAINT `videos_ibfk_1` FOREIGN KEY (`quadra_id`) REFERENCES `quadras` (`id`),
   CONSTRAINT `videos_ibfk_2` FOREIGN KEY (`criador_id`) REFERENCES `usuarios` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2024-09-16 14:38:31
+)
